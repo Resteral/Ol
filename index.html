@@ -997,6 +997,53 @@
             </div>
           </div>
         </div>
+
+        <!-- Micro-Gigs & Task Board (Phase 13: Ways to Make Money) -->
+        <div class="card margin-top-large" style="border-top: 4px solid var(--color-green);">
+          <h3 class="text-gold" style="margin-bottom:0.25rem;">Micro-Gigs & Mutual Aid Tasks Board</h3>
+          <p class="section-intro">Claim local micro-tasks, coordinate deliverables, and earn direct payouts (funded by community pools or private sponsors) to support local projects.</p>
+
+          <div style="display:grid; grid-template-columns: 1fr 2fr; gap:2rem; margin-top:1.5rem;">
+            <!-- Post a Gig Form -->
+            <div style="background:rgba(0,0,0,0.15); border:1px solid var(--color-border); padding:1.25rem; border-radius:8px; height:fit-content;">
+              <h4 style="color:var(--color-green); margin-bottom:1rem; font-size:0.95rem; text-transform:uppercase;">Post a New Gig</h4>
+              <form id="local-gig-form">
+                <div class="input-group" style="margin-bottom:0.75rem;">
+                  <label for="gig-title" style="font-size:0.75rem;">Task Title</label>
+                  <input type="text" id="gig-title" placeholder="e.g. Translate co-op handbook" required style="padding:0.4rem; background:rgba(0,0,0,0.3); border:1px solid var(--color-border); color:var(--color-text); border-radius:4px;">
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; margin-bottom:0.75rem;">
+                  <div class="input-group" style="margin-bottom:0;">
+                    <label for="gig-bounty" style="font-size:0.75rem;">Bounty ($)</label>
+                    <input type="number" id="gig-bounty" placeholder="50" min="5" required style="padding:0.4rem; background:rgba(0,0,0,0.3); border:1px solid var(--color-border); color:var(--color-text); border-radius:4px;">
+                  </div>
+                  <div class="input-group" style="margin-bottom:0;">
+                    <label for="gig-category" style="font-size:0.75rem;">Category</label>
+                    <select id="gig-category" style="padding:0.4rem; background:rgba(0,0,0,0.3); border:1px solid var(--color-border); color:var(--color-text); border-radius:4px;">
+                      <option value="Labor">Manual Labor</option>
+                      <option value="Digital">Digital / Tech</option>
+                      <option value="Education">Education</option>
+                      <option value="Writing">Writing / Translating</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="input-group" style="margin-bottom:1rem;">
+                  <label for="gig-desc" style="font-size:0.75rem;">Description</label>
+                  <textarea id="gig-desc" placeholder="Details of the deliverable..." rows="3" required style="padding:0.4rem; background:rgba(0,0,0,0.3); border:1px solid var(--color-border); color:var(--color-text); border-radius:4px; font-family:inherit; font-size:0.8rem;"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%; padding:0.5rem;">Post Task & Fund Bounty</button>
+              </form>
+            </div>
+
+            <!-- Active Gigs Stream -->
+            <div>
+              <h4 style="color:var(--color-text-muted); margin-bottom:1rem; font-size:0.95rem; text-transform:uppercase;">Available Tasks</h4>
+              <div id="local-gigs-list" style="display:flex; flex-direction:column; gap:0.75rem;">
+                <!-- Filled dynamically by JS -->
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       <!-- TAB 8: P2P MUTUAL CREDIT -->

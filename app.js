@@ -1088,6 +1088,39 @@ const LOCALDATA_BY_REGION = {
   }
 };
 
+/* ==========================================================================
+   10b. Micro-Gigs & Mutual Aid Tasks database
+   ========================================================================== */
+let LOCAL_GIGS = [
+  {
+    id: 1,
+    title: 'Audit Super PAC Disclosures',
+    category: 'Digital',
+    bounty: 120,
+    desc: 'Verify 2026 Q1 FEC filings for real estate PACs operating in LA/NY. Put results into a CSV format.',
+    status: 'Open',
+    worker: null
+  },
+  {
+    id: 2,
+    title: 'Translate Co-op Bylaws to Spanish',
+    category: 'Writing',
+    bounty: 75,
+    desc: 'Translate the standard worker-owned cooperative template (20 pages) for local Hispanic entrepreneurs.',
+    status: 'Open',
+    worker: null
+  },
+  {
+    id: 3,
+    title: 'Repair Echo Park Community Cooler',
+    category: 'Labor',
+    bounty: 50,
+    desc: 'Replace the temperature regulator relay on the outdoor community fridge. Parts provided.',
+    status: 'Claimed',
+    worker: '@Citizen_Socrates'
+  }
+];
+
 function initLocalBoard() {
   const btnGeo = document.getElementById('btn-geolocation');
   const btnZip = document.getElementById('btn-zip-submit');
@@ -1210,6 +1243,113 @@ function initLocalBoard() {
       renderRegion(matchedRegion);
     });
   }
+
+  // Micro-Gigs Board Engine
+  const gigsContainer = document.getElementById('local-gigs-list');
+  const gigForm = document.getElementById('local-gig-form');
+
+  const renderGigs = () => {
+    if (!gigsContainer) return;
+    gigsContainer.innerHTML = '';
+
+    LOCAL_GIGS.forEach(gig => {
+      const row = document.createElement('div');
+      row.className = 'loan-card';
+      row.style.background = 'rgba(255, 255, 255, 0.03)';
+      row.style.border = '1px solid var(--color-border)';
+
+      const left = document.createElement('div');
+      left.className = 'loan-card-info';
+
+      const title = document.createElement('span');
+      title.className = 'reg-folder-title';
+      title.textContent = gig.title;
+
+      const catBadge = `<span class="post-tag" style="margin-left: 0.5rem; font-size:0.65rem; padding:0.1rem 0.4rem; vertical-align:middle; background:rgba(255,255,255,0.05); color:var(--color-text-muted);">${gig.category}</span>`;
+      title.innerHTML += catBadge;
+
+      const desc = document.createElement('span');
+      desc.className = 'loan-details-meta';
+      desc.style.display = 'block';
+      desc.style.marginTop = '0.25rem';
+      desc.textContent = gig.desc;
+
+      const statusLine = document.createElement('span');
+      statusLine.className = 'loan-details-meta';
+      statusLine.style.fontSize = '0.75rem';
+      statusLine.style.marginTop = '0.25rem';
+      statusLine.style.display = 'block';
+      
+      if (gig.status === 'Open') {
+        statusLine.style.color = 'var(--color-green)';
+        statusLine.textContent = '🟢 Open for Claims';
+      } else {
+        statusLine.style.color = 'var(--color-text-muted)';
+        statusLine.textContent = `🔒 Claimed by ${gig.worker}`;
+      }
+
+      left.appendChild(title);
+      left.appendChild(desc);
+      left.appendChild(statusLine);
+
+      const right = document.createElement('div');
+      right.className = 'loan-card-actions';
+
+      const bountyAmt = document.createElement('span');
+      bountyAmt.className = 'loan-amount';
+      bountyAmt.textContent = `$${gig.bounty}`;
+
+      const claimBtn = document.createElement('button');
+      claimBtn.className = `btn ${gig.status === 'Open' ? 'btn-primary' : 'btn-secondary'}`;
+      claimBtn.style.padding = '0.3rem 0.8rem';
+      claimBtn.style.marginTop = '0.25rem';
+      claimBtn.textContent = gig.status === 'Open' ? 'Claim Gig' : 'Claimed';
+      claimBtn.disabled = gig.status !== 'Open';
+
+      claimBtn.addEventListener('click', () => {
+        gig.status = 'Claimed';
+        gig.worker = '@Citizen_X (You)';
+        alert(`Gig Claimed successfully! Submit deliverables to claiming@resolve.bet to receive your $${gig.bounty} payment.`);
+        renderGigs();
+      });
+
+      right.appendChild(bountyAmt);
+      right.appendChild(claimBtn);
+
+      row.appendChild(left);
+      row.appendChild(right);
+      gigsContainer.appendChild(row);
+    });
+  };
+
+  if (gigForm) {
+    gigForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const title = document.getElementById('gig-title').value;
+      const bounty = parseInt(document.getElementById('gig-bounty').value) || 10;
+      const category = document.getElementById('gig-category').value;
+      const desc = document.getElementById('gig-desc').value;
+
+      LOCAL_GIGS.unshift({
+        id: LOCAL_GIGS.length + 1,
+        title: title,
+        category: category,
+        bounty: bounty,
+        desc: desc,
+        status: 'Open',
+        worker: null
+      });
+
+      document.getElementById('gig-title').value = '';
+      document.getElementById('gig-bounty').value = '';
+      document.getElementById('gig-desc').value = '';
+
+      renderGigs();
+    });
+  }
+
+  // Draw gigs initially
+  renderGigs();
 }
 
 /* ==========================================================================

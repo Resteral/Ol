@@ -72,6 +72,10 @@
         <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
         Submissions Hub
       </button>
+      <button class="tab-btn" data-tab="betting-arena" id="tab-betting-arena">
+        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/></svg>
+        resolve.bet Markets
+      </button>
       <button class="tab-btn" data-tab="local-board" id="tab-local-board">
         <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
         Local Board
@@ -1061,7 +1065,7 @@
         <h2 class="section-title text-center">Submissions Hub & Community Vote</h2>
         <p class="section-intro text-center">Decentralized approval system. Upvote proposed debate topics, developer app projects, or micro-gigs. Items reaching <strong>5 upvotes</strong> are automatically integrated.</p>
 
-        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1.5rem; margin-top:2rem;" class="voting-columns-container">
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:1.25rem; margin-top:2rem;" class="voting-columns-container">
           <!-- Col 1: Proposed Debate Topics -->
           <div class="card" style="border-top:3px solid var(--color-blue); background:rgba(0,0,0,0.25);">
             <h3 style="color:var(--color-blue); margin-bottom:0.5rem; display:flex; justify-content:space-between; align-items:center; font-size:1.1rem;">
@@ -1095,6 +1099,73 @@
             <p style="font-size:0.75rem; color:var(--color-text-muted); margin-bottom:1rem;">Needs 5 upvotes to appear in Local Tasks Board.</p>
             <div id="voting-gigs-list" style="display:flex; flex-direction:column; gap:0.75rem;">
               <!-- Dynamic pending micro-gigs -->
+            </div>
+          </div>
+
+          <!-- Col 4: Pending Prediction Markets -->
+          <div class="card" style="border-top:3px solid var(--color-red); background:rgba(0,0,0,0.25);">
+            <h3 style="color:var(--color-red); margin-bottom:0.5rem; display:flex; justify-content:space-between; align-items:center; font-size:1.1rem;">
+              <span>Prediction Markets</span>
+              <span class="status-badge" style="font-size:0.6rem; padding:0.1rem 0.3rem; background:rgba(239,68,68,0.1); color:var(--color-red);">Pending</span>
+            </h3>
+            <p style="font-size:0.75rem; color:var(--color-text-muted); margin-bottom:1rem;">Needs 5 upvotes to appear in active resolve.bet Markets.</p>
+            <div id="voting-markets-list" style="display:flex; flex-direction:column; gap:0.75rem;">
+              <!-- Dynamic pending prediction markets -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: resolve.bet CITIZENS PREDICTION MARKETS -->
+      <section id="betting-arena" class="tab-content">
+        <h2 class="section-title text-center">resolve.bet Citizens Prediction Markets</h2>
+        <p class="section-intro text-center">Harnessing community intelligence. Trade positions on regulatory filings, legislative reforms, and antitrust cases. Odds shift in real-time as citizens buy Yes/No contracts.</p>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.25); border:1px solid var(--color-border); padding:1rem 1.5rem; border-radius:8px; margin-bottom:1.5rem;" class="card">
+          <div style="display:flex; align-items:center; gap:0.6rem;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--color-gold);"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+            <span style="font-size:0.95rem; font-weight:bold;">Citizens Wallet Balance:</span>
+          </div>
+          <span style="font-size:1.4rem; font-weight:800; color:var(--color-green);" id="market-wallet-display">$2,500</span>
+        </div>
+
+        <div style="display:grid; grid-template-columns:2fr 1fr; gap:1.5rem;" class="loophole-grid-container">
+          <!-- Left: Prediction Contracts -->
+          <div style="display:flex; flex-direction:column; gap:1.25rem;">
+            <h3 style="font-size:1.2rem; border-bottom:1px solid var(--color-border); padding-bottom:0.5rem; margin-bottom:0.5rem;">Active Prediction Contracts</h3>
+            <div id="prediction-contracts-list" style="display:flex; flex-direction:column; gap:1rem;">
+              <!-- Populated dynamically by JS -->
+            </div>
+          </div>
+
+          <!-- Right: User active positions and submit contract -->
+          <div style="display:flex; flex-direction:column; gap:1.25rem;">
+            <div class="card" style="border-top:3px solid var(--color-blue); background:rgba(0,0,0,0.25);">
+              <h3 style="font-size:1.1rem; color:var(--color-blue); margin-bottom:0.75rem;">Your Active Positions</h3>
+              <div id="market-positions-list" style="display:flex; flex-direction:column; gap:0.6rem; font-size:0.82rem;">
+                <!-- Populated dynamically by JS -->
+              </div>
+            </div>
+
+            <!-- Propose a prediction contract form -->
+            <div class="card" style="border-top:3px solid var(--color-gold); background:rgba(0,0,0,0.25);">
+              <h3 style="font-size:1.1rem; color:var(--color-gold); margin-bottom:0.75rem;">Propose New Market</h3>
+              <form id="propose-market-form">
+                <div class="input-group" style="margin-bottom:0.75rem;">
+                  <label for="market-question">Prediction Question</label>
+                  <input type="text" id="market-question" placeholder="e.g. Will Congress pass the tax bill by Dec?" required style="padding:0.4rem; background:rgba(0,0,0,0.3); border:1px solid var(--color-border); color:#fff; border-radius:4px; width:100%; box-sizing:border-box;">
+                </div>
+                <div class="input-group" style="margin-bottom:0.75rem;">
+                  <label for="market-category">Agency Category</label>
+                  <select id="market-category" style="padding:0.4rem; background:rgba(0,0,0,0.3); border:1px solid var(--color-border); color:#fff; border-radius:4px; width:100%; box-sizing:border-box;">
+                    <option value="FTC">FTC (Antitrust & Consumer Protection)</option>
+                    <option value="SEC">SEC (Financial Securities)</option>
+                    <option value="FEC">FEC (Campaign Financing)</option>
+                    <option value="EPA">EPA (Environmental Standards)</option>
+                  </select>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%; padding:0.5rem; font-weight:bold;">Submit Proposal</button>
+              </form>
             </div>
           </div>
         </div>
@@ -1450,6 +1521,66 @@
           <!-- Debt Output results -->
           <div class="reflection-output losing margin-top-large" id="cc-trap-output">
             <!-- Loaded dynamically by JS -->
+          </div>
+        </div>
+
+        <!-- Billionaire Tax Loophole Simulator (Full Width) -->
+        <div class="card margin-top-large" style="border-top:4px solid var(--color-green); background:rgba(0, 0, 0, 0.15);">
+          <h2 class="section-title text-gold">The Billionaire Tax Loophole Simulator</h2>
+          <p class="section-intro">Federal tax codes are written with structural bias favoring assets over labor. Input an annual income, select active corporate loopholes, and watch how the ultra-wealthy bypass taxation entirely.</p>
+
+          <div style="display:grid; grid-template-columns:1.2fr 1fr; gap:2rem;" class="loophole-grid-container">
+            <!-- Left inputs & loopholes -->
+            <div>
+              <div class="widget-grid" style="margin-bottom:1.5rem;">
+                <div class="input-group">
+                  <label for="loop-income">Target Wealth Increase ($)</label>
+                  <input type="number" id="loop-income" value="5000000" min="50000" step="500000">
+                </div>
+                <div class="input-group">
+                  <label for="loop-source">Income Class</label>
+                  <select id="loop-source">
+                    <option value="w2">W-2 Wages (Working Class / Executive Salaries)</option>
+                    <option value="assets" selected>Capital/Stock Appreciation (Billionaire Assets)</option>
+                  </select>
+                </div>
+              </div>
+
+              <h4>Activate Loophole Systems</h4>
+              <div style="display:flex; flex-direction:column; gap:0.8rem; margin-top:0.75rem;">
+                <label style="display:flex; align-items:start; gap:0.6rem; font-size:0.85rem; cursor:pointer;">
+                  <input type="checkbox" id="chk-buy-borrow" checked style="margin-top:0.2rem;">
+                  <div>
+                    <strong style="color:#fff;">Buy, Borrow, Die (Portfolio Lending)</strong>
+                    <p style="font-size:0.78rem; color:var(--color-text-muted); margin:0.15rem 0;">Never sell appreciated assets. Instead, borrow cash (e.g. at 2.5% interest) using your stock portfolio as collateral. Loan proceeds are legally classified as debt rather than income, generating 0% income tax liability.</p>
+                  </div>
+                </label>
+
+                <label style="display:flex; align-items:start; gap:0.6rem; font-size:0.85rem; cursor:pointer;">
+                  <input type="checkbox" id="chk-offshore" style="margin-top:0.2rem;">
+                  <div>
+                    <strong style="color:#fff;">Offshore Shell IP Royalties</strong>
+                    <p style="font-size:0.78rem; color:var(--color-text-muted); margin:0.15rem 0;">Assign corporate intellectual property to Bermuda shell entities. Lease the IP back to domestic branches to deduct licensing outlays locally and deposit revenues in tax havens.</p>
+                  </div>
+                </label>
+
+                <label style="display:flex; align-items:start; gap:0.6rem; font-size:0.85rem; cursor:pointer;">
+                  <input type="checkbox" id="chk-foundation" style="margin-top:0.2rem;">
+                  <div>
+                    <strong style="color:#fff;">Family Foundation Stock Donations</strong>
+                    <p style="font-size:0.78rem; color:var(--color-text-muted); margin:0.15rem 0;">Donate appreciated shares directly to your private family foundation. Claim a full fair market value deduction up to 30% of AGI, while continuing to exercise corporate voting rights on the shares.</p>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- Right results outputs -->
+            <div style="display:flex; flex-direction:column; gap:1rem;">
+              <h4>Taxation Summary Results</h4>
+              <div class="reflection-output winning" id="loop-output-panel" style="flex:1;">
+                <!-- Loaded dynamically by JS -->
+              </div>
+            </div>
           </div>
         </div>
       </section>

@@ -41,6 +41,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initSupabaseAuth();
   initLiveFeed();
   initSubmissionsHub();
+  initBillionaireLoopholeSimulator();
+  initPredictionMarkets();
 });
 
 /* ==========================================================================
@@ -3214,6 +3216,7 @@ function initSubmissionsHub() {
   renderVotingDebates();
   renderVotingDevs();
   renderVotingGigs();
+  if (typeof renderVotingMarkets === 'function') renderVotingMarkets();
 }
 
 function renderVotingDebates() {
@@ -3305,3 +3308,377 @@ function renderVotingGigs() {
     container.appendChild(item);
   });
 }
+
+/* ==========================================================================
+   21. Billionaire Tax Loophole Simulator
+   ========================================================================== */
+function initBillionaireLoopholeSimulator() {
+  const incomeInput = document.getElementById('loop-income');
+  const sourceSelect = document.getElementById('loop-source');
+  
+  const chkBuyBorrow = document.getElementById('chk-buy-borrow');
+  const chkOffshore = document.getElementById('chk-offshore');
+  const chkFoundation = document.getElementById('chk-foundation');
+  
+  const outputPanel = document.getElementById('loop-output-panel');
+
+  if (!incomeInput || !sourceSelect || !outputPanel) return;
+
+  const calculateTax = () => {
+    const income = parseFloat(incomeInput.value) || 0;
+    const isW2 = sourceSelect.value === 'w2';
+    
+    // W-2 pays 37% federal rate on income over $600k + state (approx 45% flat for high-earning bracket)
+    // Assets pays 20% capital gains rate
+    const baseRate = isW2 ? 0.45 : 0.20;
+    const baseTax = income * baseRate;
+    
+    let activeLoopholes = [];
+    let reductionFactor = 1.0;
+    let rateExplanation = '';
+    
+    // Loophole adjustments
+    if (isW2) {
+      // W-2 earners cannot use these loopholes because taxes are withheld by payroll
+      chkBuyBorrow.disabled = true;
+      chkOffshore.disabled = true;
+      chkFoundation.disabled = true;
+      
+      chkBuyBorrow.checked = false;
+      chkOffshore.checked = false;
+      chkFoundation.checked = false;
+      
+      rateExplanation = `W-2 wages are subject to mandatory employer withholding. As a salary earner, you cannot write off personal assets, shelter royalties offshore, or borrow against wages interest-free. You pay the full <strong>45%</strong> marginal rate.`;
+    } else {
+      chkBuyBorrow.disabled = false;
+      chkOffshore.disabled = false;
+      chkFoundation.disabled = false;
+
+      rateExplanation = `Asset appreciation is legally untaxed until sold. This allows you to apply billionaire asset preservation strategies.`;
+      
+      if (chkBuyBorrow.checked) {
+        reductionFactor = 0.0; // Buy, Borrow, Die drops effective income to 0
+        activeLoopholes.push('Buy, Borrow, Die (Portfolio Lending)');
+      } else {
+        if (chkOffshore.checked) {
+          reductionFactor -= 0.40;
+          activeLoopholes.push('Offshore IP royalties shelter');
+        }
+        if (chkFoundation.checked) {
+          reductionFactor -= 0.30;
+          activeLoopholes.push('Family Foundation stock write-off');
+        }
+      }
+    }
+    
+    reductionFactor = Math.max(0.0, reductionFactor);
+    const finalTax = baseTax * reductionFactor;
+    const effectiveRate = income > 0 ? (finalTax / income) * 100 : 0;
+    const savings = baseTax - finalTax;
+    const netKept = income - finalTax;
+
+    const isLosing = effectiveRate > 15;
+    outputPanel.className = `reflection-output ${isLosing ? 'losing' : 'winning'}`;
+    
+    let loopholesHTML = '';
+    if (activeLoopholes.length > 0) {
+      loopholesHTML = `
+        <p style="margin-top:0.5rem; font-size:0.8rem; color:#fff;"><strong>Loopholes Applied:</strong></p>
+        <ul style="padding-left:1rem; font-size:0.78rem; color:var(--color-text-muted); margin-top:0.25rem;">
+          ${activeLoopholes.map(loop => `<li>✅ ${loop}</li>`).join('')}
+        </ul>
+      `;
+    }
+
+    outputPanel.innerHTML = `
+      <div class="reflection-header">
+        <span class="reflection-badge ${isLosing ? 'badge-losing' : 'badge-winning'}">
+          ${isLosing ? 'Standard Tax Rate' : 'Billionaire Status'}
+        </span>
+        <span class="reflection-title" style="${isLosing ? 'color:var(--color-red);' : 'color:var(--color-green);'}">
+          ${effectiveRate.toFixed(1)}% Effective Rate
+        </span>
+      </div>
+      <div class="reflection-text">
+        <p><strong>Base Tax Rate:</strong> ${(baseRate * 100).toFixed(0)}%</p>
+        <p><strong>Standard Liability:</strong> $${Math.round(baseTax).toLocaleString()}</p>
+        <p style="margin-top:0.4rem;"><strong>Final Tax Due:</strong> $${Math.round(finalTax).toLocaleString()}</p>
+        <p><strong>Net Cash Kept:</strong> $${Math.round(netKept).toLocaleString()}</p>
+        <p style="color:var(--color-green); font-weight:bold; margin-top:0.4rem;">Net Tax Savings: $${Math.round(savings).toLocaleString()}</p>
+        ${loopholesHTML}
+        <p class="margin-top-small" style="font-size:0.8rem; line-height:1.4; color:var(--color-text-muted); border-top:1px solid rgba(255,255,255,0.05); padding-top:0.5rem;">
+          ${rateExplanation}
+        </p>
+      </div>
+    `;
+  };
+
+  incomeInput.addEventListener('input', calculateTax);
+  sourceSelect.addEventListener('change', calculateTax);
+  
+  chkBuyBorrow.addEventListener('change', calculateTax);
+  chkOffshore.addEventListener('change', calculateTax);
+  chkFoundation.addEventListener('change', calculateTax);
+
+  // Initial calculation
+  calculateTax();
+}
+
+/* ==========================================================================
+   22. resolve.bet Prediction Markets System
+   ========================================================================== */
+let CITIZEN_WALLET = parseFloat(localStorage.getItem('CITIZEN_WALLET')) || 2500.0;
+
+let DEFAULT_PREDICTION_CONTRACTS = [
+  { id: 1, question: "Will the FTC block the Kroger-Albertsons supermarket merger by Oct 2026?", category: "FTC", yesOdds: 65, totalPool: 15000 },
+  { id: 2, question: "Will the compute-limit threshold for frontier AI training be reduced to 10^24 FLOPs?", category: "SEC", yesOdds: 42, totalPool: 9000 },
+  { id: 3, question: "Will campaign finance limits be capped under a public election funding amendment?", category: "FEC", yesOdds: 15, totalPool: 24000 }
+];
+
+let PREDICTION_CONTRACTS = JSON.parse(localStorage.getItem('PREDICTION_CONTRACTS')) || DEFAULT_PREDICTION_CONTRACTS;
+let USER_POSITIONS = JSON.parse(localStorage.getItem('USER_POSITIONS')) || [];
+let PENDING_MARKETS = JSON.parse(localStorage.getItem('PENDING_MARKETS')) || [
+  { id: 1, question: "Will the EPA mandate 60% EV vehicle production by 2030?", category: "EPA", upvotes: 3 }
+];
+
+function initPredictionMarkets() {
+  const contractsList = document.getElementById('prediction-contracts-list');
+  const positionsList = document.getElementById('market-positions-list');
+  const walletDisplay = document.getElementById('market-wallet-display');
+  const proposeForm = document.getElementById('propose-market-form');
+
+  if (!contractsList || !proposeForm) return;
+
+  const updateWalletDisplay = () => {
+    if (walletDisplay) walletDisplay.textContent = `$${CITIZEN_WALLET.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+    localStorage.setItem('CITIZEN_WALLET', CITIZEN_WALLET.toString());
+  };
+
+  const renderContracts = () => {
+    contractsList.innerHTML = '';
+    PREDICTION_CONTRACTS.forEach(contract => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.style.cssText = 'padding:1.25rem; border:1px solid var(--color-border); border-radius:10px; background:rgba(0,0,0,0.2); display:flex; flex-direction:column; gap:0.75rem;';
+      
+      const noOdds = 100 - contract.yesOdds;
+      const yesPayout = (100 / contract.yesOdds).toFixed(2);
+      const noPayout = (100 / noOdds).toFixed(2);
+
+      card.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; color:var(--color-text-muted);">
+          <span class="genre-badge genre-political">#${contract.category} Market</span>
+          <span>Liquidity Pool: $${contract.totalPool.toLocaleString()}</span>
+        </div>
+        <h4 style="font-size:1.05rem; margin:0.25rem 0; color:#fff; line-height:1.35;">${contract.question}</h4>
+        
+        <!-- Odds Bars -->
+        <div>
+          <div style="display:flex; justify-content:space-between; font-size:0.8rem; font-weight:bold; margin-bottom:4px;">
+            <span style="color:var(--color-green);">Yes: ${contract.yesOdds}% (pays $${yesPayout})</span>
+            <span style="color:var(--color-red);">No: ${noOdds}% (pays $${noPayout})</span>
+          </div>
+          <div style="height:8px; background:rgba(255,255,255,0.05); border-radius:10px; overflow:hidden; display:flex;">
+            <div style="background:var(--color-green); width:${contract.yesOdds}%; height:100%; transition:width 0.3s ease;"></div>
+            <div style="background:var(--color-red); width:${noOdds}%; height:100%; transition:width 0.3s ease;"></div>
+          </div>
+        </div>
+
+        <!-- Action Bet controls -->
+        <div style="display:flex; gap:0.8rem; align-items:center; margin-top:0.25rem;">
+          <div class="input-group" style="margin:0; width:100px;">
+            <input type="number" id="wager-amt-${contract.id}" value="50" min="5" max="${CITIZEN_WALLET}" style="padding:0.35rem; background:rgba(0,0,0,0.4); border:1px solid var(--color-border); color:#fff; border-radius:4px; font-size:0.8rem;">
+          </div>
+          <button class="btn btn-primary" style="flex:1; padding:0.4rem; font-size:0.8rem; background:var(--color-green); border-color:var(--color-green);" onclick="placeMarketBet(${contract.id}, 'Yes')">
+            Buy YES
+          </button>
+          <button class="btn btn-primary" style="flex:1; padding:0.4rem; font-size:0.8rem; background:var(--color-red); border-color:var(--color-red);" onclick="placeMarketBet(${contract.id}, 'No')">
+            Buy NO
+          </button>
+        </div>
+      `;
+      contractsList.appendChild(card);
+    });
+  };
+
+  const renderPositions = () => {
+    if (!positionsList) return;
+    positionsList.innerHTML = '';
+    
+    if (USER_POSITIONS.length === 0) {
+      positionsList.innerHTML = '<div class="chat-system-message">No active positions. Make a wager on resolve.bet markets to build leverage!</div>';
+      return;
+    }
+
+    USER_POSITIONS.forEach((pos, idx) => {
+      const contract = PREDICTION_CONTRACTS.find(c => c.id === pos.contractId);
+      if (!contract) return;
+
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.style.cssText = 'padding:0.75rem; font-size:0.78rem; display:flex; flex-direction:column; gap:0.25rem; border-color:rgba(255,255,255,0.05); background:rgba(255,255,255,0.01);';
+      card.innerHTML = `
+        <div style="display:flex; justify-content:space-between; font-weight:bold;">
+          <span style="color:#fff; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:180px;">${contract.question}</span>
+          <span style="color:${pos.outcome === 'Yes' ? 'var(--color-green)' : 'var(--color-red)'};">${pos.outcome.toUpperCase()}</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; color:var(--color-text-muted); margin-top:2px;">
+          <span>Staked: $${pos.amount} (at ${pos.odds}%)</span>
+          <span style="color:var(--color-gold); font-weight:bold;">Payout: $${pos.payout.toFixed(2)}</span>
+        </div>
+        <button class="btn btn-secondary" style="padding:0.15rem; font-size:0.65rem; margin-top:0.3rem;" onclick="sellMarketPosition(${idx})">
+          Sell Position
+        </button>
+      `;
+      positionsList.appendChild(card);
+    });
+  };
+
+  window.placeMarketBet = (contractId, outcome) => {
+    const wagerField = document.getElementById(`wager-amt-${contractId}`);
+    if (!wagerField) return;
+
+    const amount = parseFloat(wagerField.value) || 0;
+    if (amount <= 0 || amount > CITIZEN_WALLET) {
+      alert("Invalid wager amount or insufficient balance.");
+      return;
+    }
+
+    const contract = PREDICTION_CONTRACTS.find(c => c.id === contractId);
+    if (!contract) return;
+
+    const rate = outcome === 'Yes' ? contract.yesOdds : (100 - contract.yesOdds);
+    const payoutFactor = 100 / rate;
+    const potentialPayout = amount * payoutFactor;
+
+    // Deduct balance
+    CITIZEN_WALLET -= amount;
+    
+    // Add position
+    USER_POSITIONS.push({
+      contractId: contractId,
+      outcome: outcome,
+      amount: amount,
+      odds: rate,
+      payout: potentialPayout
+    });
+
+    // Shift odds slightly (market impact of the trade)
+    const shift = Math.max(1, Math.min(5, Math.round(amount / 100)));
+    if (outcome === 'Yes') {
+      contract.yesOdds = Math.min(95, contract.yesOdds + shift);
+    } else {
+      contract.yesOdds = Math.max(5, contract.yesOdds - shift);
+    }
+
+    contract.totalPool += amount;
+
+    // Save
+    localStorage.setItem('PREDICTION_CONTRACTS', JSON.stringify(PREDICTION_CONTRACTS));
+    localStorage.setItem('USER_POSITIONS', JSON.stringify(USER_POSITIONS));
+    
+    updateWalletDisplay();
+    renderContracts();
+    renderPositions();
+    alert(`Successfully bought $${amount} position in ${outcome.toUpperCase()}! Your leverage is registered.`);
+  };
+
+  window.sellMarketPosition = (idx) => {
+    const pos = USER_POSITIONS[idx];
+    if (!pos) return;
+
+    // Return 85% of staked cash (liquidity fee)
+    const returnCash = pos.amount * 0.85;
+    CITIZEN_WALLET += returnCash;
+
+    // Remove
+    USER_POSITIONS.splice(idx, 1);
+
+    localStorage.setItem('USER_POSITIONS', JSON.stringify(USER_POSITIONS));
+    
+    updateWalletDisplay();
+    renderContracts();
+    renderPositions();
+    alert(`Sold position for $${returnCash.toFixed(2)} return cash.`);
+  };
+
+  // Submit proposal
+  proposeForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const q = document.getElementById('market-question').value;
+    const cat = document.getElementById('market-category').value;
+
+    PENDING_MARKETS.push({
+      id: PENDING_MARKETS.length + 1,
+      question: q,
+      category: cat,
+      upvotes: 1
+    });
+
+    document.getElementById('market-question').value = '';
+    localStorage.setItem('PENDING_MARKETS', JSON.stringify(PENDING_MARKETS));
+    
+    renderVotingMarkets();
+    alert("Prediction Market proposal submitted! It will appear in the Submissions Hub. Upvote it to 5 to approve.");
+  });
+
+  updateWalletDisplay();
+  renderContracts();
+  renderPositions();
+}
+
+function renderVotingMarkets() {
+  const container = document.getElementById('voting-markets-list');
+  if (!container) return;
+  container.innerHTML = '';
+
+  if (PENDING_MARKETS.length === 0) {
+    container.innerHTML = '<div class="chat-system-message">No pending prediction markets.</div>';
+    return;
+  }
+
+  PENDING_MARKETS.forEach(market => {
+    const item = document.createElement('div');
+    item.className = 'loan-card';
+    item.style.padding = '0.75rem';
+    item.innerHTML = `
+      <div class="loan-card-info" style="gap:0.15rem;">
+        <span class="reg-folder-title" style="font-size:0.85rem;">"${market.question}"</span>
+        <span class="genre-badge genre-news" style="width:fit-content; font-size:0.6rem; padding:0.1rem 0.3rem;">${market.category}</span>
+      </div>
+      <div class="loan-card-actions">
+        <button class="upvote-btn" style="padding:0.2rem 0.5rem; font-size:0.7rem;" onclick="upvoteSubmissionMarket(${market.id})">
+          ▲ Upvote (<span style="font-weight:bold;">${market.upvotes}/5</span>)
+        </button>
+      </div>
+    `;
+    container.appendChild(item);
+  });
+}
+
+window.upvoteSubmissionMarket = (id) => {
+  const market = PENDING_MARKETS.find(m => m.id === id);
+  if (!market) return;
+
+  market.upvotes++;
+  if (market.upvotes >= 5) {
+    PREDICTION_CONTRACTS.push({
+      id: PREDICTION_CONTRACTS.length + 1,
+      question: market.question,
+      category: market.category,
+      yesOdds: 50,
+      totalPool: 5000
+    });
+    PENDING_MARKETS = PENDING_MARKETS.filter(m => m.id !== id);
+    alert(`Prediction Market approved! "${market.question}" is now active in resolve.bet Markets.`);
+    // Redraw active lists if current
+    const contractsList = document.getElementById('prediction-contracts-list');
+    if (contractsList) {
+      localStorage.setItem('PREDICTION_CONTRACTS', JSON.stringify(PREDICTION_CONTRACTS));
+      initPredictionMarkets();
+    }
+  }
+
+  localStorage.setItem('PENDING_MARKETS', JSON.stringify(PENDING_MARKETS));
+  renderVotingMarkets();
+};

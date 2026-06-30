@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Capital Loop | Money, Power, and Human Purpose</title>
+  <meta name="description" content="An interactive explainer on how systemic government is controlled by capital rather than people, the spiritual cost of extreme greed, and a philosophy for true human fulfillment.">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="main-header">
+      <div class="logo">
+        <span class="logo-accent">THE</span> CAPITAL LOOP
+      </div>
+      <p class="tagline">Analyzing the systemic influence of wealth in politics, the spiritual isolation of greed, and the pathway to true human value.</p>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs" aria-label="Explainer Navigation">
+      <button class="tab-btn active" data-tab="system-loop" id="tab-system-loop">
+        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+        The Systemic Loop
+      </button>
+      <button class="tab-btn" data-tab="mechanics-control" id="tab-mechanics-control">
+        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Mechanics of Control
+      </button>
+      <button class="tab-btn" data-tab="public-square" id="tab-public-square">
+        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        The Public Square
+      </button>
+      <button class="tab-btn" data-tab="hell-greed" id="tab-hell-greed">
+        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        The Wealth Bubble (Greed)
+      </button>
+      <button class="tab-btn" data-tab="purpose-life" id="tab-purpose-life">
+        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        The Purpose of Life
+      </button>
+      <button class="tab-btn" data-tab="systemic-reform" id="tab-systemic-reform">
+        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Pathways to Reform
+      </button>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="content-display">
+      
+      <!-- TAB 1: SYSTEMIC LOOP -->
+      <section id="system-loop" class="tab-content active">
+        <div class="grid-layout">
+          <!-- Interactive Diagram Column -->
+          <div class="diagram-card card">
+            <h2 class="section-title">The Feedback Loop of Plutocracy</h2>
+            <p class="section-intro">Click on any node in the diagram below to trace how capital bypasses democratic feedback and cycles wealth back to its source, sidelining the public interest.</p>
+            
+            <div class="diagram-container">
+              <svg viewBox="0 0 800 500" class="systemic-svg" id="interactive-svg">
+                <!-- Definitions for markers/gradients -->
+                <defs>
+                  <radialGradient id="node-glow" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="var(--accent-glow)" stop-opacity="0.15"/>
+                    <stop offset="100%" stop-color="var(--accent-glow)" stop-opacity="0"/>
+                  </radialGradient>
+                  
+                  <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 1 L 10 5 L 0 9 z" fill="var(--color-text-muted)" />
+                  </marker>
+                  
+                  <marker id="arrow-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 1 L 10 5 L 0 9 z" fill="var(--color-green)" />
+                  </marker>
+                  
+                  <marker id="arrow-blue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 1 L 10 5 L 0 9 z" fill="var(--color-blue)" />
+                  </marker>
+                </defs>
+
+                <!-- Flow Paths (Background Connections) -->
+                <!-- Path 1: Capital to Funding -->
+                <path id="path-capital-funding" d="M 230 150 Q 280 90 370 90" fill="none" stroke="var(--color-border)" stroke-width="3" marker-end="url(#arrow)"/>
+                <path id="flow-capital-funding" d="M 230 150 Q 280 90 370 90" fill="none" stroke="var(--color-green)" stroke-width="3" stroke-dasharray="8 8" class="flow-line hidden" marker-end="url(#arrow-green)"/>
+
+                <!-- Path 2: Funding to Politicians -->
+                <path id="path-funding-politicians" d="M 430 90 Q 520 90 570 150" fill="none" stroke="var(--color-border)" stroke-width="3" marker-end="url(#arrow)"/>
+                <path id="flow-funding-politicians" d="M 430 90 Q 520 90 570 150" fill="none" stroke="var(--color-green)" stroke-width="3" stroke-dasharray="8 8" class="flow-line hidden" marker-end="url(#arrow-green)"/>
+
+                <!-- Path 3: Politicians to Policy -->
+                <path id="path-politicians-policy" d="M 570 210 Q 520 270 430 270" fill="none" stroke="var(--color-border)" stroke-width="3" marker-end="url(#arrow)"/>
+                <path id="flow-politicians-policy" d="M 570 210 Q 520 270 430 270" fill="none" stroke="var(--color-blue)" stroke-width="3" stroke-dasharray="8 8" class="flow-line hidden" marker-end="url(#arrow-blue)"/>
+
+                <!-- Path 4: Policy to Regulatory Capture -->
+                <path id="path-policy-regulatory" d="M 370 270 Q 280 270 230 210" fill="none" stroke="var(--color-border)" stroke-width="3" marker-end="url(#arrow)"/>
+                <path id="flow-policy-regulatory" d="M 370 270 Q 280 270 230 210" fill="none" stroke="var(--color-blue)" stroke-width="3" stroke-dasharray="8 8" class="flow-line hidden" marker-end="url(#arrow-blue)"/>
+
+                <!-- Path 5: Regulatory & Policy to Capital (Reinforcement Loop) -->
+                <path id="path-regulatory-capital" d="M 200 150 L 200 210" fill="none" stroke="var(--color-border)" stroke-width="3" marker-end="url(#arrow)"/>
+                <path id="flow-regulatory-capital" d="M 200 210 L 200 150" fill="none" stroke="var(--color-green)" stroke-width="3" stroke-dasharray="8 8" class="flow-line hidden" marker-end="url(#arrow-green)"/>
+
+                <!-- Sidelined Flow: Public to Politicians (Weak/Blocked Connection) -->
+                <path id="path-public-politicians" d="M 400 370 L 570 210" fill="none" stroke="var(--color-red)" stroke-width="2" stroke-dasharray="4 4" marker-end="url(#arrow)"/>
+                <text x="500" y="300" fill="var(--color-red)" font-size="12" font-weight="600" text-anchor="middle" transform="rotate(-40 500 300)">INFLUENCE BLOCKED</text>
+
+                <!-- Nodes -->
+                <!-- Node 1: Concentrated Capital -->
+                <g class="diagram-node clickable" id="node-capital" data-node="capital">
+                  <circle cx="200" cy="150" r="45" class="node-bg" />
+                  <circle cx="200" cy="150" r="55" class="node-glow-ring" stroke="var(--color-green)" />
+                  <text x="200" y="145" class="node-label" fill="var(--color-text)">CONCENTRATED</text>
+                  <text x="200" y="160" class="node-label accent" fill="var(--color-green)">CAPITAL</text>
+                </g>
+
+                <!-- Node 2: Campaign Funding -->
+                <g class="diagram-node clickable" id="node-funding" data-node="funding">
+                  <circle cx="400" cy="90" r="45" class="node-bg" />
+                  <circle cx="400" cy="90" r="55" class="node-glow-ring" stroke="var(--color-green)" />
+                  <text x="400" y="85" class="node-label" fill="var(--color-text)">CAMPAIGN</text>
+                  <text x="400" y="100" class="node-label accent" fill="var(--color-green)">FINANCE</text>
+                </g>
+
+                <!-- Node 3: Political Class -->
+                <g class="diagram-node clickable" id="node-politicians" data-node="politicians">
+                  <circle cx="600" cy="180" r="45" class="node-bg" />
+                  <circle cx="600" cy="180" r="55" class="node-glow-ring" stroke="var(--color-blue)" />
+                  <text x="600" y="175" class="node-label" fill="var(--color-text)">POLITICAL</text>
+                  <text x="600" y="190" class="node-label accent" fill="var(--color-blue)">CLASS</text>
+                </g>
+
+                <!-- Node 4: Policy & Legislation -->
+                <g class="diagram-node clickable" id="node-policy" data-node="policy">
+                  <circle cx="400" cy="270" r="45" class="node-bg" />
+                  <circle cx="400" cy="270" r="55" class="node-glow-ring" stroke="var(--color-blue)" />
+                  <text x="400" y="265" class="node-label" fill="var(--color-text)">POLICY &</text>
+                  <text x="400" y="280" class="node-label accent" fill="var(--color-blue)">LEGISLATION</text>
+                </g>
+
+                <!-- Node 5: Regulatory Capture -->
+                <g class="diagram-node clickable" id="node-regulatory" data-node="regulatory">
+                  <circle cx="200" cy="240" r="45" class="node-bg" />
+                  <circle cx="200" cy="240" r="55" class="node-glow-ring" stroke="var(--color-red)" />
+                  <text x="200" y="235" class="node-label" fill="var(--color-text)">REGULATORY</text>
+                  <text x="200" y="250" class="node-label accent" fill="var(--color-red)">CAPTURE</text>
+                </g>
+
+                <!-- Node 6: The Sidelined Public -->
+                <g class="diagram-node clickable" id="node-public" data-node="public">
+                  <circle cx="400" cy="400" r="50" class="node-bg public-node" />
+                  <circle cx="400" cy="400" r="60" class="node-glow-ring public-glow" stroke="var(--color-text-muted)" />
+                  <text x="400" y="395" class="node-label" fill="var(--color-text-muted)">THE GENERAL</text>
+                  <text x="400" y="410" class="node-label accent" fill="var(--color-text-muted)">PUBLIC</text>
+                  <text x="400" y="425" font-size="10" font-weight="600" fill="var(--color-red)">SIDELINED</text>
+                </g>
+              </svg>
+            </div>
+            
+            <div class="diagram-help">
+              <span class="help-dot"></span> Hover or click on nodes to inspect connection paths. Glow animations represent active capital routes.
+            </div>
+          </div>
+
+          <!-- Dynamic Detail Panel Column -->
+          <div class="detail-card card" id="detail-panel">
+            <div class="detail-initial-state">
+              <div class="graphic-placeholder">
+                <svg class="placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+              </div>
+              <h3>Explore the Flow</h3>
+              <p>Click any node in the diagram to inspect its role, how capital flows through it, and the data detailing how the system operates under financial control.</p>
+            </div>
+            
+            <div class="detail-content hidden" id="detail-content">
+              <!-- Content gets injected by JS -->
+              <h3 id="detail-title">Node Title</h3>
+              <div class="node-badge" id="detail-badge">System Component</div>
+              
+              <div class="detail-section">
+                <h4>Systemic Role</h4>
+                <p id="detail-description">Description of what this node does and how it operates in the system.</p>
+              </div>
+
+              <div class="detail-section">
+                <h4>How It Filters People Out</h4>
+                <p id="detail-filtered">How the voices of regular citizens are minimized or completely ignored in this stage.</p>
+              </div>
+
+              <div class="detail-section quote-section">
+                <blockquote id="detail-quote">
+                  "Quote or key statistic showing financial control."
+                </blockquote>
+                <cite id="detail-citation">— Citation Source</cite>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: MECHANICS OF CONTROL -->
+      <section id="mechanics-control" class="tab-content">
+        <h2 class="section-title text-center">The Machinery of Financial Capture</h2>
+        <p class="section-intro text-center">Democracy rests on the premise of "one person, one vote." Plutocracy functions on the reality of "one dollar, one vote." Below are the three pillars that convert capital into political command.</p>
+        
+        <div class="mechanics-grid">
+          <!-- Campaign Finance Card -->
+          <div class="card mechanic-card">
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+            </div>
+            <h3>1. Campaign Finance & Dark Money</h3>
+            <p class="card-desc">Modern elections are incredibly expensive. Politicians spend up to 30% to 70% of their time fundraising rather than governing. This creates a survival filter: to exist in the political system, candidates must cater to the interests of those who can afford high-dollar contributions.</p>
+            <ul class="card-list">
+              <li><strong>Citizens United (2010):</strong> The Supreme Court ruled that political spending is a form of protected free speech, enabling corporations to spend unlimited sums on elections.</li>
+              <li><strong>Super PACs:</strong> Independent expenditure committees that can raise unlimited funds from corporations, unions, and individuals to advocate for or against candidates.</li>
+              <li><strong>Dark Money:</strong> Funds funneled through 501(c)(4) non-profits where the ultimate donors do not have to be disclosed, hiding who is paying to influence the voter.</li>
+            </ul>
+          </div>
+
+          <!-- Lobbying Card -->
+          <div class="card mechanic-card">
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            </div>
+            <h3>2. The Lobbying Industry</h3>
+            <p class="card-desc">Lobbying is often misunderstood as simple persuasion. In practice, it is the outsourcing of legislative drafting. Corporate lobbying firms write entire pieces of legislation (model bills), which are then handed to politicians who sponsor them, frequently without reading them.</p>
+            <ul class="card-list">
+              <li><strong>Lobbying Expenditures:</strong> In the US, corporate lobbying outspends public interest lobbying by a ratio of roughly 34 to 1.</li>
+              <li><strong>Information Monopoly:</strong> Underfunded legislative staffs rely on industry lobbyists to provide research and statistics, allowing the regulated industry to define the terms of the debate.</li>
+              <li><strong>ALEC (American Legislative Exchange Council):</strong> An organization where corporate representatives and state legislators sit together to draft "model bills" that favor corporate profits.</li>
+            </ul>
+          </div>
+
+          <!-- Revolving Door Card -->
+          <div class="card mechanic-card">
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            </div>
+            <h3>3. The Revolving Door</h3>
+            <p class="card-desc">The boundary between the regulators and the regulated is highly porous. Politicians, staffers, and regulators regularly transition into high-paying corporate lobbying positions. Conversely, corporate executives are appointed to lead the agencies tasked with regulating their former employers.</p>
+            <ul class="card-list">
+              <li><strong>Deferred Compensation:</strong> Regulators who are soft on corporate interests are often rewarded later with lucrative board seats, consulting arrangements, or executive jobs.</li>
+              <li><strong>Staff Capture:</strong> Congressional staffers are frequently underpaid, making them eager to prove their loyalty to corporate interests to land a job "K Street" (the lobbying hub).</li>
+              <li><strong>Institutional Memory Loss:</strong> Public agencies lose their most experienced staff to the private sector, leaving them outmatched when negotiating with corporate legal teams.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: THE PUBLIC SQUARE (SOCIAL & DEBATE MATCHMAKER) -->
+      <section id="public-square" class="tab-content">
+        <h2 class="section-title text-center">The Public Square</h2>
+        <p class="section-intro text-center">A decentralized network built to reclaim debate, broadcast unfiltered news, and challenge systemic propaganda via live matchmaking and peer voting.</p>
+        
+        <!-- Sub navigation for the public square -->
+        <div class="square-subnav">
+          <button class="subtab-btn active" data-subtab="arena">Debate Arena</button>
+          <button class="subtab-btn" data-subtab="feed">Debate Feed</button>
+          <button class="subtab-btn" data-subtab="leaderboard">Leaderboard</button>
+          <button class="subtab-btn" data-subtab="news">Unfiltered News</button>
+        </div>
+
+        <div class="subtab-content-container">
+          
+          <!-- SUBTAB 1: DEBATE ARENA -->
+          <div id="subtab-arena" class="subtab-content active">
+            <div class="arena-layout">
+              <!-- Video Feeds Card -->
+              <div class="card arena-card">
+                <div class="arena-header">
+                  <div class="arena-match-status">
+                    <span class="status-indicator" id="match-indicator">●</span>
+                    <span id="match-status-text">Idle</span>
+                  </div>
+                  <div class="arena-timer" id="arena-timer">03:00</div>
+                </div>
+
+                <!-- Video Grid -->
+                <div class="video-grid">
+                  <!-- User Video Panel -->
+                  <div class="video-panel" id="panel-local">
+                    <video id="local-video" autoplay playsinline muted class="camera-feed"></video>
+                    <div class="video-overlay" id="local-overlay">
+                      <div class="overlay-icon">👤</div>
+                      <span>Your Webcam (Inactive)</span>
+                    </div>
+                    <div class="panel-name">User (You)</div>
+                  </div>
+
+                  <!-- Partner Video Panel -->
+                  <div class="video-panel" id="panel-remote">
+                    <div class="remote-avatar-container" id="remote-avatar">
+                      <div class="overlay-icon animated-pulse">🎙️</div>
+                      <span id="remote-placeholder-text">Searching for debate partner...</span>
+                    </div>
+                    <div class="panel-name" id="remote-name">Partner</div>
+                  </div>
+                </div>
+
+                <!-- Controls -->
+                <div class="arena-controls">
+                  <div class="input-group search-group">
+                    <label for="arena-topic">Select Debate Topic</label>
+                    <select id="arena-topic">
+                      <option value="lobbying">Is Corporate Lobbying Legalized Bribery?</option>
+                      <option value="wealth">Should there be a Maximum Wealth Cap?</option>
+                      <option value="united">Is Citizens United Destroying Democracy?</option>
+                      <option value="funding">Should Elections be 100% Publicly Funded?</option>
+                    </select>
+                  </div>
+                  <button class="btn btn-primary" id="btn-match">Find Debate Partner</button>
+                  <button class="btn btn-secondary hidden" id="btn-disconnect">Disconnect</button>
+                </div>
+              </div>
+
+              <!-- Audience Chat & Vote Card -->
+              <div class="card audience-card">
+                <h3>Live Audience Poll</h3>
+                <div class="agreement-bar-container">
+                  <div class="agreement-bar" id="agreement-bar" style="width: 50%;"></div>
+                  <div class="agreement-labels">
+                    <span id="label-user">You: 50%</span>
+                    <span id="label-partner">Partner: 50%</span>
+                  </div>
+                </div>
+                <div class="poll-votes-total">Total Votes: <span id="vote-count">0</span></div>
+
+                <h3>Live Reaction Stream</h3>
+                <div class="audience-chat" id="audience-chat-box">
+                  <div class="chat-system-message">System: Match debate partners to see live audience response.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SUBTAB 2: DEBATE FEED (SOCIAL MEDIA) -->
+          <div id="subtab-feed" class="subtab-content">
+            <div class="social-feed-layout">
+              <!-- Post Box -->
+              <div class="card post-box-card">
+                <h3>Write an Argument</h3>
+                <form id="debate-post-form">
+                  <div class="post-form-grid">
+                    <div class="input-group">
+                      <label for="post-username">Handle</label>
+                      <input type="text" id="post-username" value="Citizen_X" required>
+                    </div>
+                    <div class="input-group">
+                      <label for="post-topic">Topic Category</label>
+                      <select id="post-topic">
+                        <option value="Wealth Gap">Wealth Gap</option>
+                        <option value="Campaign Finance">Campaign Finance</option>
+                        <option value="Lobbying">Lobbying</option>
+                        <option value="Human Service">Human Service</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="input-group margin-top-small">
+                    <label for="post-text">Your Statement / Argument</label>
+                    <textarea id="post-text" placeholder="State your thesis... Back it with logic or data." rows="3" required></textarea>
+                  </div>
+                  <button type="submit" class="btn btn-primary margin-top-small">Broadcast Statement</button>
+                </form>
+              </div>
+
+              <!-- Posts Feed -->
+              <div class="feed-posts-container" id="feed-container">
+                <!-- Posts are rendered dynamically by JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- SUBTAB 3: LEADERBOARD -->
+          <div id="subtab-leaderboard" class="subtab-content">
+            <div class="card leaderboard-card">
+              <h3>Global Debater Standings</h3>
+              <p class="section-intro">Rankings are calculated dynamically based on audience agreement votes in matchmaking competitions (Elo System).</p>
+              
+              <div class="leaderboard-table-container">
+                <table class="leaderboard-table">
+                  <thead>
+                    <tr>
+                      <th>Rank</th>
+                      <th>Debater</th>
+                      <th>Win Ratio</th>
+                      <th>Elo Rating</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="leaderboard-body">
+                    <!-- Loaded dynamically via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- SUBTAB 4: UNFILTERED NEWS -->
+          <div id="subtab-news" class="subtab-content">
+            <div class="news-grid" id="news-container">
+              <!-- News cards loaded dynamically -->
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- TAB 4: THE HELL OF GREED -->
+      <section id="hell-greed" class="tab-content">
+        <div class="philosophical-container">
+          <div class="hero-quote">
+            <p class="quote-text">"Greed is a sensory deprivation chamber lined with gold. It traps the soul in a layer of isolation so thick that the basic mechanics of human survival, regular communication, and the labor supporting their lives become entirely invisible."</p>
+          </div>
+
+          <h2 class="section-title">The Three Layers of Isolation</h2>
+          <p class="section-intro">We often view extreme wealth as a state of ultimate freedom. In reality, unchecked greed creates a distinct psychological and spiritual "hell"—a state of total insulation that disconnects the super-wealthy from the shared reality of human existence.</p>
+
+          <div class="layers-grid">
+            <!-- Layer 1 -->
+            <div class="card layer-card">
+              <div class="layer-num">I</div>
+              <h3>Detachment from Day-to-Day Survival</h3>
+              <p>The first layer of isolation is the erasure of ordinary human physics: the everyday realities of logistics, survival, and limit. The super-wealthy operate in a friction-free universe where services are instantaneous, bills are paid automatically, and transit is private. They lose understanding of the mental overhead carried by regular people—calculating the cost of groceries, fearing a sudden medical bill, or spending hours in traffic. Because their day-to-day lives contain zero friction, they view systemic societal failures not as problems, but as personal failures of the poor.</p>
+            </div>
+
+            <!-- Layer 2 -->
+            <div class="card layer-card">
+              <div class="layer-num">II</div>
+              <h3>The Erasure of Real Communication</h3>
+              <p>Extreme wealth transforms all human interaction into transactions. When a person possesses billions, every relationship is compromised by the gravitational pull of their assets. Family, friends, advisors, and employees are constantly incentivized to please, flatter, or extract. As a result, the super-wealthy exist in a hollow echo chamber of sycophancy. They do not experience raw, unfiltered human communication—the corrections, criticisms, and honest boundaries that keep people grounded. They mistake compliance for respect, and transactional loyalty for love, leaving them deeply isolated in a spiritual desert.</p>
+            </div>
+
+            <!-- Layer 3 -->
+            <div class="card layer-card">
+              <div class="layer-num">III</div>
+              <h3>Blindness to the Manufacturing of Life</h3>
+              <p>The most profound layer of this isolation is the total disconnection from the labor that manufactures their lives. The super-wealthy consume pristine realities—impeccable estates, gourmet food, custom apparel, and private aviation—without any comprehension of the hands, sweat, and lives required to produce them. The agricultural worker, the construction crew, the factory line worker, and the sanitation crew are invisible. They consume the fruits of human labor while policy-making to suppress the wages and rights of the very people who build their world, treating the working class as abstract cost variables rather than human beings.</p>
+            </div>
+          </div>
+
+          <div class="philosophical-insight card">
+            <h3>The Damnation of Wealth Hoarding</h3>
+            <p>In classical literature, hell is often depicted as a place of physical torment. But the hell of greed is a structural prison of the mind. By hoarding resources far beyond what any human could consume in a thousand lifetimes, the ultra-wealthy build a wall that separates them from the shared human experience. They lock themselves in a tower where they cannot hear the laughter of community, the warmth of uncorrupted friendship, or the satisfaction of true, uncompensated contribution. They trade their humanity for numbers on a ledger, unaware that they have paid for their luxury with their own soul's capacity for connection.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 5: THE PURPOSE OF LIFE -->
+      <section id="purpose-life" class="tab-content">
+        <div class="philosophical-container purpose-container">
+          <div class="gold-gradient-bg">
+            <h2 class="section-title text-gold">The True Metric of a Winning Life</h2>
+            <p class="lead-text">If accumulation is a spiritual prison, what is the alternative? True success is not found in how much you can extract from the world, but in how much you can elevate those around you.</p>
+          </div>
+
+          <div class="split-view">
+            <div class="text-block">
+              <h3>The Philosophy of Self-Betterment for Service</h3>
+              <p>Going out every single day to better yourself—physically, mentally, and emotionally—is the most valuable thing you can do, but <em>only</em> when that self-betterment is directed toward helping other people. Improving your mind, your skills, and your strength is not a selfish act; it is the accumulation of capacity to serve. If you make yourself strong, you can carry others. If you make yourself wise, you can guide others. Self-improvement without service is vanity; service without self-improvement is weak. Combined, they form the foundation of a worthy human life.</p>
+              
+              <div class="quote-callout">
+                "We rise by lifting others. There is no other ladder."
+              </div>
+            </div>
+
+            <div class="success-metric-card card">
+              <h3>How Do You Define "Winning"?</h3>
+              <p>Society tells us that winning is a competitive game of accumulation. We are taught to look at the billionaire as the ultimate winner. But this is a systemic lie. True winning is not about beating others; it is about bringing others along with you.</p>
+              
+              <div class="metrics-list">
+                <div class="metric-item">
+                  <div class="metric-score">01</div>
+                  <div>
+                    <h4>The Happiness Output</h4>
+                    <p>If you are not actively making other people happy, you are not winning. The ultimate metric of a successful day is the number of burdens you lightened and smiles you created.</p>
+                  </div>
+                </div>
+                <div class="metric-item">
+                  <div class="metric-score">02</div>
+                  <div>
+                    <h4>Generative Value vs. Extractive Value</h4>
+                    <p>Extractive value is taking wealth from society (rents, interest, low-wage labor). Generative value is adding joy, relief, and capability to the community. Winners generate; they do not hoard.</p>
+                  </div>
+                </div>
+                <div class="metric-item">
+                  <div class="metric-score">03</div>
+                  <div>
+                    <h4>Interconnected Legacy</h4>
+                    <p>A hoarded fortune disappears or divides. The investments you make in other people—mentoring, kindness, structural support—ripple outwards indefinitely, echoing in lives you will never meet.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive Reflection Widget -->
+          <div class="reflection-widget card">
+            <h3>Human Value Calculator</h3>
+            <p class="widget-subtitle">A simple reflection to contrast systemic metrics (wealth) with real human metrics (service).</p>
+            
+            <div class="widget-grid">
+              <div class="input-group">
+                <label for="input-money">Net Worth Hoarded ($)</label>
+                <input type="number" id="input-money" value="1000000" min="0" step="100000">
+                <span class="input-hint">Systemic metric of "winning"</span>
+              </div>
+              <div class="input-group">
+                <label for="input-people">People Helped / Made Happy (Daily)</label>
+                <input type="number" id="input-people" value="5" min="0">
+                <span class="input-hint">Real human metric of "winning"</span>
+              </div>
+            </div>
+
+            <div id="reflection-result" class="reflection-output">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 6: SYSTEMIC REFORM -->
+      <section id="systemic-reform" class="tab-content">
+        <h2 class="section-title text-center">Reclaiming the Democratic System</h2>
+        <p class="section-intro text-center">To move from a government controlled by capital to a government controlled by people, we must dismantle the structures that make money necessary for political survival.</p>
+
+        <div class="reforms-timeline">
+          <div class="reform-step card">
+            <div class="reform-marker">01</div>
+            <div class="reform-details">
+              <h3>Overturn Citizens United</h3>
+              <p>Constitutional amendments or judicial appointments must declare that money is not speech, and that corporations are not people with political rights. This allows Congress and state legislatures to place strict limits on electoral spending, restoring equal protection to actual human voters.</p>
+            </div>
+          </div>
+
+          <div class="reform-step card">
+            <div class="reform-marker">02</div>
+            <div class="reform-details">
+              <h3>Public Funding of Campaigns</h3>
+              <p>By establishing system-wide public financing (such as "democracy vouchers" given to citizens to donate to candidates of their choice), we can break the dependency loop. Politicians would fund their campaigns by talking directly to voters rather than seeking corporate bundlers or wealthy donors.</p>
+            </div>
+          </div>
+
+          <div class="reform-step card">
+            <div class="reform-marker">03</div>
+            <div class="reform-details">
+              <h3>Ban the Revolving Door</h3>
+              <p>Enact strict cooling-off periods (e.g., 5 to 10 years) before former members of Congress, political staffers, or federal regulators can work for lobbying firms or sit on corporate boards in the sectors they regulated. Violations should carry severe criminal penalties.</p>
+            </div>
+          </div>
+
+          <div class="reform-step card">
+            <div class="reform-marker">04</div>
+            <div class="reform-details">
+              <h3>Establish Ranked-Choice Voting (RCV)</h3>
+              <p>RCV eliminates the "spoiler effect" and allows third-party and independent candidates to run without splitting votes. This reduces the two-party duopoly's gatekeeping power, which is heavily funded and controlled by major corporate donors.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+      <p>Built as an educational tool to reflect the structural flows of money in political systems and the necessity of human service. © 2026</p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

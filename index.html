@@ -35,6 +35,14 @@
         <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         The Public Square
       </button>
+      <button class="tab-btn" data-tab="developer-hub" id="tab-developer-hub">
+        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+        Developer Hub
+      </button>
+      <button class="tab-btn" data-tab="local-board" id="tab-local-board">
+        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Local Board
+      </button>
       <button class="tab-btn" data-tab="hell-greed" id="tab-hell-greed">
         <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
         The Wealth Bubble (Greed)
@@ -408,7 +416,99 @@
         </div>
       </section>
 
-      <!-- TAB 4: THE HELL OF GREED -->
+      <!-- TAB 4: DEVELOPER HUB -->
+      <section id="developer-hub" class="tab-content">
+        <h2 class="section-title text-center">Developer Hub</h2>
+        <p class="section-intro text-center">Showcase your independent tools, alternative media websites, or transparency platforms. Upvote projects built in service of the community.</p>
+
+        <div class="dev-layout">
+          <!-- Submission Card -->
+          <div class="card dev-form-card">
+            <h3>Publish Your Project</h3>
+            <form id="dev-upload-form">
+              <div class="input-group">
+                <label for="dev-title">Website/Project Title</label>
+                <input type="text" id="dev-title" placeholder="e.g. OpenLobby Tracker" required>
+              </div>
+              
+              <div class="input-group margin-top-small">
+                <label for="dev-desc">Description</label>
+                <textarea id="dev-desc" placeholder="What does it solve? How does it empower people?" rows="3" required></textarea>
+              </div>
+              
+              <div class="post-form-grid margin-top-small">
+                <div class="input-group">
+                  <label for="dev-url">Live URL</label>
+                  <input type="url" id="dev-url" placeholder="https://..." required>
+                </div>
+                <div class="input-group">
+                  <label for="dev-tag">Category Tag</label>
+                  <select id="dev-tag">
+                    <option value="Transparency">Transparency</option>
+                    <option value="Alternative Media">Alternative Media</option>
+                    <option value="Mutual Aid">Mutual Aid</option>
+                    <option value="Education">Education</option>
+                  </select>
+                </div>
+              </div>
+              
+              <button type="submit" class="btn btn-primary margin-top-large">Broadcast Website</button>
+            </form>
+          </div>
+
+          <!-- Gallery List Column -->
+          <div class="gallery-wrapper">
+            <h3>Community Directory</h3>
+            <div class="dev-gallery-grid" id="dev-gallery">
+              <!-- Rendered dynamically by JS -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 5: LOCAL BOARD -->
+      <section id="local-board" class="tab-content">
+        <h2 class="section-title text-center">Local Board</h2>
+        <p class="section-intro text-center">Bypass systemic isolation. Find cooperative businesses, mutual aid initiatives, local deals, and civic events happening near you.</p>
+
+        <div class="local-header card">
+          <div class="location-controls">
+            <button class="btn btn-primary" id="btn-geolocation">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px;"><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"/><circle cx="12" cy="10" r="3"/></svg>
+              Find Near Me
+            </button>
+            <div class="zip-entry">
+              <span>Or enter ZIP:</span>
+              <input type="text" id="input-zip" placeholder="90210" maxlength="5">
+              <button class="btn btn-secondary" id="btn-zip-submit">Go</button>
+            </div>
+          </div>
+          <div class="location-display" id="location-display">
+            Status: <span id="location-status-badge" class="badge-public node-badge">Unknown location</span>
+            <span class="location-coords" id="location-coords"></span>
+          </div>
+        </div>
+
+        <div class="local-layout-grid margin-top-large">
+          <!-- Deals Column -->
+          <div class="local-column">
+            <h3 class="column-header">Co-op Deals & Independent Shops</h3>
+            <div class="deals-container" id="deals-list">
+              <div class="empty-state-local">Locate yourself to find local businesses.</div>
+            </div>
+          </div>
+
+          <!-- Events Column -->
+          <div class="local-column">
+            <h3 class="column-header">Local Civic Events & Mutual Aid</h3>
+            <div class="events-container" id="events-list">
+              <div class="empty-state-local">Locate yourself to find nearby events.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 6: THE HELL OF GREED -->
       <section id="hell-greed" class="tab-content">
         <div class="philosophical-container">
           <div class="hero-quote">
@@ -448,7 +548,7 @@
         </div>
       </section>
 
-      <!-- TAB 5: THE PURPOSE OF LIFE -->
+      <!-- TAB 7: THE PURPOSE OF LIFE -->
       <section id="purpose-life" class="tab-content">
         <div class="philosophical-container purpose-container">
           <div class="gold-gradient-bg">
@@ -521,7 +621,7 @@
         </div>
       </section>
 
-      <!-- TAB 6: SYSTEMIC REFORM -->
+      <!-- TAB 8: SYSTEMIC REFORM -->
       <section id="systemic-reform" class="tab-content">
         <h2 class="section-title text-center">Reclaiming the Democratic System</h2>
         <p class="section-intro text-center">To move from a government controlled by capital to a government controlled by people, we must dismantle the structures that make money necessary for political survival.</p>

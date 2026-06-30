@@ -1,4 +1,4 @@
-// App Logic - The Capital Loop & Public Square
+// App Logic - The Capital Loop & Public Square & Developer Hub
 
 document.addEventListener('DOMContentLoaded', () => {
   initTabs();
@@ -11,6 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
   initDebateFeed();
   initLeaderboard();
   initNewsHub();
+
+  // Phase 3: Developer Hub & Local Board Initializers
+  initDeveloperHub();
+  initLocalBoard();
 });
 
 /* ==========================================================================
@@ -278,8 +282,8 @@ function initSubTabs() {
 let localStream = null;
 let matchTimerInterval = null;
 let chatInterval = null;
-let matchDurationSeconds = 180; // 3 minutes
-let userEloRating = 1200; // Starting rating
+let matchDurationSeconds = 180;
+let userEloRating = 1200;
 
 const OPPONENT_POOL = [
   { name: 'Liberty_Patriot', elo: 1315, stream: 'avatar-patriot' },
@@ -326,7 +330,6 @@ function initDebateArena() {
 
   if (!btnMatch || !btnDisconnect) return;
 
-  // WebRTC Webcam Access
   const startCamera = async () => {
     try {
       localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
@@ -335,7 +338,6 @@ function initDebateArena() {
       setTimeout(() => localOverlay.classList.add('hidden'), 300);
     } catch (err) {
       console.warn("Webcam access denied or unavailable. Using placeholder.", err);
-      // Keep placeholder overlay showing
     }
   };
 
@@ -349,7 +351,6 @@ function initDebateArena() {
     localOverlay.style.opacity = '1';
   };
 
-  // State Updates
   const setMatchingState = (state) => {
     if (state === 'idle') {
       matchStatusText.textContent = 'Idle';
@@ -361,12 +362,10 @@ function initDebateArena() {
       remoteName.textContent = 'Partner';
       arenaTimer.textContent = '03:00';
       
-      // Stop webcam and reset feeds
       stopCamera();
       clearInterval(matchTimerInterval);
       clearInterval(chatInterval);
       
-      // Reset agreement bar
       agreementBar.style.width = '50%';
       labelUser.textContent = 'You: 50%';
       labelPartner.textContent = 'Partner: 50%';
@@ -377,10 +376,8 @@ function initDebateArena() {
       btnMatch.classList.add('hidden');
       btnDisconnect.classList.remove('hidden');
       
-      // Start webcam request
       startCamera();
 
-      // Simulate match after 2.5 seconds
       setTimeout(() => {
         if (matchStatusText.textContent === 'Searching...') {
           connectMatch();
@@ -396,24 +393,20 @@ function initDebateArena() {
   const connectMatch = () => {
     setMatchingState('connected');
     
-    // Choose random opponent
     const opponent = OPPONENT_POOL[Math.floor(Math.random() * OPPONENT_POOL.length)];
     remoteName.textContent = `${opponent.name} (Elo: ${opponent.elo})`;
     remoteAvatar.classList.add('hidden');
 
-    // Add video stream simulation
     const remotePanel = document.getElementById('panel-remote');
     const existingOpponentVideo = document.getElementById('simulated-remote-video');
     if (existingOpponentVideo) existingOpponentVideo.remove();
 
-    // Create custom looping graphic/simulation for remote video feed
     const simVideo = document.createElement('div');
     simVideo.id = 'simulated-remote-video';
     simVideo.style.cssText = 'width:100%;height:100%;background:linear-gradient(135deg, #111827 0%, #1e293b 100%);display:flex;align-items:center;justify-content:center;z-index:1;font-size:4rem;';
     simVideo.textContent = '👤';
     remotePanel.appendChild(simVideo);
 
-    // Initialize Timer
     let secondsLeft = matchDurationSeconds;
     arenaTimer.textContent = formatTime(secondsLeft);
     
@@ -422,17 +415,15 @@ function initDebateArena() {
       arenaTimer.textContent = formatTime(secondsLeft);
       
       if (secondsLeft <= 0) {
-        endMatch(true); // End and award Elo
+        endMatch(true);
       }
     }, 1000);
 
-    // Setup Audience Reaction Chat scrolling
     chatBox.innerHTML = '<div class="chat-system-message">Audience joined. Live stream connected.</div>';
     let currentVotes = 120;
     voteCount.textContent = currentVotes;
 
     chatInterval = setInterval(() => {
-      // Add random comment
       const user = `DebateWatcher_${Math.floor(Math.random() * 900) + 100}`;
       const text = AUDIENCE_COMMENTS[Math.floor(Math.random() * AUDIENCE_COMMENTS.length)];
       
@@ -442,8 +433,7 @@ function initDebateArena() {
       chatBox.appendChild(commentDiv);
       chatBox.scrollTop = chatBox.scrollHeight;
 
-      // Update agreement votes randomly
-      const variance = (Math.random() * 8) - 4; // -4 to +4
+      const variance = (Math.random() * 8) - 4;
       let userPercent = Math.max(15, Math.min(85, parseInt(agreementBar.style.width) + variance));
       let partnerPercent = 100 - userPercent;
       
@@ -465,7 +455,6 @@ function initDebateArena() {
       const eloDiff = userWin ? 16 : -12;
       userEloRating += eloDiff;
       
-      // Update Leaderboard rating
       updateLeaderboardSelf(userEloRating);
 
       alert(`Match ended! You secured ${agreementBar.style.width} agreement. Elo change: ${eloDiff > 0 ? '+' : ''}${eloDiff} (${userEloRating} Elo)`);
@@ -572,11 +561,10 @@ function initDebateFeed() {
       DEBATE_POSTS.unshift(newPost);
       renderFeed();
       form.reset();
-      document.getElementById('post-username').value = username; // restore username
+      document.getElementById('post-username').value = username;
     });
   }
 
-  // Define vote callback on global window for easy access from inline onclick
   window.votePost = (postId, type) => {
     const post = DEBATE_POSTS.find(p => p.id === postId);
     if (!post) return;
@@ -594,7 +582,7 @@ function initDebateFeed() {
 }
 
 /* ==========================================================================
-   7. Leaderboard Population
+   7. Leaderboard Standings
    ========================================================================== */
 let LEADERBOARD_USERS = [
   { rank: 1, name: 'Socrates_99', wins: 242, losses: 14, elo: 1680, status: 'online' },
@@ -616,10 +604,8 @@ function renderLeaderboard() {
 
   tbody.innerHTML = '';
   
-  // Sort users by Elo
   LEADERBOARD_USERS.sort((a, b) => b.elo - a.elo);
   
-  // Re-assign ranks
   LEADERBOARD_USERS.forEach((user, index) => {
     user.rank = index + 1;
   });
@@ -709,4 +695,268 @@ function initNewsHub() {
     `;
     newsContainer.appendChild(card);
   });
+}
+
+/* ==========================================================================
+   9. Developer Hub (Showcase & Thumbs Up)
+   ========================================================================== */
+let DEV_PROJECTS = [
+  {
+    id: 1,
+    title: 'PAC-Tracker API',
+    desc: 'An open-source Node/Express JSON API that aggregates Super PAC filings and updates corporate lobbying databases weekly. Fully documented endpoint outputs.',
+    url: 'https://github.com/Resteral/Ol',
+    tag: 'Transparency',
+    upvotes: 84
+  },
+  {
+    id: 2,
+    title: 'CoopFinder Mobile',
+    desc: 'A decentralized geolocation lookup tool listing verified worker-owned co-ops, mutual aid gardens, and community fridges across major US regions.',
+    url: 'https://coopfinder.org',
+    tag: 'Mutual Aid',
+    upvotes: 62
+  },
+  {
+    id: 3,
+    title: 'MediaFilter Extension',
+    desc: 'Chrome browser extension that tags articles from media conglomerates with their parent company assets and lobbying history directly in the search results.',
+    url: 'https://mediafilter.net',
+    tag: 'Alternative Media',
+    upvotes: 49
+  }
+];
+
+function initDeveloperHub() {
+  const form = document.getElementById('dev-upload-form');
+  const gallery = document.getElementById('dev-gallery');
+
+  if (!gallery) return;
+
+  const renderGallery = () => {
+    gallery.innerHTML = '';
+    
+    // Sort projects by upvotes descending
+    DEV_PROJECTS.sort((a, b) => b.upvotes - a.upvotes);
+
+    DEV_PROJECTS.forEach(proj => {
+      const card = document.createElement('div');
+      card.className = 'card dev-card';
+      card.innerHTML = `
+        <div class="dev-card-header">
+          <h4>${proj.title}</h4>
+          <span class="post-tag">${proj.tag}</span>
+        </div>
+        <p class="dev-card-desc">${proj.desc}</p>
+        <div class="dev-card-links">
+          <a href="${proj.url}" target="_blank" class="dev-link">Open Project ↗</a>
+        </div>
+        <div class="dev-card-footer">
+          <button class="upvote-btn" onclick="upvoteProject(${proj.id})">
+            👍 Upvote (<span class="upvote-count" id="upvote-count-${proj.id}">${proj.upvotes}</span>)
+          </button>
+        </div>
+      `;
+      gallery.appendChild(card);
+    });
+  };
+
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const title = document.getElementById('dev-title').value;
+      const desc = document.getElementById('dev-desc').value;
+      const url = document.getElementById('dev-url').value;
+      const tag = document.getElementById('dev-tag').value;
+
+      const newProject = {
+        id: DEV_PROJECTS.length + 1,
+        title: title,
+        desc: desc,
+        url: url,
+        tag: tag,
+        upvotes: 1
+      };
+
+      DEV_PROJECTS.unshift(newProject);
+      renderGallery();
+      form.reset();
+    });
+  }
+
+  // Global callback for upvotes
+  window.upvoteProject = (id) => {
+    const proj = DEV_PROJECTS.find(p => p.id === id);
+    if (proj) {
+      proj.upvotes++;
+      const countEl = document.getElementById(`upvote-count-${id}`);
+      if (countEl) {
+        countEl.textContent = proj.upvotes;
+      }
+      // Re-render gallery after slight delay to allow smooth resorting
+      setTimeout(renderGallery, 400);
+    }
+  };
+
+  renderGallery();
+}
+
+/* ==========================================================================
+   10. Local Board Logic (Deals & Events with Geolocation)
+   ========================================================================== */
+const LOCALDATA_BY_REGION = {
+  california: {
+    name: 'Southern California Co-ops',
+    coords: 'Lat: 34.0522, Lon: -118.2437',
+    deals: [
+      { shop: 'Los Angeles Food Co-op', title: '15% Off Organic Produce', desc: 'Present coupon at register. Worker-owned and sourced from regional family farms.', value: '15% OFF' },
+      { shop: 'Silverlake Cooperative Books', title: 'Buy One Get One Free', desc: 'Valid on all economic history, labor studies, and political science books.', value: 'BOGO' },
+      { shop: 'People’s Cafe Collective', title: 'Free Coffee with Reusable Cup', desc: 'Encouraging local ecology. 100% fair-trade beans sourced directly.', value: 'FREE COFFEE' }
+    ],
+    events: [
+      { month: 'Jul', day: '12', title: 'LA Tenants Union Assembly', time: '6:30 PM', loc: 'Silverlake Community Hall', desc: 'Organizing tenant protection seminars and discussing local rent control proposals.', action: 'Join Meeting' },
+      { month: 'Jul', day: '18', title: 'Echo Park Mutual Aid Food Drive', time: '9:00 AM', loc: 'Echo Park Methodist', desc: 'Volunteers needed to package surplus food deliveries for sidelined families.', action: 'Volunteer' }
+    ]
+  },
+  newyork: {
+    name: 'Metro New York Civic Board',
+    coords: 'Lat: 40.7128, Lon: -74.0060',
+    deals: [
+      { shop: 'Brooklyn Independent Books', title: '10% Off Union Members', desc: 'Show your union card at check-out. Celebrating community organizing.', value: '10% OFF' },
+      { shop: 'Manhattan Co-op Market', title: 'Free Member Trial Pass', desc: 'Access member-owner discounts on locally manufactured goods.', value: 'MEMBER PASS' },
+      { shop: 'The Commons Cafe', title: 'Co-working Session Discount', desc: '50% off day pass. Independent community-owned co-working space.', value: '50% OFF' }
+    ],
+    events: [
+      { month: 'Jul', day: '15', title: 'Rethinking Capital Loop Forum', time: '7:00 PM', loc: 'The Commons Brooklyn', desc: 'A town-hall discussion on Citizens United and public funding amendments.', action: 'RSVP' },
+      { month: 'Jul', day: '22', title: 'Astoria Community Garden Soil Work', time: '10:00 AM', loc: 'Astoria Green Lot', desc: 'Bring gloves. Planting summer vegetables and repairing irrigation pipes.', action: 'Volunteer' }
+    ]
+  },
+  general: {
+    name: 'General US Cooperative Board',
+    coords: 'Lat: 39.8283, Lon: -98.5795',
+    deals: [
+      { shop: 'Union Thread Co-op', title: 'Free Nationwide Shipping', desc: '100% union-made clothing. Enter code COOP-SHIP at check-out.', value: 'FREE SHIP' },
+      { shop: 'National Farmers Assembly', title: '10% Off Direct Box Orders', desc: 'Sourced directly from agricultural cooperatives bypass corporate stores.', value: '10% OFF' }
+    ],
+    events: [
+      { month: 'Aug', day: '05', title: 'National Virtual Debate Matchup', time: '4:00 PM EST', loc: 'Decentralized Arena', desc: 'Connecting debaters from all states to discuss campaign lobbying caps.', action: 'Register' }
+    ]
+  }
+};
+
+function initLocalBoard() {
+  const btnGeo = document.getElementById('btn-geolocation');
+  const btnZip = document.getElementById('btn-zip-submit');
+  const inputZip = document.getElementById('input-zip');
+  const statusBadge = document.getElementById('location-status-badge');
+  const coordsLabel = document.getElementById('location-coords');
+  const dealsList = document.getElementById('deals-list');
+  const eventsList = document.getElementById('events-list');
+
+  if (!btnGeo || !dealsList || !eventsList) return;
+
+  const renderRegion = (regionKey) => {
+    const data = LOCALDATA_BY_REGION[regionKey];
+    if (!data) return;
+
+    statusBadge.textContent = data.name;
+    statusBadge.className = 'status-badge status-active node-badge';
+    coordsLabel.textContent = data.coords;
+
+    // Render Deals
+    dealsList.innerHTML = '';
+    data.deals.forEach(deal => {
+      const card = document.createElement('div');
+      card.className = 'deal-card';
+      card.innerHTML = `
+        <div class="deal-left">
+          <span class="deal-shop">${deal.shop}</span>
+          <span class="deal-title">${deal.title}</span>
+          <span class="deal-desc">${deal.desc}</span>
+        </div>
+        <div class="deal-right">
+          <span class="deal-badge">${deal.value}</span>
+          <button class="btn btn-secondary" onclick="alert('Deal Redeemed: Use code CITIZEN-COOP')">Redeem</button>
+        </div>
+      `;
+      dealsList.appendChild(card);
+    });
+
+    // Render Events
+    eventsList.innerHTML = '';
+    data.events.forEach(evt => {
+      const card = document.createElement('div');
+      card.className = 'card event-card';
+      card.innerHTML = `
+        <div class="event-date-box">
+          <span class="event-month">${evt.month}</span>
+          <span class="event-day">${evt.day}</span>
+        </div>
+        <div class="event-details">
+          <h4>${evt.title}</h4>
+          <span class="event-time-loc">${evt.time} | ${evt.loc}</span>
+          <p class="event-desc">${evt.desc}</p>
+          <a href="#" class="event-action" onclick="alert('Registered successfully!')">${evt.action} ↗</a>
+        </div>
+      `;
+      eventsList.appendChild(card);
+    });
+  };
+
+  // Browser Geolocation
+  btnGeo.addEventListener('click', () => {
+    statusBadge.textContent = 'Locating...';
+    coordsLabel.textContent = '';
+
+    if (!navigator.geolocation) {
+      alert("Geolocation is not supported by your browser.");
+      renderRegion('general');
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        
+        // Map coordinates to region
+        let matchedRegion = 'general';
+        
+        // Simple bounding box logic for simulation
+        if (lat > 38 && lon < -70) {
+          matchedRegion = 'newyork';
+        } else if (lat < 36 && lon < -110) {
+          matchedRegion = 'california';
+        }
+        
+        renderRegion(matchedRegion);
+      },
+      (error) => {
+        console.warn("Geolocation lookup failed, falling back to General.", error);
+        alert("Could not retrieve location. Loading fallback General US Board.");
+        renderRegion('general');
+      }
+    );
+  });
+
+  // ZIP Code Fallback
+  if (btnZip && inputZip) {
+    btnZip.addEventListener('click', () => {
+      const zip = inputZip.value.trim();
+      if (!/^\d{5}$/.test(zip)) {
+        alert("Please enter a valid 5-digit ZIP code.");
+        return;
+      }
+
+      let matchedRegion = 'general';
+      if (zip.startsWith('9')) {
+        matchedRegion = 'california';
+      } else if (zip.startsWith('1') || zip.startsWith('0')) {
+        matchedRegion = 'newyork';
+      }
+
+      renderRegion(matchedRegion);
+    });
+  }
 }

@@ -413,17 +413,20 @@
 
                 <!-- Controls -->
                 <div class="arena-controls">
-                  <div class="input-group search-group">
+                  <div class="input-group search-group" style="margin-bottom:0;">
                     <label for="arena-topic">Select Debate Topic</label>
                     <select id="arena-topic">
-                      <option value="lobbying">Is Corporate Lobbying Legalized Bribery?</option>
-                      <option value="wealth">Should there be a Maximum Wealth Cap?</option>
-                      <option value="united">Is Citizens United Destroying Democracy?</option>
-                      <option value="funding">Should Elections be 100% Publicly Funded?</option>
+                      <!-- Populated dynamically by JS with optgroups -->
                     </select>
                   </div>
-                  <button class="btn btn-primary" id="btn-match">Find Debate Partner</button>
-                  <button class="btn btn-secondary hidden" id="btn-disconnect">Disconnect</button>
+                  <div style="display:flex; gap:0.5rem; margin-top:0.5rem; width:100%; flex-wrap:wrap;">
+                    <button class="btn btn-secondary" id="btn-random-topic" style="flex:1; padding:0.5rem 1rem;">🎲 Random Topic</button>
+                    <button class="btn btn-secondary" id="btn-swap-topic" style="flex:1; padding:0.5rem 1rem;">🔄 Swap Question</button>
+                  </div>
+                  <div style="display:flex; gap:0.5rem; margin-top:0.75rem; width:100%;">
+                    <button class="btn btn-primary" id="btn-match" style="width:100%;">Find Debate Partner</button>
+                    <button class="btn btn-secondary hidden" id="btn-disconnect" style="width:100%;">Disconnect</button>
+                  </div>
                 </div>
               </div>
 
@@ -442,6 +445,40 @@
                 <h3>Live Reaction Stream</h3>
                 <div class="audience-chat" id="audience-chat-box">
                   <div class="chat-system-message">System: Match debate partners to see live audience response.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Community Topics Section (Below Debate Arena) -->
+            <div class="grid-layout margin-top-large" style="grid-template-columns: 1fr 1fr;">
+              <!-- Propose Form -->
+              <div class="card">
+                <h3>Propose a Debate Question</h3>
+                <p class="section-intro">Submit a new debate question. Suggested topics go to the voting block. Once a question reaches <strong>5 upvotes</strong> from the community, it is approved and added to the selectable pool!</p>
+                <form id="propose-topic-form">
+                  <div class="input-group">
+                    <label for="propose-text">Proposed Question</label>
+                    <input type="text" id="propose-text" placeholder="e.g. Should all politicians have a salary cap?" required>
+                  </div>
+                  <div class="input-group margin-top-small">
+                    <label for="propose-genre">Genre / Category</label>
+                    <select id="propose-genre">
+                      <option value="political">Political</option>
+                      <option value="spiritual">Spiritual</option>
+                      <option value="news">News</option>
+                      <option value="fun">Fun</option>
+                    </select>
+                  </div>
+                  <button type="submit" class="btn btn-primary margin-top-large">Propose Question</button>
+                </form>
+              </div>
+
+              <!-- Vote List -->
+              <div class="card" style="display:flex; flex-direction:column; max-height: 420px; overflow-y: auto;">
+                <h3>Community Voting Queue</h3>
+                <p class="section-intro">Upvote topics suggested by other citizens to approve them.</p>
+                <div class="loan-listings" id="suggested-topics-list">
+                  <!-- Injected by JS -->
                 </div>
               </div>
             </div>

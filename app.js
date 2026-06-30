@@ -27,6 +27,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Phase 8: AI Chatbot Initializer
   initChatbot();
+
+  // Phase 9: Debate Arena Enhancements
+  renderDebateTopics();
+  renderSuggestedTopics();
+  initProposeTopicForm();
 });
 
 /* ==========================================================================
@@ -348,6 +353,9 @@ function initDebateArena() {
   const voteCount = document.getElementById('vote-count');
   const chatBox = document.getElementById('audience-chat-box');
 
+  const btnRandom = document.getElementById('btn-random-topic');
+  const btnSwap = document.getElementById('btn-swap-topic');
+
   if (!btnMatch || !btnDisconnect) return;
 
   const startCamera = async () => {
@@ -439,7 +447,10 @@ function initDebateArena() {
       }
     }, 1000);
 
-    chatBox.innerHTML = '<div class="chat-system-message">Audience joined. Live stream connected.</div>';
+    const activeTopicSelect = document.getElementById('arena-topic');
+    const activeTopicText = activeTopicSelect && activeTopicSelect.selectedIndex >= 0 ? activeTopicSelect.options[activeTopicSelect.selectedIndex].text : "General Debate";
+
+    chatBox.innerHTML = `<div class="chat-system-message">Audience joined. Live stream connected.</div><div class="chat-system-message" style="color:var(--color-blue); font-weight:bold;">Debate Topic: "${activeTopicText}"</div>`;
     let currentVotes = 120;
     voteCount.textContent = currentVotes;
 
@@ -491,6 +502,50 @@ function initDebateArena() {
 
   btnMatch.addEventListener('click', () => setMatchingState('searching'));
   btnDisconnect.addEventListener('click', () => endMatch(false));
+
+  if (btnRandom) {
+    btnRandom.addEventListener('click', () => {
+      const allTopics = [];
+      for (const genre in DEFAULT_DEBATE_TOPICS) {
+        DEFAULT_DEBATE_TOPICS[genre].forEach(topic => {
+          allTopics.push(topic.value);
+        });
+      }
+      if (allTopics.length > 0) {
+        const select = document.getElementById('arena-topic');
+        select.value = allTopics[Math.floor(Math.random() * allTopics.length)];
+      }
+    });
+  }
+
+  if (btnSwap) {
+    btnSwap.addEventListener('click', () => {
+      const select = document.getElementById('arena-topic');
+      if (!select) return;
+      const currentVal = select.value;
+      const allTopics = [];
+      for (const genre in DEFAULT_DEBATE_TOPICS) {
+        DEFAULT_DEBATE_TOPICS[genre].forEach(topic => {
+          if (topic.value !== currentVal) {
+            allTopics.push(topic);
+          }
+        });
+      }
+      if (allTopics.length > 0) {
+        const randomTopic = allTopics[Math.floor(Math.random() * allTopics.length)];
+        select.value = randomTopic.value;
+        
+        if (chatBox && matchStatusText.textContent === 'Connected') {
+          const msg = document.createElement('div');
+          msg.className = 'chat-message chat-system-message';
+          msg.style.cssText = 'color:var(--color-gold); font-weight:bold;';
+          msg.innerHTML = `🔄 Question Swapped: "${randomTopic.text}"`;
+          chatBox.appendChild(msg);
+          chatBox.scrollTop = chatBox.scrollHeight;
+        }
+      }
+    });
+  }
 }
 
 /* ==========================================================================
@@ -1795,5 +1850,157 @@ function initChatbot() {
         }, 400);
       }
     });
+  });
+}
+
+/* ==========================================================================
+   15. Custom Debate Topics & Voting Queue
+   ========================================================================== */
+const DEFAULT_DEBATE_TOPICS = {
+  political: [
+    { value: 'lobbying', text: 'Is Corporate Lobbying Legalized Bribery?' },
+    { value: 'wealth', text: 'Should there be a Maximum Wealth Cap?' },
+    { value: 'united', text: 'Is Citizens United Destroying Democracy?' },
+    { value: 'funding', text: 'Should Elections be 100% Publicly Funded?' }
+  ],
+  spiritual: [
+    { value: 'greed-soul', text: 'Does Extreme Greed Cause Spiritual Deprivation?' },
+    { value: 'value-service', text: 'Is the True Purpose of Life Selfless Service?' },
+    { value: 'wealth-happiness', text: 'Does Hoarded Wealth Prevent Authentic Connections?' }
+  ],
+  news: [
+    { value: 'penalty-freeze', text: 'Is the 2026 Inflation Penalty Freeze Pro-Corporate?' },
+    { value: 'fee-cap-stay', text: 'Should Judges Block Credit Card Fee Caps?' },
+    { value: 'ai-thresholds', text: 'Should Compute Limits on AI Training be Regulated?' }
+  ],
+  fun: [
+    { value: 'mars-colonies', text: 'Should We Colonize Mars or Fix Earth First?' },
+    { value: 'ai-art', text: 'Is AI-Generated Art Real Creative Expression?' },
+    { value: 'social-detox', text: 'Should Social Media be Banned for Under-18s?' }
+  ]
+};
+
+const SUGGESTED_TOPICS = [
+  { text: 'Should lobbying records be published on the blockchain?', genre: 'political', upvotes: 4, status: 'pending' },
+  { text: 'Is modern advertising a form of psychological capture?', genre: 'spiritual', upvotes: 2, status: 'pending' },
+  { text: 'Does fractional reserve banking constitute structural theft?', genre: 'political', upvotes: 5, status: 'approved' },
+  { text: 'Should we introduce a 4-day workweek globally?', genre: 'fun', upvotes: 1, status: 'pending' }
+];
+
+function renderDebateTopics() {
+  const select = document.getElementById('arena-topic');
+  if (!select) return;
+
+  const currentVal = select.value;
+  select.innerHTML = '';
+
+  for (const genre in DEFAULT_DEBATE_TOPICS) {
+    const group = document.createElement('optgroup');
+    group.label = genre.charAt(0).toUpperCase() + genre.slice(1) + ' Debates';
+    
+    DEFAULT_DEBATE_TOPICS[genre].forEach(topic => {
+      const opt = document.createElement('option');
+      opt.value = topic.value;
+      opt.textContent = topic.text;
+      group.appendChild(opt);
+    });
+
+    select.appendChild(group);
+  }
+
+  if (currentVal) {
+    select.value = currentVal;
+  }
+}
+
+function renderSuggestedTopics() {
+  const container = document.getElementById('suggested-topics-list');
+  if (!container) return;
+
+  container.innerHTML = '';
+
+  SUGGESTED_TOPICS.forEach((topic, idx) => {
+    const card = document.createElement('div');
+    card.className = 'loan-card';
+    card.style.padding = '0.9rem 1.1rem';
+    
+    const info = document.createElement('div');
+    info.className = 'loan-card-info';
+    
+    const textSpan = document.createElement('span');
+    textSpan.className = 'reg-folder-title';
+    textSpan.style.fontSize = '0.9rem';
+    textSpan.textContent = topic.text;
+    
+    const badge = document.createElement('span');
+    badge.className = `genre-badge genre-${topic.genre}`;
+    badge.textContent = topic.genre;
+    
+    info.appendChild(textSpan);
+    info.appendChild(badge);
+    
+    const actions = document.createElement('div');
+    actions.className = 'loan-card-actions';
+    actions.style.alignItems = 'center';
+    
+    if (topic.status === 'approved') {
+      const approvedBadge = document.createElement('span');
+      approvedBadge.className = 'reg-status-badge reg-status-active';
+      approvedBadge.style.fontSize = '0.65rem';
+      approvedBadge.textContent = 'Approved';
+      actions.appendChild(approvedBadge);
+    } else {
+      const upvoteBtn = document.createElement('button');
+      upvoteBtn.className = 'upvote-btn';
+      upvoteBtn.style.padding = '0.2rem 0.6rem';
+      upvoteBtn.innerHTML = `▲ <span class="upvote-count">${topic.upvotes}</span>`;
+      
+      upvoteBtn.addEventListener('click', () => {
+        topic.upvotes++;
+        upvoteBtn.querySelector('.upvote-count').textContent = topic.upvotes;
+        
+        if (topic.upvotes >= 5) {
+          topic.status = 'approved';
+          const uniqueVal = 'custom-' + idx;
+          const exists = DEFAULT_DEBATE_TOPICS[topic.genre].some(t => t.value === uniqueVal);
+          if (!exists) {
+            DEFAULT_DEBATE_TOPICS[topic.genre].push({ value: uniqueVal, text: topic.text });
+            renderDebateTopics();
+          }
+          renderSuggestedTopics();
+        }
+      });
+      actions.appendChild(upvoteBtn);
+    }
+    
+    card.appendChild(info);
+    card.appendChild(actions);
+    container.appendChild(card);
+  });
+}
+
+function initProposeTopicForm() {
+  const form = document.getElementById('propose-topic-form');
+  const textInput = document.getElementById('propose-text');
+  const genreSelect = document.getElementById('propose-genre');
+
+  if (!form || !textInput || !genreSelect) return;
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const text = textInput.value.trim();
+    const genre = genreSelect.value;
+
+    if (!text) return;
+
+    SUGGESTED_TOPICS.push({
+      text: text,
+      genre: genre,
+      upvotes: 1,
+      status: 'pending'
+    });
+
+    textInput.value = '';
+    renderSuggestedTopics();
   });
 }

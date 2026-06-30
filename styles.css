@@ -705,14 +705,14 @@ cite {
 
 .arena-controls {
   display: flex;
-  gap: 1rem;
+  gap: 0.5rem;
   align-items: flex-end;
-  flex-wrap: wrap;
+  flex-direction: column;
+  width: 100%;
 }
 
 .search-group {
-  flex: 1;
-  min-width: 200px;
+  width: 100%;
 }
 
 .btn {
@@ -1899,6 +1899,25 @@ cite {
     right: -10px;
   }
 }
+
+/* ==========================================================================
+   DEBATE CATEGORY BADGES & SUGGESTIONS
+   ========================================================================== */
+.genre-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+  display: inline-block;
+  margin-top: 0.2rem;
+}
+
+.genre-political { background: rgba(59, 130, 246, 0.15); color: var(--color-blue); }
+.genre-spiritual { background: rgba(245, 158, 11, 0.15); color: var(--color-gold); }
+.genre-news { background: rgba(239, 68, 68, 0.15); color: var(--color-red); }
+.genre-fun { background: rgba(16, 185, 129, 0.15); color: var(--color-green); }
 
 /* ==========================================================================
    TAB 6: THE HELL OF GREED (PHILOSOPHICAL PAGE)

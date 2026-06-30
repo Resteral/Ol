@@ -168,6 +168,18 @@ body {
   box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
 }
 
+.tab-btn[data-tab="gaming-corner"].active {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: var(--color-blue);
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
+}
+
+.tab-btn[data-tab="community-forum"].active {
+  background: rgba(245, 158, 11, 0.1);
+  border-color: var(--color-gold);
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.15);
+}
+
 .tab-icon {
   width: 18px;
   height: 18px;
@@ -2426,6 +2438,130 @@ cite {
   background: rgba(239, 68, 68, 0.15);
   border-color: var(--color-red);
   box-shadow: 0 0 10px rgba(239, 68, 68, 0.1);
+}
+
+/* ==========================================================================
+   PHASE 10 & 11: GAMING CORNER & COMMUNITY FORUM STYLES
+   ========================================================================== */
+
+/* Bracket Viewer Trees */
+.bracket-viewer-container {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  overflow-x: auto;
+}
+
+.bracket-rounds-wrapper {
+  display: flex;
+  gap: 2.5rem;
+  min-width: 550px;
+}
+
+.bracket-round-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  gap: 1.5rem;
+  flex: 1;
+}
+
+.matchup-box {
+  background: #0d0f14;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+  width: 170px;
+  position: relative;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+  transition: border-color 0.2s ease;
+}
+
+.matchup-box:hover {
+  border-color: var(--color-blue);
+}
+
+.matchup-participant-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  padding: 0.2rem 0;
+  color: var(--color-text-muted);
+}
+
+.matchup-participant-row.winner-row {
+  color: #fff;
+  font-weight: 700;
+}
+
+.matchup-score {
+  font-family: monospace;
+  font-weight: bold;
+  color: var(--color-gold);
+}
+
+.winner-highlight {
+  color: var(--color-green) !important;
+}
+
+/* Forum Boards */
+.forum-sidebar-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.thread-row-item {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--color-border);
+  padding: 1rem 1.25rem;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.thread-row-item:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.04);
+  transform: translateX(4px);
+}
+
+.thread-row-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.thread-row-title {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #fff;
+}
+
+.thread-row-meta {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+}
+
+.thread-row-actions {
+  display: flex;
+  align-items: center;
+}
+
+.thread-comment-count {
+  font-size: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--color-text-muted);
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  font-weight: 600;
 }
 
 /* Footer styling */

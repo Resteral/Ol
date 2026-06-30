@@ -39,6 +39,14 @@
         <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
         Developer Hub
       </button>
+      <button class="tab-btn" data-tab="gaming-corner" id="tab-gaming-corner">
+        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2" ry="2"/><path d="M6 12h4"/><path d="M8 10v4"/><line x1="15" y1="13" x2="15.01" y2="13"/><line x1="18" y1="11" x2="18.01" y2="11"/></svg>
+        Gaming Corner
+      </button>
+      <button class="tab-btn" data-tab="community-forum" id="tab-community-forum">
+        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+        Community Forum
+      </button>
       <button class="tab-btn" data-tab="local-board" id="tab-local-board">
         <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
         Local Board
@@ -205,6 +213,131 @@
               <div class="loop-explanation margin-top-small">
                 <h4>How the Loop Reinforces Itself</h4>
                 <p>Accumulated wealth is invested into the political process through campaign contributions and lobbying. This investment secures legislation (tax cuts, subsidies, and deregulation) that increases the rate of return on assets (<strong>r</strong>) while keeping wage growth (<strong>g</strong>) stagnant. The resulting surplus capital feeds back into the loop, expanding the donor class's command over democratic systems.</p>
+              </div>
+
+              <!-- Dynamic Visual Charts (Phase 12) -->
+              <div class="chart-section-wrapper margin-top-large" style="border-top:1px solid var(--color-border); padding-top:1.5rem;">
+                <h4 style="color:var(--color-gold); margin-bottom:1rem;">Systemic Wealth & Expenditure Disparities</h4>
+                
+                <!-- Chart Row -->
+                <div style="display:flex; flex-direction:column; gap:1.5rem;">
+                  <!-- Chart 1: Wealth Concentration -->
+                  <div>
+                    <h5 style="font-size:0.85rem; text-transform:uppercase; color:var(--color-text-muted); margin-bottom:0.5rem; display:flex; justify-content:space-between;">
+                      <span>Global Wealth Ownership (People vs. Wealth)</span>
+                      <span style="color:var(--color-gold);">Top 10% owns 75%</span>
+                    </h5>
+                    <!-- Stacked Horizontal Bar -->
+                    <div style="height:24px; background:rgba(255,255,255,0.05); border-radius:6px; display:flex; overflow:hidden; border:1px solid var(--color-border);">
+                      <div style="background:var(--color-gold); width:45%; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:bold; color:#000;" title="Top 1% owns 45%">Top 1% (45%)</div>
+                      <div style="background:var(--color-blue); width:30%; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:bold;" title="Next 9% owns 30%">Top 10% (30%)</div>
+                      <div style="background:rgba(255,255,255,0.15); width:23%; display:flex; align-items:center; justify-content:center; font-size:0.75rem;" title="Middle 40% owns 23%">Middle 40% (23%)</div>
+                      <div style="background:var(--color-red); width:2%; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:bold;" title="Bottom 50% owns 2%">Bottom 50% (2%)</div>
+                    </div>
+                    <div style="display:flex; gap:1rem; font-size:0.75rem; color:var(--color-text-muted); margin-top:0.4rem; justify-content:center; flex-wrap:wrap;">
+                      <span style="display:flex; align-items:center; gap:0.25rem;"><span style="width:10px; height:10px; background:var(--color-gold); display:inline-block; border-radius:2px;"></span> Top 1% (45%)</span>
+                      <span style="display:flex; align-items:center; gap:0.25rem;"><span style="width:10px; height:10px; background:var(--color-blue); display:inline-block; border-radius:2px;"></span> Next 9% (30%)</span>
+                      <span style="display:flex; align-items:center; gap:0.25rem;"><span style="width:10px; height:10px; background:rgba(255,255,255,0.15); display:inline-block; border-radius:2px;"></span> Middle 40% (23%)</span>
+                      <span style="display:flex; align-items:center; gap:0.25rem;"><span style="width:10px; height:10px; background:var(--color-red); display:inline-block; border-radius:2px;"></span> Bottom 50% (2%)</span>
+                    </div>
+                  </div>
+
+                  <!-- Chart 2: Expenditure Disparity -->
+                  <div>
+                    <h5 style="font-size:0.85rem; text-transform:uppercase; color:var(--color-text-muted); margin-bottom:0.75rem;">
+                      Where the Money Goes: Working-Class Expenses vs. Corporate Lobbying Budgets
+                    </h5>
+                    
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem;">
+                      <!-- Citizen Budget -->
+                      <div style="background:rgba(0,0,0,0.2); border:1px solid var(--color-border); padding:1rem; border-radius:8px;">
+                        <h6 style="color:var(--color-blue); font-size:0.8rem; text-transform:uppercase; margin-bottom:0.75rem;">Citizen Monthly Budget (Median Income)</h6>
+                        
+                        <!-- Housing -->
+                        <div style="margin-bottom:0.5rem;">
+                          <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:0.2rem;">
+                            <span>Housing / Rent</span>
+                            <span>42%</span>
+                          </div>
+                          <div style="height:6px; background:rgba(255,255,255,0.05); border-radius:10px; overflow:hidden;">
+                            <div style="background:var(--color-blue); height:100%; width:42%;"></div>
+                          </div>
+                        </div>
+                        
+                        <!-- Food/Utilities -->
+                        <div style="margin-bottom:0.5rem;">
+                          <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:0.2rem;">
+                            <span>Food & Utilities</span>
+                            <span>25%</span>
+                          </div>
+                          <div style="height:6px; background:rgba(255,255,255,0.05); border-radius:10px; overflow:hidden;">
+                            <div style="background:var(--color-blue); height:100%; width:25%;"></div>
+                          </div>
+                        </div>
+
+                        <!-- Healthcare -->
+                        <div style="margin-bottom:0.5rem;">
+                          <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:0.2rem;">
+                            <span>Healthcare</span>
+                            <span>15%</span>
+                          </div>
+                          <div style="height:6px; background:rgba(255,255,255,0.05); border-radius:10px; overflow:hidden;">
+                            <div style="background:var(--color-blue); height:100%; width:15%;"></div>
+                          </div>
+                        </div>
+
+                        <!-- Savings -->
+                        <div>
+                          <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:0.2rem;">
+                            <span>Savings / Capital Investment</span>
+                            <span style="color:var(--color-red); font-weight:bold;">2%</span>
+                          </div>
+                          <div style="height:6px; background:rgba(255,255,255,0.05); border-radius:10px; overflow:hidden;">
+                            <div style="background:var(--color-red); height:100%; width:2%;"></div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Lobby Budget -->
+                      <div style="background:rgba(0,0,0,0.2); border:1px solid var(--color-border); padding:1rem; border-radius:8px;">
+                        <h6 style="color:var(--color-green); font-size:0.8rem; text-transform:uppercase; margin-bottom:0.75rem;">Corporate Lobby Annual Budget (Lobbying Groups)</h6>
+                        
+                        <!-- Policy Lobbying -->
+                        <div style="margin-bottom:0.5rem;">
+                          <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:0.2rem;">
+                            <span>Drafting Policy & PR</span>
+                            <span>50%</span>
+                          </div>
+                          <div style="height:6px; background:rgba(255,255,255,0.05); border-radius:10px; overflow:hidden;">
+                            <div style="background:var(--color-green); height:100%; width:50%;"></div>
+                          </div>
+                        </div>
+
+                        <!-- Campaign Contributions -->
+                        <div style="margin-bottom:0.5rem;">
+                          <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:0.2rem;">
+                            <span>Electoral PAC Donations</span>
+                            <span>35%</span>
+                          </div>
+                          <div style="height:6px; background:rgba(255,255,255,0.05); border-radius:10px; overflow:hidden;">
+                            <div style="background:var(--color-green); height:100%; width:35%;"></div>
+                          </div>
+                        </div>
+
+                        <!-- Revolving Door -->
+                        <div>
+                          <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:0.2rem;">
+                            <span>Revolving Door Recruiting / Job Offers</span>
+                            <span>15%</span>
+                          </div>
+                          <div style="height:6px; background:rgba(255,255,255,0.05); border-radius:10px; overflow:hidden;">
+                            <div style="background:var(--color-green); height:100%; width:15%;"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -595,6 +728,7 @@
                     <option value="Alternative Media">Alternative Media</option>
                     <option value="Mutual Aid">Mutual Aid</option>
                     <option value="Education">Education</option>
+                    <option value="Game">Playable Game</option>
                   </select>
                 </div>
               </div>
@@ -613,7 +747,215 @@
         </div>
       </section>
 
-      <!-- TAB 5: LOCAL BOARD -->
+      <!-- TAB 5: GAMING CORNER -->
+      <section id="gaming-corner" class="tab-content">
+        <h2 class="section-title text-center">The Gaming Corner</h2>
+        <p class="section-intro text-center">Host or join tournaments, arrange prize pool buy-ins, configure snake or auction drafts, and discover indie games published by the community.</p>
+
+        <div class="grid-layout">
+          <!-- Tournament Configurator Form Card -->
+          <div class="card">
+            <h3>Host a Tournament</h3>
+            <p class="section-intro">Set up stakes, select your game title, configure brackets, and coordinate drafts.</p>
+            <form id="tournament-creator-form">
+              <div class="input-group">
+                <label for="tourney-name">Tournament Name</label>
+                <input type="text" id="tourney-name" placeholder="e.g. resolve.bet Spring Classic" required>
+              </div>
+
+              <div class="post-form-grid margin-top-small">
+                <div class="input-group">
+                  <label for="tourney-game">Game Title</label>
+                  <select id="tourney-game">
+                    <option value="chess">Speed Chess</option>
+                    <option value="blockmaker">BlockMaker Sandbox</option>
+                    <option value="capital-exploit">Capital Exploit Runner</option>
+                  </select>
+                </div>
+                <div class="input-group">
+                  <label for="tourney-prize">Prize Pool / Stake ($)</label>
+                  <input type="number" id="tourney-prize" value="250" min="0" step="50" required>
+                </div>
+              </div>
+
+              <div class="post-form-grid margin-top-small">
+                <div class="input-group">
+                  <label for="tourney-bracket">Bracket Format</label>
+                  <select id="tourney-bracket">
+                    <option value="single">Single Elimination</option>
+                    <option value="double">Double Elimination</option>
+                    <option value="robin">Round Robin</option>
+                  </select>
+                </div>
+                <div class="input-group">
+                  <label for="tourney-draft">Draft Mode</label>
+                  <select id="tourney-draft">
+                    <option value="snake">Snake Draft</option>
+                    <option value="auction">Auction Draft ($200 budget)</option>
+                    <option value="none">Seeded Matches</option>
+                  </select>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary margin-top-large">Generate Tournament & Bracket</button>
+            </form>
+          </div>
+
+          <!-- Active Tournaments List -->
+          <div class="card" style="display:flex; flex-direction:column; max-height:420px; overflow-y:auto;">
+            <h3>Active Competitions</h3>
+            <p class="section-intro">Click any tournament to load its bracket visualization and draft results below.</p>
+            <div class="loan-listings" id="active-tournaments-list">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Visual Bracket Tree & Draft Console -->
+        <div class="card margin-top-large" id="tournament-detail-panel" style="border-top: 4px solid var(--color-blue);">
+          <div id="tourney-detail-initial">
+            <h3 class="text-center">Select or Create a Tournament</h3>
+            <p class="text-center section-intro">Generate a tournament to see bracket paths, participant pairings, draft picks, and tournament standings.</p>
+          </div>
+
+          <div id="tourney-detail-active" class="hidden">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--color-border); padding-bottom:1rem; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;">
+              <div>
+                <h3 id="active-tourney-title">Tournament Title</h3>
+                <span class="node-badge badge-capital" id="active-tourney-meta" style="margin-bottom:0;">Chess • $500 Pool</span>
+              </div>
+              <div style="display:flex; gap:0.5rem;">
+                <button class="btn btn-primary" id="btn-simulate-round" style="padding:0.4rem 0.8rem; font-size:0.8rem;">⚡ Simulate Next Matchups</button>
+              </div>
+            </div>
+
+            <!-- Draft Board Column & Bracket Grid -->
+            <div class="grid-layout" style="grid-template-columns: 1fr 1.6fr;">
+              <!-- Draft Console Card -->
+              <div>
+                <h4>Draft Summary</h4>
+                <p class="section-intro" id="active-tourney-draft-desc">Snake or Auction draft roster overview.</p>
+                <div class="audience-chat" id="tourney-draft-log" style="height:280px; background:rgba(0,0,0,0.25);">
+                  <!-- Injected by JS -->
+                </div>
+              </div>
+
+              <!-- Bracket Visualizer -->
+              <div>
+                <h4>Tournament Bracket Tree</h4>
+                <p class="section-intro">Track matches from Quarterfinals down to the Champion.</p>
+                <div class="bracket-viewer-container" id="bracket-viewer-tree">
+                  <!-- Rendered via JS -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 6: COMMUNITY FORUM -->
+      <section id="community-forum" class="tab-content">
+        <h2 class="section-title text-center">Community Forum</h2>
+        <p class="section-intro text-center">Discuss campaign finance reform, cooperative finance models, gaming setups, or direct policy lobby tracking with other citizens.</p>
+
+        <div class="grid-layout">
+          <!-- Forum Sidebar (Category Filters & Thread starter) -->
+          <div class="forum-sidebar-column">
+            <!-- New Thread Form -->
+            <div class="card">
+              <h3>Start a Discussion Thread</h3>
+              <form id="forum-thread-form">
+                <div class="input-group">
+                  <label for="thread-author">Your Handle</label>
+                  <input type="text" id="thread-author" value="Citizen_X" required>
+                </div>
+                <div class="post-form-grid margin-top-small">
+                  <div class="input-group">
+                    <label for="thread-title">Thread Title</label>
+                    <input type="text" id="thread-title" placeholder="e.g. Why FICO is rigged" required>
+                  </div>
+                  <div class="input-group">
+                    <label for="thread-category">Category</label>
+                    <select id="thread-category">
+                      <option value="Reform">Systemic Reform</option>
+                      <option value="Mutual Aid">Mutual Aid & Co-ops</option>
+                      <option value="Gaming">Gaming Arena</option>
+                      <option value="General">General Assembly</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="input-group margin-top-small">
+                  <label for="thread-body">Post Message</label>
+                  <textarea id="thread-body" placeholder="Share your thesis or coordinate efforts..." rows="4" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary margin-top-large">Publish Thread</button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Threads List Board -->
+          <div class="forum-main-column">
+            <div class="card" style="min-height:480px; display:flex; flex-direction:column;">
+              <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--color-border); padding-bottom:1rem; margin-bottom:1.5rem;">
+                <h3>Active Discussion Threads</h3>
+                <div class="news-filter-bar" style="margin-bottom:0;" id="forum-filter-bar">
+                  <button class="news-filter-btn active" data-forum-filter="all">All Topics</button>
+                  <button class="news-filter-btn" data-forum-filter="Reform">Reform</button>
+                  <button class="news-filter-btn" data-forum-filter="Mutual Aid">Mutual Aid</button>
+                  <button class="news-filter-btn" data-forum-filter="Gaming">Gaming</button>
+                </div>
+              </div>
+
+              <!-- Threads Grid -->
+              <div class="feed-posts-container" id="forum-threads-list" style="gap:1rem; flex:1;">
+                <!-- Injected via JS -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Thread Thread Detail replies Drawer -->
+        <div class="card margin-top-large hidden" id="forum-thread-detail-panel" style="border-top: 4px solid var(--color-gold);">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; border-bottom:1px solid var(--color-border); padding-bottom:1rem; margin-bottom:1.5rem;">
+            <div>
+              <h3 id="active-thread-title">Rigged Systems discussion</h3>
+              <div style="display:flex; gap:0.5rem; align-items:center; margin-top:0.25rem;">
+                <span class="node-badge badge-capital" id="active-thread-tag" style="margin-bottom:0; font-size:0.7rem;">Reform</span>
+                <span style="font-size:0.8rem; color:var(--color-text-muted);" id="active-thread-author">Started by Socrates</span>
+              </div>
+            </div>
+            <button class="btn btn-secondary" id="btn-close-thread-view" style="padding:0.4rem 0.8rem;">Back to List</button>
+          </div>
+
+          <!-- OP Body -->
+          <div class="philosophical-insight" id="active-thread-op-body" style="margin-top:0; margin-bottom:1.5rem; font-size:0.95rem; line-height:1.5; padding:1.25rem; border-left:3px solid var(--color-gold);">
+            Original post message content.
+          </div>
+
+          <!-- Reply List -->
+          <h4>Thread Comments</h4>
+          <div class="audience-chat margin-top-small" id="thread-replies-list" style="height:250px; background:rgba(0,0,0,0.15); margin-bottom:1.5rem;">
+            <!-- Comments injected by JS -->
+          </div>
+
+          <!-- Post Comment Form -->
+          <form id="thread-reply-form">
+            <div class="post-form-grid">
+              <div class="input-group">
+                <label for="reply-author">Your Handle</label>
+                <input type="text" id="reply-author" value="Citizen_X" required>
+              </div>
+              <div class="input-group" style="flex:2;">
+                <label for="reply-text">Add Reply Comment</label>
+                <input type="text" id="reply-text" placeholder="Type your comment reply..." required>
+              </div>
+              <button type="submit" class="btn btn-primary" style="height:38px; margin-top:24px;">Submit Comment</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- TAB 7: LOCAL BOARD -->
       <section id="local-board" class="tab-content">
         <h2 class="section-title text-center">Local Board</h2>
         <p class="section-intro text-center">Bypass systemic isolation. Find cooperative businesses, mutual aid initiatives, local deals, and civic events happening near you.</p>
@@ -655,7 +997,7 @@
         </div>
       </section>
 
-      <!-- TAB 6: P2P MUTUAL CREDIT -->
+      <!-- TAB 8: P2P MUTUAL CREDIT -->
       <section id="mutual-credit" class="tab-content">
         <h2 class="section-title text-center">P2P Mutual Credit</h2>
         <p class="section-intro text-center">Bypass fractional reserve extraction. Lend and borrow directly with private individuals inside the community network at zero or negligible interest.</p>
@@ -788,7 +1130,7 @@
         </div>
       </section>
 
-      <!-- TAB 7: FINANCIAL LITERACY -->
+      <!-- TAB 9: FINANCIAL LITERACY -->
       <section id="financial-literacy" class="tab-content">
         <div class="grid-layout">
           <!-- Money & Platforms Column -->
@@ -919,7 +1261,7 @@
         </div>
       </section>
 
-      <!-- TAB 8: THE HELL OF GREED -->
+      <!-- TAB 10: THE HELL OF GREED -->
       <section id="hell-greed" class="tab-content">
         <div class="philosophical-container">
           <div class="hero-quote">
@@ -959,7 +1301,7 @@
         </div>
       </section>
 
-      <!-- TAB 9: THE PURPOSE OF LIFE -->
+      <!-- TAB 11: THE PURPOSE OF LIFE -->
       <section id="purpose-life" class="tab-content">
         <div class="philosophical-container purpose-container">
           <div class="gold-gradient-bg">
@@ -1032,7 +1374,7 @@
         </div>
       </section>
 
-      <!-- TAB 10: SYSTEMIC REFORM -->
+      <!-- TAB 12: SYSTEMIC REFORM -->
       <section id="systemic-reform" class="tab-content">
         <h2 class="section-title text-center">Reclaiming the Democratic System</h2>
         <p class="section-intro text-center">To move from a government controlled by capital to a government controlled by people, we must dismantle the structures that make money necessary for political survival.</p>

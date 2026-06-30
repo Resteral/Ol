@@ -32,6 +32,10 @@ document.addEventListener('DOMContentLoaded', () => {
   renderDebateTopics();
   renderSuggestedTopics();
   initProposeTopicForm();
+
+  // Phase 10 & 11: Gaming & Forum Initializers
+  initGamingCorner();
+  initForum();
 });
 
 /* ==========================================================================
@@ -1788,6 +1792,11 @@ function initChatbot() {
       return `To fix or rebuild your credit score, open the <strong>Financial Literacy</strong> tab and review the FICO breakdowns. Keep your utilization below 10%, automate payments, and dispute errors. You can also simulate interest rates in our <strong>Credit Card Debt Trap Simulator</strong> at the bottom of that page!`;
     }
 
+    // Check for Rich giving back / philanthropy
+    if (text.includes('giving back') || text.includes('philanthropy') || text.includes('charity') || text.includes('rich give') || text.includes('foundation') || text.includes('donation')) {
+      return `Billionaire philanthropy is often a structural illusion (philanthropic theater). Instead of paying taxes to be democratically distributed, the ultra-wealthy use <strong>private family foundations</strong> to secure massive tax write-offs while keeping 95% of the assets invested in the market, compounding tax-free under their control. This allows them to bypass democratic processes and dictate public programs according to personal preference. Real "giving back" requires <strong>surrendering control</strong>—such as allocating wealth to public reserves, community land trusts, or worker-owned cooperatives. Check the hot thread in our new <strong>Community Forum</strong> tab for a full breakdown!`;
+    }
+
     // Check for Regulatory capture questions
     if (text.includes('capture') || text.includes('citizens united') || text.includes('lobbying') || text.includes('dark money') || text.includes('revolving door')) {
       return `Regulatory Capture happens when federal agencies (like the SEC, FTC, FCC) get staffed or pressured by the corporations they regulate. Check out the <strong>Mechanics of Control</strong> tab and select <strong>The President's Desk</strong> to search active filings and see how lobbying money halts rules.`;
@@ -2003,4 +2012,514 @@ function initProposeTopicForm() {
     textInput.value = '';
     renderSuggestedTopics();
   });
+}
+
+/* ==========================================================================
+   16. Gaming Corner (Tournament Brackets & Snake/Auction Drafts)
+   ========================================================================== */
+let TOURNAMENTS = [
+  {
+    id: 'tourney-1',
+    name: 'resolve.bet Chess Classic',
+    game: 'Speed Chess',
+    prize: 500,
+    bracket: 'single',
+    draft: 'snake',
+    players: ['Liberty_Patriot', 'VoxPopuli_33', 'Citizen_Socrates', 'NullHypothesis', 'Capitalist_Edge', 'Citizen_X', 'Player_Alpha', 'Player_Beta'],
+    status: 'In Progress',
+    round: 1,
+    matches: [
+      { p1: 'Liberty_Patriot', p2: 'VoxPopuli_33', s1: 2, s2: 1, winner: 'Liberty_Patriot', round: 1 },
+      { p1: 'Citizen_Socrates', p2: 'NullHypothesis', s1: 0, s2: 2, winner: 'NullHypothesis', round: 1 },
+      { p1: 'Capitalist_Edge', p2: 'Citizen_X', s1: 1, s2: 2, winner: 'Citizen_X', round: 1 },
+      { p1: 'Player_Alpha', p2: 'Player_Beta', s1: 2, s2: 0, winner: 'Player_Alpha', round: 1 }
+    ],
+    draftLog: [
+      'Round 1: Liberty_Patriot drafted Magnus Carlson (Bot)',
+      'Round 1: VoxPopuli_33 drafted Hikaru Nakamura (Bot)',
+      'Round 1: Citizen_Socrates drafted Garry Kasparov (Bot)',
+      'Round 1: NullHypothesis drafted AlphaZero (Bot)',
+      'Round 2: Capitalist_Edge drafted Stockfish (Bot)',
+      'Round 2: Citizen_X drafted Deep Blue (Bot)',
+      'Round 2: Player_Alpha drafted Leela Chess Zero (Bot)',
+      'Round 2: Player_Beta drafted Fritz (Bot)'
+    ]
+  }
+];
+
+let activeTourneyId = 'tourney-1';
+
+function initGamingCorner() {
+  const form = document.getElementById('tournament-creator-form');
+  const tName = document.getElementById('tourney-name');
+  const tGame = document.getElementById('tourney-game');
+  const tPrize = document.getElementById('tourney-prize');
+  const tBracket = document.getElementById('tourney-bracket');
+  const tDraft = document.getElementById('tourney-draft');
+
+  const btnSimulate = document.getElementById('btn-simulate-round');
+
+  if (!form) return;
+
+  // Listen to Developer Hub dynamic game submissions
+  const originalDraw = renderDevGallery;
+  renderDevGallery = function() {
+    originalDraw();
+    updateGameSelectDropdown();
+  };
+
+  const updateGameSelectDropdown = () => {
+    if (!tGame) return;
+    // Get all game submissions
+    const gameSubmissions = DEV_PROJECTS.filter(p => p.tag === 'Game');
+    
+    // Clear default select options except basic ones
+    tGame.innerHTML = `
+      <option value="chess">Speed Chess</option>
+      <option value="blockmaker">BlockMaker Sandbox</option>
+      <option value="capital-exploit">Capital Exploit Runner</option>
+    `;
+
+    gameSubmissions.forEach(game => {
+      const opt = document.createElement('option');
+      opt.value = game.title.toLowerCase().replace(/\s+/g, '-');
+      opt.textContent = game.title;
+      tGame.appendChild(opt);
+    });
+  };
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const id = 'tourney-' + (TOURNAMENTS.length + 1);
+    const draftType = tDraft.value;
+    
+    const participants = ['Liberty_Patriot', 'VoxPopuli_33', 'Citizen_Socrates', 'NullHypothesis', 'Capitalist_Edge', 'Citizen_X', 'Player_Alpha', 'Player_Beta'];
+    const matches = [
+      { p1: participants[0], p2: participants[1], s1: 0, s2: 0, winner: null, round: 1 },
+      { p1: participants[2], p2: participants[3], s1: 0, s2: 0, winner: null, round: 1 },
+      { p1: participants[4], p2: participants[5], s1: 0, s2: 0, winner: null, round: 1 },
+      { p1: participants[6], p2: participants[7], s1: 0, s2: 0, winner: null, round: 1 }
+    ];
+
+    const logs = [];
+    if (draftType === 'snake') {
+      participants.forEach((p, idx) => {
+        logs.push(`Round ${Math.floor(idx/8)+1}: ${p} drafted Agent_${idx + 1}`);
+      });
+    } else if (draftType === 'auction') {
+      participants.forEach((p, idx) => {
+        const bid = Math.floor(Math.random() * 80) + 40;
+        logs.push(`${p} secured Roster_Hero_${idx + 1} for $${bid}`);
+      });
+    } else {
+      logs.push('Direct seeding selected. Draft bypassed.');
+    }
+
+    const newTourney = {
+      id: id,
+      name: tName.value,
+      game: tGame.options[tGame.selectedIndex].text,
+      prize: parseInt(tPrize.value),
+      bracket: tBracket.value,
+      draft: draftType,
+      players: participants,
+      status: 'In Progress',
+      round: 1,
+      matches: matches,
+      draftLog: logs
+    };
+
+    TOURNAMENTS.push(newTourney);
+    activeTourneyId = id;
+    
+    tName.value = '';
+    renderTournamentsList();
+    loadTourneyDetails(id);
+  });
+
+  if (btnSimulate) {
+    btnSimulate.addEventListener('click', () => {
+      const tourney = TOURNAMENTS.find(t => t.id === activeTourneyId);
+      if (!tourney || tourney.status === 'Completed') return;
+
+      if (tourney.round === 1) {
+        // Simulate Round 1 results
+        tourney.matches.forEach(m => {
+          if (m.round === 1) {
+            m.s1 = Math.floor(Math.random() * 3);
+            m.s2 = Math.floor(m.s1 === 2 ? Math.random() * 2 : 2);
+            m.winner = m.s1 > m.s2 ? m.p1 : m.p2;
+          }
+        });
+
+        // Generate Round 2 (Semifinals)
+        const winners = tourney.matches.filter(m => m.round === 1).map(m => m.winner);
+        tourney.matches.push({ p1: winners[0], p2: winners[1], s1: 0, s2: 0, winner: null, round: 2 });
+        tourney.matches.push({ p1: winners[2], p2: winners[3], s1: 0, s2: 0, winner: null, round: 2 });
+        tourney.round = 2;
+      } 
+      else if (tourney.round === 2) {
+        // Simulate Round 2
+        tourney.matches.forEach(m => {
+          if (m.round === 2) {
+            m.s1 = Math.floor(Math.random() * 3);
+            m.s2 = Math.floor(m.s1 === 2 ? Math.random() * 2 : 2);
+            m.winner = m.s1 > m.s2 ? m.p1 : m.p2;
+          }
+        });
+
+        // Generate Finals
+        const winners = tourney.matches.filter(m => m.round === 2).map(m => m.winner);
+        tourney.matches.push({ p1: winners[0], p2: winners[1], s1: 0, s2: 0, winner: null, round: 3 });
+        tourney.round = 3;
+      } 
+      else if (tourney.round === 3) {
+        // Simulate Finals
+        const finalMatch = tourney.matches.find(m => m.round === 3);
+        if (finalMatch) {
+          finalMatch.s1 = Math.floor(Math.random() * 3);
+          finalMatch.s2 = Math.floor(finalMatch.s1 === 2 ? Math.random() * 2 : 2);
+          finalMatch.winner = finalMatch.s1 > finalMatch.s2 ? finalMatch.p1 : finalMatch.p2;
+          tourney.status = 'Completed';
+        }
+      }
+
+      loadTourneyDetails(tourney.id);
+      renderTournamentsList();
+    });
+  }
+
+  // Draw initial list
+  renderTournamentsList();
+  updateGameSelectDropdown();
+}
+
+function renderTournamentsList() {
+  const container = document.getElementById('active-tournaments-list');
+  if (!container) return;
+
+  container.innerHTML = '';
+
+  TOURNAMENTS.forEach(t => {
+    const card = document.createElement('div');
+    card.className = `loan-card ${t.id === activeTourneyId ? 'active-folder' : ''}`;
+    card.style.cursor = 'pointer';
+
+    card.addEventListener('click', () => {
+      activeTourneyId = t.id;
+      renderTournamentsList();
+      loadTourneyDetails(t.id);
+    });
+
+    const info = document.createElement('div');
+    info.className = 'loan-card-info';
+
+    const title = document.createElement('span');
+    title.className = 'reg-folder-title';
+    title.textContent = t.name;
+
+    const desc = document.createElement('span');
+    desc.className = 'loan-details-meta';
+    desc.textContent = `${t.game} • Bracket: ${t.bracket} • Status: ${t.status}`;
+
+    info.appendChild(title);
+    info.appendChild(desc);
+
+    const stakes = document.createElement('div');
+    stakes.className = 'loan-card-actions';
+    
+    const amt = document.createElement('span');
+    amt.className = 'loan-amount';
+    amt.textContent = `$${t.prize}`;
+
+    const label = document.createElement('span');
+    label.className = 'loan-rate';
+    label.textContent = 'Prize Pool';
+
+    stakes.appendChild(amt);
+    stakes.appendChild(label);
+
+    card.appendChild(info);
+    card.appendChild(stakes);
+    container.appendChild(card);
+  });
+}
+
+function loadTourneyDetails(id) {
+  const tourney = TOURNAMENTS.find(t => t.id === id);
+  const detailInitial = document.getElementById('tourney-detail-initial');
+  const detailActive = document.getElementById('tourney-detail-active');
+
+  if (!tourney || !detailActive) return;
+
+  if (detailInitial) detailInitial.classList.add('hidden');
+  detailActive.classList.remove('hidden');
+
+  document.getElementById('active-tourney-title').textContent = tourney.name;
+  document.getElementById('active-tourney-meta').textContent = `${tourney.game} • Draft: ${tourney.draft} • Stake: $${tourney.prize}`;
+  document.getElementById('active-tourney-draft-desc').textContent = `Roster Drafting Method: ${tourney.draft.toUpperCase()}`;
+
+  // Renders logs
+  const logContainer = document.getElementById('tourney-draft-log');
+  if (logContainer) {
+    logContainer.innerHTML = '';
+    tourney.draftLog.forEach(log => {
+      const row = document.createElement('div');
+      row.className = 'chat-message';
+      row.innerHTML = `<span class="chat-system-message" style="text-align:left; color:var(--color-text-muted);">${log}</span>`;
+      logContainer.appendChild(row);
+    });
+  }
+
+  // Renders visual Bracket columns
+  const treeContainer = document.getElementById('bracket-viewer-tree');
+  if (treeContainer) {
+    treeContainer.innerHTML = '';
+    const wrapper = document.createElement('div');
+    wrapper.className = 'bracket-rounds-wrapper';
+
+    // Quarterfinals col (Round 1)
+    const qCol = document.createElement('div');
+    qCol.className = 'bracket-round-col';
+    const qMatches = tourney.matches.filter(m => m.round === 1);
+    qMatches.forEach(m => {
+      qCol.appendChild(createMatchupBox(m));
+    });
+    wrapper.appendChild(qCol);
+
+    // Semifinals col (Round 2)
+    const sCol = document.createElement('div');
+    sCol.className = 'bracket-round-col';
+    const sMatches = tourney.matches.filter(m => m.round === 2);
+    if (sMatches.length > 0) {
+      sMatches.forEach(m => sCol.appendChild(createMatchupBox(m)));
+    } else {
+      sCol.innerHTML = `
+        <div class="matchup-box" style="opacity: 0.35;"><div class="matchup-participant-row">TBD</div><div class="matchup-participant-row">TBD</div></div>
+        <div class="matchup-box" style="opacity: 0.35;"><div class="matchup-participant-row">TBD</div><div class="matchup-participant-row">TBD</div></div>
+      `;
+    }
+    wrapper.appendChild(sCol);
+
+    // Finals col (Round 3)
+    const fCol = document.createElement('div');
+    fCol.className = 'bracket-round-col';
+    const fMatch = tourney.matches.find(m => m.round === 3);
+    if (fMatch) {
+      fCol.appendChild(createMatchupBox(m => createMatchupBox(fMatch)));
+      fCol.innerHTML = '';
+      fCol.appendChild(createMatchupBox(fMatch));
+    } else {
+      fCol.innerHTML = `<div class="matchup-box" style="opacity: 0.35;"><div class="matchup-participant-row">TBD</div><div class="matchup-participant-row">TBD</div></div>`;
+    }
+    wrapper.appendChild(fCol);
+
+    treeContainer.appendChild(wrapper);
+  }
+}
+
+function createMatchupBox(match) {
+  const box = document.createElement('div');
+  box.className = 'matchup-box';
+
+  const row1 = document.createElement('div');
+  row1.className = `matchup-participant-row ${match.winner === match.p1 ? 'winner-row' : ''}`;
+  row1.innerHTML = `<span>${match.p1}</span> <span class="matchup-score ${match.winner === match.p1 ? 'winner-highlight' : ''}">${match.s1}</span>`;
+
+  const row2 = document.createElement('div');
+  row2.className = `matchup-participant-row ${match.winner === match.p2 ? 'winner-row' : ''}`;
+  row2.innerHTML = `<span>${match.p2}</span> <span class="matchup-score ${match.winner === match.p2 ? 'winner-highlight' : ''}">${match.s2}</span>`;
+
+  box.appendChild(row1);
+  box.appendChild(row2);
+  return box;
+}
+
+/* ==========================================================================
+   17. Community Forum Engine (Categorized Thread replies &OPs)
+   ========================================================================== */
+let FORUM_THREADS = [
+  {
+    id: 'thread-1',
+    title: 'Why the ultra-rich don\'t "give back" (and what happens when they pretend to)',
+    category: 'Reform',
+    author: 'Socrates_99',
+    body: 'We are told billionaire charity saves the world. But look at the numbers. Private family foundations allow billionaires to bypass taxes, direct social programs to their personal whims (like charter schools), and keep 95% of the assets compounding tax-free in the stock market. True giving is not charity; it is surrendering control of the assets back to workers and communities via land trusts and co-ops.',
+    replies: [
+      { author: 'Citizen_X', text: 'This is the most critical post here. Philanthropic foundations are just tax shields that preserve dynastic control.' },
+      { author: 'LobbyWatcher', text: 'Exactly. If they really wanted to give back, they would stop lobbying for corporate tax breaks.' }
+    ],
+    date: '1 hour ago'
+  },
+  {
+    id: 'thread-2',
+    title: 'Why the FICO credit system is fundamentally rigged',
+    category: 'Mutual Aid',
+    author: 'DebtDisputer_99',
+    body: 'The FICO system is designed as a compliance indicator. It does not measure wealth; it measures how profitable you are to credit card companies. If you carry debt and pay interest, you are valued. If you live debt-free, you are invisible. We need a P2P Mutual Credit ledger to declare our own community trustworthiness!',
+    replies: [
+      { author: 'Citizen_X', text: 'Agree. The utilization ratio is particularly ridiculous. If I use my own money, why does it drop my score?' }
+    ],
+    date: '2 hours ago'
+  }
+];
+
+let activeThreadId = 'thread-1';
+let forumCategoryFilter = 'all';
+
+function initForum() {
+  const threadForm = document.getElementById('forum-thread-form');
+  const tAuthor = document.getElementById('thread-author');
+  const tTitle = document.getElementById('thread-title');
+  const tCategory = document.getElementById('thread-category');
+  const tBody = document.getElementById('thread-body');
+
+  const replyForm = document.getElementById('thread-reply-form');
+  const rAuthor = document.getElementById('reply-author');
+  const rText = document.getElementById('reply-text');
+
+  const btnClose = document.getElementById('btn-close-thread-view');
+
+  if (!threadForm || !replyForm) return;
+
+  // Category filters
+  const filterButtons = document.querySelectorAll('#forum-filter-bar button');
+  filterButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      forumCategoryFilter = btn.getAttribute('data-forum-filter');
+      renderForumThreads();
+    });
+  });
+
+  threadForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const id = 'thread-' + (FORUM_THREADS.length + 1);
+    
+    FORUM_THREADS.unshift({
+      id: id,
+      title: tTitle.value,
+      category: tCategory.value,
+      author: tAuthor.value,
+      body: tBody.value,
+      replies: [],
+      date: 'Just now'
+    });
+
+    tTitle.value = '';
+    tBody.value = '';
+    
+    renderForumThreads();
+  });
+
+  replyForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const thread = FORUM_THREADS.find(t => t.id === activeThreadId);
+    if (!thread) return;
+
+    thread.replies.push({
+      author: rAuthor.value,
+      text: rText.value
+    });
+
+    rText.value = '';
+    loadThreadDetails(activeThreadId);
+    renderForumThreads();
+  });
+
+  if (btnClose) {
+    btnClose.addEventListener('click', () => {
+      document.getElementById('forum-thread-detail-panel').classList.add('hidden');
+    });
+  }
+
+  // Draw list
+  renderForumThreads();
+}
+
+function renderForumThreads() {
+  const container = document.getElementById('forum-threads-list');
+  if (!container) return;
+
+  container.innerHTML = '';
+
+  const filtered = FORUM_THREADS.filter(t => {
+    if (forumCategoryFilter === 'all') return true;
+    return t.category === forumCategoryFilter;
+  });
+
+  filtered.forEach(t => {
+    const row = document.createElement('div');
+    row.className = 'thread-row-item';
+    
+    row.addEventListener('click', () => {
+      activeThreadId = t.id;
+      loadThreadDetails(t.id);
+    });
+
+    const info = document.createElement('div');
+    info.className = 'thread-row-info';
+
+    const title = document.createElement('span');
+    title.className = 'thread-row-title';
+    title.textContent = t.title;
+
+    const meta = document.createElement('span');
+    meta.className = 'thread-row-meta';
+    meta.innerHTML = `
+      <span class="genre-badge genre-political" style="font-size:0.65rem; margin-top:0;">${t.category}</span>
+      <span>By ${t.author}</span>
+      <span>${t.date}</span>
+    `;
+
+    info.appendChild(title);
+    info.appendChild(meta);
+
+    const replies = document.createElement('div');
+    replies.className = 'thread-row-actions';
+
+    const count = document.createElement('span');
+    count.className = 'thread-comment-count';
+    count.textContent = `${t.replies.length} replies`;
+
+    replies.appendChild(count);
+
+    row.appendChild(info);
+    row.appendChild(replies);
+    container.appendChild(row);
+  });
+}
+
+function loadThreadDetails(id) {
+  const thread = FORUM_THREADS.find(t => t.id === id);
+  const detailPanel = document.getElementById('forum-thread-detail-panel');
+
+  if (!thread || !detailPanel) return;
+
+  detailPanel.classList.remove('hidden');
+  detailPanel.scrollIntoView({ behavior: 'smooth' });
+
+  document.getElementById('active-thread-title').textContent = thread.title;
+  document.getElementById('active-thread-tag').textContent = thread.category;
+  document.getElementById('active-thread-author').textContent = `Started by @${thread.author} • ${thread.date}`;
+  document.getElementById('active-thread-op-body').textContent = thread.body;
+
+  const repliesContainer = document.getElementById('thread-replies-list');
+  if (repliesContainer) {
+    repliesContainer.innerHTML = '';
+    
+    if (thread.replies.length === 0) {
+      repliesContainer.innerHTML = '<div class="chat-system-message">No comments yet. Start the conversation!</div>';
+      return;
+    }
+
+    thread.replies.forEach(r => {
+      const msg = document.createElement('div');
+      msg.className = 'chat-message';
+      msg.innerHTML = `<span class="chat-user">@${r.author}:</span> <span class="chat-text" style="color:var(--color-text);">${r.text}</span>`;
+      repliesContainer.appendChild(msg);
+    });
+    repliesContainer.scrollTop = repliesContainer.scrollHeight;
+  }
 }

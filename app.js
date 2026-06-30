@@ -651,28 +651,28 @@ function updateLeaderboardSelf(newElo) {
    ========================================================================== */
 const NEWS_ARTICLES = [
   {
-    source: 'Federal Lobbying Database Report',
+    source: 'OpenSecrets.org Lobbying Database',
     date: 'June 29, 2026',
-    title: 'Top 5 Finance Firms Spent $42 Million Writing Tax Exemption Clauses in Q1',
-    excerpt: 'Lobbying filing data reveals an unprecedented surge in financial services lobbying targeting tax rewrite proposals. Industry lawyers drafted 85% of the newly proposed exemptions.'
+    title: 'US Lobbying Expenditures Reach Record $5.24 Billion in Surge of Corporate Spending',
+    excerpt: 'Federal lobbying spending broke records in 2025, marking an unprecedented 17% year-over-year increase. Tech conglomerates (Meta, Coinbase) and pharmaceutical lobbies lead advocacy spending in preparation for the 2026 elections.'
   },
   {
-    source: 'Economic Inequality Index',
+    source: 'Pew Research Center Economic Analysis',
     date: 'June 28, 2026',
-    title: 'Study: 92% of Post-Pandemic Wealth Gains Captured by Top 10% of Earners',
-    excerpt: 'New macroeconomic analysis outlines how quantitative easing policies directly capitalized stock holdings, bypassing wage earners and increasing wealth inequality to historic ratios.'
+    title: 'Racial Wealth Gaps in the United States Expand by $50,000 in Recent Cycles',
+    excerpt: 'Analysis of the Survey of Consumer Finances shows median wealth gaps between White households and Black/Hispanic counterparts continue to widen, driven primarily by systemic gaps in workplace retirement plan assets.'
   },
   {
-    source: 'Federal Election Commission filings',
+    source: 'Pew Research Center Income Studies',
     date: 'June 25, 2026',
-    title: 'Dark Money Spending Outpaces Public Campaign Contributions by 12 to 1',
-    excerpt: 'Super PAC filings show that 88% of local congressional campaign ads are funded by 501(c)(4) social welfare groups which are legally exempt from disclosing their primary financial donors.'
+    title: 'The American Middle Class Shrinks from 61% to 51% as Upper Income Tier Captures Gains',
+    excerpt: 'Long-term income data reveals structural compression of the middle class since the 1970s. The proportion of households in the upper-income bracket has outgrown lower tiers, leading to a highly top-heavy wealth curve.'
   },
   {
-    source: 'Journal of Political Capture',
+    source: 'Federal Election Commission (FEC) Filings',
     date: 'June 20, 2026',
-    title: '78% of Retired Regulatory Directors Found to Hold Consulting Roles in Regulated Sector',
-    excerpt: 'An investigation into the revolving door shows that federal officials who oversaw enforcement at the SEC and EPA transitioned to advisory positions for major fossil fuel and finance corporations.'
+    title: 'Dark Money Spending Outpaces Public Campaigns as 501(c)(4) Outlays Escalate',
+    excerpt: 'Independent expenditures from groups that hide their primary funding sources have reached new peaks. Campaign ad tracking shows corporate-backed dark money groups dominant in local legislative districts.'
   }
 ];
 

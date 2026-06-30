@@ -13,12 +13,29 @@
 </head>
 <body>
   <div class="app-container">
-    <!-- Header -->
-    <header class="main-header">
-      <div class="logo">
-        <span class="logo-accent">resolve</span>.bet
+    <header class="main-header" style="display:flex; justify-content:space-between; align-items:center; width:100%; flex-wrap:wrap; gap:1rem;">
+      <div>
+        <div class="logo" style="display:flex; align-items:center; gap:0.6rem;">
+          <!-- Stylized logo R checkmark -->
+          <svg width="34" height="34" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 2px 6px rgba(16,185,129,0.35));">
+            <!-- Left-hand green checkmark stem -->
+            <path d="M18 52 L35 70 L55 35" stroke="#10b981" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
+            <!-- Head of the R curved around and connecting to checkmark stem -->
+            <path d="M35 22 L65 22 C80 22, 80 44, 65 44 L35 44" stroke="#f1f5f9" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
+            <!-- Right diagonal leg -->
+            <path d="M52 44 L78 82" stroke="#f1f5f9" stroke-width="12" stroke-linecap="round" />
+          </svg>
+          <span style="font-family: 'Inter', sans-serif; font-weight: 800; font-size: 1.7rem; letter-spacing: -0.03em; color: #fff;">
+            resolve<span style="color: #10b981;">.bet</span>
+          </span>
+        </div>
+        <p class="tagline">Analyzing the systemic influence of wealth in politics, the spiritual isolation of greed, and the pathway to true human value.</p>
       </div>
-      <p class="tagline">Analyzing the systemic influence of wealth in politics, the spiritual isolation of greed, and the pathway to true human value.</p>
+      <div>
+        <button class="btn btn-secondary" id="btn-auth-trigger" style="padding:0.5rem 1rem; font-size:0.8rem; display:flex; align-items:center; gap:0.4rem; font-weight:bold; border-color:var(--color-blue); color:#fff; cursor:pointer; background:rgba(59,130,246,0.05);">
+          ⚡ Supabase: Guest
+        </button>
+      </div>
     </header>
 
     <!-- Navigation Tabs -->
@@ -46,6 +63,14 @@
       <button class="tab-btn" data-tab="community-forum" id="tab-community-forum">
         <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
         Community Forum
+      </button>
+      <button class="tab-btn" data-tab="live-feed" id="tab-live-feed">
+        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
+        Live Loop Feed
+      </button>
+      <button class="tab-btn" data-tab="voting-arena" id="tab-voting-arena">
+        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        Submissions Hub
       </button>
       <button class="tab-btn" data-tab="local-board" id="tab-local-board">
         <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
@@ -959,6 +984,122 @@
         </div>
       </section>
 
+      <!-- TAB: LIVE LOOP FEED (X CLONE) -->
+      <section id="live-feed" class="tab-content">
+        <h2 class="section-title text-center">Live Loop Feed</h2>
+        <p class="section-intro text-center">Share short updates, read dispatches, and upvote trending micro-arguments directly inside the community circuit.</p>
+
+        <div class="feed-layout-grid margin-top-large">
+          <!-- Left: composer & Profile -->
+          <div style="display:flex; flex-direction:column; gap:1.25rem;">
+            <div class="card" style="border-top:3px solid var(--color-blue); background:rgba(0,0,0,0.25);">
+              <h3 style="font-size:1.1rem; color:var(--color-blue); margin-bottom:0.75rem;">Create a Dispatch</h3>
+              <form id="feed-post-composer">
+                <div class="input-group" style="margin-bottom:0.75rem;">
+                  <label for="composer-handle">Handle</label>
+                  <input type="text" id="composer-handle" value="Citizen_X" required style="padding:0.4rem; background:rgba(0,0,0,0.3); border:1px solid var(--color-border); color:#fff; border-radius:4px; width:100%;">
+                </div>
+                <div class="input-group" style="margin-bottom:0.75rem;">
+                  <label for="composer-tag">Topic Hashtag</label>
+                  <select id="composer-tag" style="padding:0.4rem; background:rgba(0,0,0,0.3); border:1px solid var(--color-border); color:#fff; border-radius:4px; width:100%;">
+                    <option value="PikettyLoop">#PikettyLoop</option>
+                    <option value="BanishLobbying">#BanishLobbying</option>
+                    <option value="CoopRevolution">#CoopRevolution</option>
+                    <option value="DirectMutualCredit">#DirectMutualCredit</option>
+                  </select>
+                </div>
+                <div class="input-group" style="margin-bottom:0.75rem;">
+                  <label for="composer-text">Dispatch (Max 280 chars)</label>
+                  <textarea id="composer-text" placeholder="What's happening on the ground?" rows="4" maxlength="280" required style="padding:0.5rem; background:rgba(0,0,0,0.3); border:1px solid var(--color-border); color:#fff; border-radius:4px; font-family:inherit; font-size:0.85rem; resize:none; width:100%; box-sizing:border-box;"></textarea>
+                  <span id="composer-char-counter" style="font-size:0.75rem; color:var(--color-text-muted); text-align:right; display:block; margin-top:0.2rem;">280 characters remaining</span>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%; padding:0.5rem;">Broadcast</button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Center: Feed Stream -->
+          <div class="card" style="display:flex; flex-direction:column; gap:1rem; min-height:400px; padding:1.5rem; background:rgba(0,0,0,0.25);">
+            <h3 style="font-size:1.15rem; border-bottom:1px solid var(--color-border); padding-bottom:0.5rem; margin-bottom:0.5rem; display:flex; justify-content:space-between; align-items:center;">
+              <span>Dispatches Stream</span>
+              <span class="status-indicator connected" style="font-size:0.75rem; padding:0.1rem 0.5rem; border-radius:20px; font-weight:normal;">Live Loop</span>
+            </h3>
+            <div id="live-feed-stream" style="display:flex; flex-direction:column; gap:1rem; max-height:600px; overflow-y:auto; padding-right:0.5rem;">
+              <!-- Populated dynamically by JS -->
+            </div>
+          </div>
+
+          <!-- Right: Trends & Stats -->
+          <div style="display:flex; flex-direction:column; gap:1.25rem;">
+            <div class="card" style="border-left:3px solid var(--color-gold); background:rgba(0,0,0,0.25);">
+              <h3 style="font-size:1.1rem; color:var(--color-gold); margin-bottom:0.75rem;">Trending Circuits</h3>
+              <ul class="card-list" style="border:none; padding:0; display:flex; flex-direction:column; gap:0.5rem;">
+                <li style="display:flex; justify-content:space-between; font-size:0.8rem; border-bottom:1px solid rgba(255,255,255,0.03); padding-bottom:0.4rem;">
+                  <span style="font-weight:bold; color:#fff;">#PikettyLoop</span>
+                  <span style="color:var(--color-text-muted);">482 dispatches</span>
+                </li>
+                <li style="display:flex; justify-content:space-between; font-size:0.8rem; border-bottom:1px solid rgba(255,255,255,0.03); padding-bottom:0.4rem;">
+                  <span style="font-weight:bold; color:#fff;">#CoopRevolution</span>
+                  <span style="color:var(--color-text-muted);">390 dispatches</span>
+                </li>
+                <li style="display:flex; justify-content:space-between; font-size:0.8rem; border-bottom:1px solid rgba(255,255,255,0.03); padding-bottom:0.4rem;">
+                  <span style="font-weight:bold; color:#fff;">#BanishLobbying</span>
+                  <span style="color:var(--color-text-muted);">248 dispatches</span>
+                </li>
+                <li style="display:flex; justify-content:space-between; font-size:0.8rem;">
+                  <span style="font-weight:bold; color:#fff;">#DirectMutualCredit</span>
+                  <span style="color:var(--color-text-muted);">180 dispatches</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: SUBMISSIONS HUB / VOTING ARENA -->
+      <section id="voting-arena" class="tab-content">
+        <h2 class="section-title text-center">Submissions Hub & Community Vote</h2>
+        <p class="section-intro text-center">Decentralized approval system. Upvote proposed debate topics, developer app projects, or micro-gigs. Items reaching <strong>5 upvotes</strong> are automatically integrated.</p>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1.5rem; margin-top:2rem;" class="voting-columns-container">
+          <!-- Col 1: Proposed Debate Topics -->
+          <div class="card" style="border-top:3px solid var(--color-blue); background:rgba(0,0,0,0.25);">
+            <h3 style="color:var(--color-blue); margin-bottom:0.5rem; display:flex; justify-content:space-between; align-items:center; font-size:1.1rem;">
+              <span>Debate Topics</span>
+              <span class="status-badge" style="font-size:0.6rem; padding:0.1rem 0.3rem; background:rgba(59,130,246,0.1); color:var(--color-blue);">Pending</span>
+            </h3>
+            <p style="font-size:0.75rem; color:var(--color-text-muted); margin-bottom:1rem;">Needs 5 upvotes to appear in Debate Arena selectors.</p>
+            <div id="voting-debate-list" style="display:flex; flex-direction:column; gap:0.75rem;">
+              <!-- Dynamic pending debate topics -->
+            </div>
+          </div>
+
+          <!-- Col 2: Pending Developer Apps -->
+          <div class="card" style="border-top:3px solid var(--color-green); background:rgba(0,0,0,0.25);">
+            <h3 style="color:var(--color-green); margin-bottom:0.5rem; display:flex; justify-content:space-between; align-items:center; font-size:1.1rem;">
+              <span>Developer Apps</span>
+              <span class="status-badge" style="font-size:0.6rem; padding:0.1rem 0.3rem; background:rgba(16,185,129,0.1); color:var(--color-green);">Pending</span>
+            </h3>
+            <p style="font-size:0.75rem; color:var(--color-text-muted); margin-bottom:1rem;">Needs 5 upvotes to appear in Developer Hub Showcase.</p>
+            <div id="voting-dev-list" style="display:flex; flex-direction:column; gap:0.75rem;">
+              <!-- Dynamic pending developer applications -->
+            </div>
+          </div>
+
+          <!-- Col 3: Pending Micro-Gigs -->
+          <div class="card" style="border-top:3px solid var(--color-gold); background:rgba(0,0,0,0.25);">
+            <h3 style="color:var(--color-gold); margin-bottom:0.5rem; display:flex; justify-content:space-between; align-items:center; font-size:1.1rem;">
+              <span>Micro-Gigs & Jobs</span>
+              <span class="status-badge" style="font-size:0.6rem; padding:0.1rem 0.3rem; background:rgba(245,158,11,0.1); color:var(--color-gold);">Pending</span>
+            </h3>
+            <p style="font-size:0.75rem; color:var(--color-text-muted); margin-bottom:1rem;">Needs 5 upvotes to appear in Local Tasks Board.</p>
+            <div id="voting-gigs-list" style="display:flex; flex-direction:column; gap:0.75rem;">
+              <!-- Dynamic pending micro-gigs -->
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- TAB 7: LOCAL BOARD -->
       <section id="local-board" class="tab-content">
         <h2 class="section-title text-center">Local Board</h2>
@@ -1524,6 +1665,52 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- SUPABASE AUTH MODAL -->
+  <div id="supabase-auth-modal" class="modal-overlay hidden">
+    <div class="card modal-content" style="max-width:400px; border-top:4px solid var(--color-blue); width:90%; background:var(--color-card-bg); border-radius:12px; padding:2rem; box-shadow:0 10px 45px rgba(0,0,0,0.6); position:relative;">
+      <h3 style="color:var(--color-blue); margin-bottom:0.5rem; text-align:center; font-size:1.4rem;">Supabase Secure Gate</h3>
+      <p style="font-size:0.8rem; color:var(--color-text-muted); text-align:center; margin-bottom:1.5rem;">Access the decentralized loop via Supabase Authentication.</p>
+      
+      <!-- Tabs -->
+      <div style="display:flex; gap:0.5rem; margin-bottom:1.25rem;">
+        <button class="subtab-btn active" id="auth-tab-login" style="flex:1; padding:0.4rem; font-size:0.82rem;">Log In</button>
+        <button class="subtab-btn" id="auth-tab-signup" style="flex:1; padding:0.4rem; font-size:0.82rem;">Sign Up</button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="auth-login-form">
+        <div class="input-group" style="margin-bottom:0.8rem;">
+          <label style="font-size:0.75rem; margin-bottom:0.25rem; display:block;">Email Address</label>
+          <input type="email" id="login-email" value="citizen@resolve.bet" required style="padding:0.5rem; background:rgba(0,0,0,0.3); border:1px solid var(--color-border); color:#fff; border-radius:4px; width:100%; box-sizing:border-box;">
+        </div>
+        <div class="input-group" style="margin-bottom:1.25rem;">
+          <label style="font-size:0.75rem; margin-bottom:0.25rem; display:block;">Password</label>
+          <input type="password" id="login-pwd" value="••••••••" required style="padding:0.5rem; background:rgba(0,0,0,0.3); border:1px solid var(--color-border); color:#fff; border-radius:4px; width:100%; box-sizing:border-box;">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%; padding:0.6rem; font-weight:bold;">Connect Session</button>
+      </form>
+
+      <!-- Signup Form -->
+      <form id="auth-signup-form" class="hidden">
+        <div class="input-group" style="margin-bottom:0.8rem;">
+          <label style="font-size:0.75rem; margin-bottom:0.25rem; display:block;">Email Address</label>
+          <input type="email" id="signup-email" placeholder="you@resolve.bet" required style="padding:0.5rem; background:rgba(0,0,0,0.3); border:1px solid var(--color-border); color:#fff; border-radius:4px; width:100%; box-sizing:border-box;">
+        </div>
+        <div class="input-group" style="margin-bottom:0.8rem;">
+          <label style="font-size:0.75rem; margin-bottom:0.25rem; display:block;">Password</label>
+          <input type="password" id="signup-pwd" placeholder="Min 6 characters" required style="padding:0.5rem; background:rgba(0,0,0,0.3); border:1px solid var(--color-border); color:#fff; border-radius:4px; width:100%; box-sizing:border-box;">
+        </div>
+        <div class="input-group" style="margin-bottom:1.25rem;">
+          <label style="font-size:0.75rem; margin-bottom:0.25rem; display:block;">Display Name</label>
+          <input type="text" id="signup-name" placeholder="e.g. Citizen_Y" required style="padding:0.5rem; background:rgba(0,0,0,0.3); border:1px solid var(--color-border); color:#fff; border-radius:4px; width:100%; box-sizing:border-box;">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%; padding:0.6rem; background:var(--color-green); border-color:var(--color-green); font-weight:bold;">Register Account</button>
+      </form>
+
+      <button class="btn btn-secondary" id="btn-close-auth" style="width:100%; margin-top:0.75rem; padding:0.5rem; font-weight:bold;">Cancel</button>
     </div>
   </div>
 

@@ -36,6 +36,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // Phase 10 & 11: Gaming & Forum Initializers
   initGamingCorner();
   initForum();
+
+  // Phase 15: Supabase Auth, Live Feed, and Submissions Arena Initializers
+  initSupabaseAuth();
+  initLiveFeed();
+  initSubmissionsHub();
 });
 
 /* ==========================================================================
@@ -2626,9 +2631,9 @@ function createMatchupBox(match) {
 }
 
 /* ==========================================================================
-   17. Community Forum Engine (Categorized Thread replies &OPs)
+   17. Community Forum Engine (Categorized Thread replies & OPs)
    ========================================================================== */
-let FORUM_THREADS = [
+let DEFAULT_FORUM_THREADS = [
   {
     id: 'thread-1',
     title: 'Why the ultra-rich don\'t "give back" (and what happens when they pretend to)',
@@ -2653,6 +2658,8 @@ let FORUM_THREADS = [
     date: '2 hours ago'
   }
 ];
+
+let FORUM_THREADS = JSON.parse(localStorage.getItem('FORUM_THREADS')) || DEFAULT_FORUM_THREADS;
 
 let activeThreadId = 'thread-1';
 let forumCategoryFilter = 'all';
@@ -2700,6 +2707,7 @@ function initForum() {
     tTitle.value = '';
     tBody.value = '';
     
+    localStorage.setItem('FORUM_THREADS', JSON.stringify(FORUM_THREADS));
     renderForumThreads();
   });
 
@@ -2714,6 +2722,7 @@ function initForum() {
     });
 
     rText.value = '';
+    localStorage.setItem('FORUM_THREADS', JSON.stringify(FORUM_THREADS));
     loadThreadDetails(activeThreadId);
     renderForumThreads();
   });
@@ -2812,4 +2821,487 @@ function loadThreadDetails(id) {
     });
     repliesContainer.scrollTop = repliesContainer.scrollHeight;
   }
+}
+
+/* ==========================================================================
+   18. Supabase Auth Controller
+   ========================================================================== */
+let SUPABASE_USER = {
+  authenticated: false,
+  email: '',
+  name: 'Guest'
+};
+
+function initSupabaseAuth() {
+  const trigger = document.getElementById('btn-auth-trigger');
+  const modal = document.getElementById('supabase-auth-modal');
+  const btnClose = document.getElementById('btn-close-auth');
+  
+  const tabLogin = document.getElementById('auth-tab-login');
+  const tabSignup = document.getElementById('auth-tab-signup');
+  const loginForm = document.getElementById('auth-login-form');
+  const signupForm = document.getElementById('auth-signup-form');
+
+  if (!trigger || !modal) return;
+
+  trigger.addEventListener('click', () => {
+    modal.classList.remove('hidden');
+  });
+
+  const closeModal = () => modal.classList.add('hidden');
+  if (btnClose) btnClose.addEventListener('click', closeModal);
+
+  if (tabLogin && tabSignup && loginForm && signupForm) {
+    tabLogin.addEventListener('click', () => {
+      tabLogin.classList.add('active');
+      tabSignup.classList.remove('active');
+      loginForm.classList.remove('hidden');
+      signupForm.classList.add('hidden');
+    });
+
+    tabSignup.addEventListener('click', () => {
+      tabSignup.classList.add('active');
+      tabLogin.classList.remove('active');
+      signupForm.classList.remove('hidden');
+      loginForm.classList.add('hidden');
+    });
+  }
+
+  // Handle Login
+  loginForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = document.getElementById('login-email').value;
+    
+    SUPABASE_USER = {
+      authenticated: true,
+      email: email,
+      name: email.split('@')[0]
+    };
+
+    updateGlobalHandles();
+    trigger.textContent = `👤 @${SUPABASE_USER.name}`;
+    trigger.style.color = 'var(--color-green)';
+    trigger.style.borderColor = 'var(--color-green)';
+    alert(`Logged in successfully via Supabase! Connected as @${SUPABASE_USER.name}.`);
+    closeModal();
+  });
+
+  // Handle Signup
+  signupForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = document.getElementById('signup-email').value;
+    const name = document.getElementById('signup-name').value.trim();
+
+    SUPABASE_USER = {
+      authenticated: true,
+      email: email,
+      name: name.replace('@', '')
+    };
+
+    updateGlobalHandles();
+    trigger.textContent = `👤 @${SUPABASE_USER.name}`;
+    trigger.style.color = 'var(--color-green)';
+    trigger.style.borderColor = 'var(--color-green)';
+    alert(`Account created and authenticated via Supabase! Welcome @${SUPABASE_USER.name}.`);
+    closeModal();
+  });
+}
+
+function updateGlobalHandles() {
+  const username = SUPABASE_USER.name;
+  
+  // Update inputs across composer/reply interfaces
+  const composer = document.getElementById('composer-handle');
+  if (composer) composer.value = username;
+
+  const reply = document.getElementById('reply-author');
+  if (reply) reply.value = username;
+
+  const thread = document.getElementById('thread-author');
+  if (thread) thread.value = username;
+
+  const borrow = document.getElementById('borrow-name');
+  if (borrow) borrow.value = username;
+
+  const feedUsername = document.getElementById('post-username');
+  if (feedUsername) feedUsername.value = username;
+}
+
+/* ==========================================================================
+   19. Live Loop Feed (X / Twitter Clone)
+   ========================================================================== */
+let LIVE_FEED_POSTS = JSON.parse(localStorage.getItem('LIVE_FEED_POSTS')) || [
+  {
+    id: 1,
+    author: 'Socrates_99',
+    tag: 'PikettyLoop',
+    body: 'Capital returns (r) are systematically outgrowing active wages (g). Local mutual credit and cooperatives are the only way to build real neighborhood resilience.',
+    time: '5m ago',
+    upvotes: 42,
+    downvotes: 2
+  },
+  {
+    id: 2,
+    author: 'LobbyWatcher',
+    tag: 'BanishLobbying',
+    body: 'Campaign finance spending under Citizens United converted democratic speech into commercial auctions. We need a direct public funding amendment.',
+    time: '18m ago',
+    upvotes: 28,
+    downvotes: 1
+  },
+  {
+    id: 3,
+    author: 'DebtDisputer_99',
+    tag: 'DirectMutualCredit',
+    body: 'Every dollar bank-lent is debt-ridden. Peer mutual credit registers eliminate fractional reserve extraction and keep cash local.',
+    time: '1h ago',
+    upvotes: 19,
+    downvotes: 3
+  }
+];
+
+function initLiveFeed() {
+  const composerForm = document.getElementById('feed-post-composer');
+  const compText = document.getElementById('composer-text');
+  const charCounter = document.getElementById('composer-char-counter');
+
+  if (!composerForm) return;
+
+  if (compText && charCounter) {
+    compText.addEventListener('input', () => {
+      const remaining = 280 - compText.value.length;
+      charCounter.textContent = `${remaining} characters remaining`;
+    });
+  }
+
+  composerForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const handle = document.getElementById('composer-handle').value;
+    const tag = document.getElementById('composer-tag').value;
+    const text = compText.value;
+
+    LIVE_FEED_POSTS.unshift({
+      id: LIVE_FEED_POSTS.length + 1,
+      author: handle.replace('@', ''),
+      tag: tag,
+      body: text,
+      time: 'Just now',
+      upvotes: 1,
+      downvotes: 0
+    });
+
+    compText.value = '';
+    if (charCounter) charCounter.textContent = '280 characters remaining';
+    
+    localStorage.setItem('LIVE_FEED_POSTS', JSON.stringify(LIVE_FEED_POSTS));
+    renderLiveFeed();
+  });
+
+  window.upvoteFeedPost = (id) => {
+    const post = LIVE_FEED_POSTS.find(p => p.id === id);
+    if (post) {
+      post.upvotes++;
+      localStorage.setItem('LIVE_FEED_POSTS', JSON.stringify(LIVE_FEED_POSTS));
+      renderLiveFeed();
+    }
+  };
+
+  window.downvoteFeedPost = (id) => {
+    const post = LIVE_FEED_POSTS.find(p => p.id === id);
+    if (post) {
+      post.downvotes++;
+      localStorage.setItem('LIVE_FEED_POSTS', JSON.stringify(LIVE_FEED_POSTS));
+      renderLiveFeed();
+    }
+  };
+
+  renderLiveFeed();
+}
+
+function renderLiveFeed() {
+  const container = document.getElementById('live-feed-stream');
+  if (!container) return;
+
+  container.innerHTML = '';
+
+  LIVE_FEED_POSTS.forEach(post => {
+    const item = document.createElement('div');
+    item.className = 'card';
+    item.style.cssText = 'padding:1rem; border:1px solid var(--color-border); border-radius:8px; display:flex; flex-direction:column; gap:0.5rem; background:rgba(255,255,255,0.02);';
+    item.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; color:var(--color-text-muted);">
+        <span><strong style="color:#fff;">@${post.author}</strong> <span style="color:var(--color-blue); margin-left:0.4rem;">#${post.tag}</span></span>
+        <span>${post.time}</span>
+      </div>
+      <p style="font-size:0.85rem; line-height:1.4; color:var(--color-text); margin:0.25rem 0;">${post.body}</p>
+      <div style="display:flex; gap:1rem; font-size:0.75rem; color:var(--color-text-muted); margin-top:0.4rem;">
+        <button style="background:transparent; border:none; color:var(--color-green); cursor:pointer; font-weight:bold;" onclick="upvoteFeedPost(${post.id})">👍 ${post.upvotes}</button>
+        <button style="background:transparent; border:none; color:var(--color-red); cursor:pointer; font-weight:bold;" onclick="downvoteFeedPost(${post.id})">👎 ${post.downvotes}</button>
+      </div>
+    `;
+    container.appendChild(item);
+  });
+}
+
+/* ==========================================================================
+   20. Submissions Hub & Voting Arena (Decentralized Approvals)
+   ========================================================================== */
+let PENDING_DEV_APPS = JSON.parse(localStorage.getItem('PENDING_DEV_APPS')) || [
+  { id: 1, title: 'OpenLobby Ledger', desc: 'Saves active senate lobbying logs to decentralized Web3 chains.', url: 'https://openlobby.io', tag: 'Transparency', upvotes: 3 },
+  { id: 2, title: 'CoopExchange Hub', desc: 'P2P commodity exchange for independent worker-owned co-ops.', url: 'https://coopexchange.org', tag: 'Mutual Aid', upvotes: 4 }
+];
+
+let PENDING_GIGS = JSON.parse(localStorage.getItem('PENDING_GIGS')) || [
+  { id: 1, title: 'Draft Community Charter', category: 'Writing', bounty: 60, desc: 'Draft the mutual aid bylaws for the Echo Park community fridge coalition.', upvotes: 4 },
+  { id: 2, title: 'Build Open Source Lobby Map', category: 'Digital', bounty: 180, desc: 'Create an interactive D3.js node map linking donors to specific congressional bills.', upvotes: 2 }
+];
+
+function initSubmissionsHub() {
+  // Override suggest topic upvote from Phase 9 to also trigger approvals here
+  const originalRenderSuggested = renderSuggestedTopics;
+  renderSuggestedTopics = function() {
+    originalRenderSuggested();
+    renderVotingDebates();
+  };
+
+  window.upvoteSubmissionDebate = (idx) => {
+    const topic = SUGGESTED_TOPICS[idx];
+    if (!topic) return;
+    
+    topic.upvotes++;
+    if (topic.upvotes >= 5) {
+      topic.status = 'approved';
+      const uniqueVal = 'custom-' + idx;
+      const exists = DEFAULT_DEBATE_TOPICS[topic.genre].some(t => t.value === uniqueVal);
+      if (!exists) {
+        DEFAULT_DEBATE_TOPICS[topic.genre].push({ value: uniqueVal, text: topic.text });
+        renderDebateTopics();
+        alert(`Debate Topic approved! "${topic.text}" is now selectable in the Debate Arena.`);
+      }
+    }
+    
+    localStorage.setItem('SUGGESTED_TOPICS', JSON.stringify(SUGGESTED_TOPICS));
+    renderSuggestedTopics();
+  };
+
+  window.upvoteSubmissionDev = (id) => {
+    const app = PENDING_DEV_APPS.find(p => p.id === id);
+    if (!app) return;
+
+    app.upvotes++;
+    if (app.upvotes >= 5) {
+      DEV_PROJECTS.push({
+        id: DEV_PROJECTS.length + 1,
+        title: app.title,
+        desc: app.desc,
+        url: app.url,
+        tag: app.tag,
+        upvotes: 5
+      });
+      // Remove from pending
+      PENDING_DEV_APPS = PENDING_DEV_APPS.filter(p => p.id !== id);
+      alert(`Developer App approved! "${app.title}" has been integrated into the Developer Hub showcase.`);
+      if (window.renderDevGallery) window.renderDevGallery();
+    }
+
+    localStorage.setItem('PENDING_DEV_APPS', JSON.stringify(PENDING_DEV_APPS));
+    renderVotingDevs();
+  };
+
+  window.upvoteSubmissionGig = (id) => {
+    const gig = PENDING_GIGS.find(g => g.id === id);
+    if (!gig) return;
+
+    gig.upvotes++;
+    if (gig.upvotes >= 5) {
+      LOCAL_GIGS.unshift({
+        id: LOCAL_GIGS.length + 1,
+        title: gig.title,
+        category: gig.category,
+        bounty: gig.bounty,
+        desc: gig.desc,
+        status: 'Open',
+        worker: null
+      });
+      // Remove from pending
+      PENDING_GIGS = PENDING_GIGS.filter(g => g.id !== id);
+      alert(`Micro-Gig approved! "${gig.title}" is now open for claims on the Local Board Tasks board.`);
+      // redraw local Board gigs
+      const localBoardContainer = document.getElementById('local-gigs-list');
+      if (localBoardContainer && typeof renderGigs === 'function') renderGigs();
+    }
+
+    localStorage.setItem('PENDING_GIGS', JSON.stringify(PENDING_GIGS));
+    renderVotingGigs();
+  };
+
+  // Listen to debate submissions from Phase 9 proposed form
+  const originalProposeForm = initProposeTopicForm;
+  initProposeTopicForm = function() {
+    originalProposeForm();
+    const form = document.getElementById('propose-topic-form');
+    if (form) {
+      form.addEventListener('submit', () => {
+        // Redraw lists
+        renderVotingDebates();
+      });
+    }
+  };
+
+  // Listen to dev uploads to also insert them into pending devs instead of directly
+  const devForm = document.getElementById('dev-upload-form');
+  if (devForm) {
+    // Replace default submit behavior to send to pending instead of direct
+    devForm.addEventListener('submit', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      
+      const title = document.getElementById('dev-title').value;
+      const desc = document.getElementById('dev-desc').value;
+      const url = document.getElementById('dev-url').value;
+      const tag = document.getElementById('dev-tag').value;
+
+      PENDING_DEV_APPS.push({
+        id: PENDING_DEV_APPS.length + 1,
+        title: title,
+        desc: desc,
+        url: url,
+        tag: tag,
+        upvotes: 1
+      });
+
+      document.getElementById('dev-title').value = '';
+      document.getElementById('dev-desc').value = '';
+      document.getElementById('dev-url').value = '';
+      
+      localStorage.setItem('PENDING_DEV_APPS', JSON.stringify(PENDING_DEV_APPS));
+      renderVotingDevs();
+      alert(`Developer Application submitted! It will appear in the Submissions Hub. Upvote it to 5 to approve.`);
+    }, true);
+  }
+
+  // Listen to local board gig creations to insert into pending instead of directly
+  const localGigForm = document.getElementById('local-gig-form');
+  if (localGigForm) {
+    localGigForm.addEventListener('submit', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+
+      const title = document.getElementById('gig-title').value;
+      const bounty = parseInt(document.getElementById('gig-bounty').value) || 10;
+      const category = document.getElementById('gig-category').value;
+      const desc = document.getElementById('gig-desc').value;
+
+      PENDING_GIGS.push({
+        id: PENDING_GIGS.length + 1,
+        title: title,
+        bounty: bounty,
+        category: category,
+        desc: desc,
+        upvotes: 1
+      });
+
+      document.getElementById('gig-title').value = '';
+      document.getElementById('gig-bounty').value = '';
+      document.getElementById('gig-desc').value = '';
+
+      localStorage.setItem('PENDING_GIGS', JSON.stringify(PENDING_GIGS));
+      renderVotingGigs();
+      alert(`Micro-Gig task submitted! It will appear in the Submissions Hub. Upvote it to 5 to approve.`);
+    }, true);
+  }
+
+  renderVotingDebates();
+  renderVotingDevs();
+  renderVotingGigs();
+}
+
+function renderVotingDebates() {
+  const container = document.getElementById('voting-debate-list');
+  if (!container) return;
+  container.innerHTML = '';
+
+  const pending = SUGGESTED_TOPICS.filter(t => t.status === 'pending');
+  if (pending.length === 0) {
+    container.innerHTML = '<div class="chat-system-message">No pending debate topics.</div>';
+    return;
+  }
+
+  pending.forEach((topic, idx) => {
+    const item = document.createElement('div');
+    item.className = 'loan-card';
+    item.style.padding = '0.75rem';
+    item.innerHTML = `
+      <div class="loan-card-info" style="gap:0.15rem;">
+        <span class="reg-folder-title" style="font-size:0.85rem;">"${topic.text}"</span>
+        <span class="genre-badge genre-${topic.genre}" style="width:fit-content; font-size:0.6rem; padding:0.1rem 0.3rem;">${topic.genre}</span>
+      </div>
+      <div class="loan-card-actions">
+        <button class="upvote-btn" style="padding:0.2rem 0.5rem; font-size:0.7rem;" onclick="upvoteSubmissionDebate(${idx})">
+          ▲ Upvote (<span style="font-weight:bold;">${topic.upvotes}/5</span>)
+        </button>
+      </div>
+    `;
+    container.appendChild(item);
+  });
+}
+
+function renderVotingDevs() {
+  const container = document.getElementById('voting-dev-list');
+  if (!container) return;
+  container.innerHTML = '';
+
+  if (PENDING_DEV_APPS.length === 0) {
+    container.innerHTML = '<div class="chat-system-message">No pending developer apps.</div>';
+    return;
+  }
+
+  PENDING_DEV_APPS.forEach(app => {
+    const item = document.createElement('div');
+    item.className = 'loan-card';
+    item.style.padding = '0.75rem';
+    item.innerHTML = `
+      <div class="loan-card-info" style="gap:0.15rem;">
+        <span class="reg-folder-title" style="font-size:0.85rem;">${app.title}</span>
+        <span class="loan-details-meta" style="font-size:0.72rem; line-height:1.2; display:block;">${app.desc}</span>
+        <span class="genre-badge genre-political" style="width:fit-content; font-size:0.6rem; padding:0.1rem 0.3rem;">${app.tag}</span>
+      </div>
+      <div class="loan-card-actions">
+        <button class="upvote-btn" style="padding:0.2rem 0.5rem; font-size:0.7rem;" onclick="upvoteSubmissionDev(${app.id})">
+          ▲ Upvote (<span style="font-weight:bold;">${app.upvotes}/5</span>)
+        </button>
+      </div>
+    `;
+    container.appendChild(item);
+  });
+}
+
+function renderVotingGigs() {
+  const container = document.getElementById('voting-gigs-list');
+  if (!container) return;
+  container.innerHTML = '';
+
+  if (PENDING_GIGS.length === 0) {
+    container.innerHTML = '<div class="chat-system-message">No pending micro-gigs.</div>';
+    return;
+  }
+
+  PENDING_GIGS.forEach(gig => {
+    const item = document.createElement('div');
+    item.className = 'loan-card';
+    item.style.padding = '0.75rem';
+    item.innerHTML = `
+      <div class="loan-card-info" style="gap:0.15rem;">
+        <span class="reg-folder-title" style="font-size:0.85rem;">${gig.title} ($${gig.bounty})</span>
+        <span class="loan-details-meta" style="font-size:0.72rem; line-height:1.2; display:block;">${gig.desc}</span>
+        <span class="genre-badge genre-fun" style="width:fit-content; font-size:0.6rem; padding:0.1rem 0.3rem;">${gig.category}</span>
+      </div>
+      <div class="loan-card-actions">
+        <button class="upvote-btn" style="padding:0.2rem 0.5rem; font-size:0.7rem;" onclick="upvoteSubmissionGig(${gig.id})">
+          ▲ Upvote (<span style="font-weight:bold;">${gig.upvotes}/5</span>)
+        </button>
+      </div>
+    `;
+    container.appendChild(item);
+  });
 }

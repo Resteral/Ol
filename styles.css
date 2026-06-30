@@ -2584,3 +2584,46 @@ cite {
 .margin-top-small { margin-top: 1rem; }
 .margin-top-large { margin-top: 2rem; }
 .hidden { display: none !important; }
+
+/* Modal Overlay styling */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  backdrop-filter: blur(8px);
+  animation: fadeIn 0.2s ease forwards;
+}
+
+/* Feed layout grid */
+.feed-layout-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.8fr 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .feed-layout-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.voting-columns-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+@media (max-width: 900px) {
+  .voting-columns-container {
+    grid-template-columns: 1fr;
+  }
+}

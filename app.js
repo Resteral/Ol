@@ -21,6 +21,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Phase 6: Financial Literacy Initializer
   initFinancialLiteracy();
+
+  // Phase 7: President's Desk Initializer
+  initPresidentDesk();
+
+  // Phase 8: AI Chatbot Initializer
+  initChatbot();
 });
 
 /* ==========================================================================
@@ -262,20 +268,28 @@ function initReflectionCalculator() {
    4. Public Square Subtab Controller
    ========================================================================== */
 function initSubTabs() {
-  const subButtons = document.querySelectorAll('.subtab-btn');
-  const subContents = document.querySelectorAll('.subtab-content');
-
-  subButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const targetSubTab = btn.getAttribute('data-subtab');
-
-      subButtons.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      subContents.forEach(content => {
-        content.classList.remove('active');
-        if (content.id === `subtab-${targetSubTab}`) {
-          content.classList.add('active');
+  const subNavs = document.querySelectorAll('.square-subnav');
+  
+  subNavs.forEach(nav => {
+    const buttons = nav.querySelectorAll('.subtab-btn');
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetSubTab = btn.getAttribute('data-subtab');
+        
+        buttons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        buttons.forEach(b => {
+          const tabId = b.getAttribute('data-subtab');
+          const content = document.getElementById(`subtab-${tabId}`);
+          if (content) {
+            content.classList.remove('active');
+          }
+        });
+        
+        const activeContent = document.getElementById(`subtab-${targetSubTab}`);
+        if (activeContent) {
+          activeContent.classList.add('active');
         }
       });
     });
@@ -1464,4 +1478,322 @@ function initFinancialLiteracy() {
   // Initial runs
   calculatePlatformMonetization();
   calculateDebtTrap();
+}
+
+/* ==========================================================================
+   13. The President's Desk (Regulations Tracker)
+   ========================================================================== */
+const REGULATIONS_DATABASE = [
+  {
+    id: 'cfpb-late-fees',
+    title: 'Credit Card Late Fee Cap ($8 limit)',
+    agency: 'CFPB',
+    status: 'blocked',
+    statusText: 'Injunction / Blocked by Court',
+    agenda: 'Capping credit card late fees at $8 (down from the current average of $32), potentially saving consumers $10 billion annually.',
+    lobbying: 'Chamber of Commerce and banking associations successfully filed a federal injunction in Texas, arguing the cap harms banking liquidity.',
+    spend: '$24.2M',
+    tags: ['cfpb', 'late fee', 'bank', 'credit card', 'finance', 'court', 'injunction']
+  },
+  {
+    id: 'sec-climate',
+    title: 'Climate Emissions Disclosure (Scope 1 & 2)',
+    agency: 'SEC',
+    status: 'stayed',
+    statusText: 'Legal Stay / Under Litigation',
+    agenda: 'Requiring large public corporations to disclose their direct Scope 1 & 2 greenhouse gas emissions in annual filings.',
+    lobbying: 'Energy companies and state attorneys general filed lawsuits claiming the SEC is overstepping its financial mandate. SEC paused the rule voluntarily pending legal outcomes.',
+    spend: '$18.4M',
+    tags: ['sec', 'climate', 'emissions', 'greenhouse', 'fossil fuel', 'lawsuit', 'energy']
+  },
+  {
+    id: 'ftc-mergers',
+    title: 'HSR Merger Review Guidelines',
+    agency: 'FTC',
+    status: 'active',
+    statusText: 'Active / Reviewing Filings',
+    agenda: 'Expanding the reporting data required for corporate mergers under the Hart-Scott-Rodino Act to check anti-competitive behavior early.',
+    lobbying: 'Tech conglomerates and defense lobbies spend heavily to water down disclosure categories (such as internal employee chats/emails).',
+    spend: '$15.5M',
+    tags: ['ftc', 'merger', 'monopoly', 'acquisition', 'tech', 'antitrust']
+  },
+  {
+    id: 'omb-penalties',
+    title: 'OMB Memo M-26-026 (Penalty Freeze)',
+    agency: 'OMB',
+    status: 'active',
+    statusText: 'Enacted / Active Freeze',
+    agenda: 'Directing all federal agencies to freeze annual inflation adjustments for civil penalty caps, maintaining them at 2025 levels.',
+    lobbying: 'Triggered by standard CPI data delays during late 2025 budget standoffs. Ensures corporate penalty limits do not increase for the fiscal year.',
+    spend: '$0.0M',
+    tags: ['omb', 'penalty', 'inflation', 'freeze', 'budget', 'shutdown']
+  },
+  {
+    id: 'eo-frontier-ai',
+    title: 'Frontier AI Safety Reporting (10^26 FLOPs)',
+    agency: 'Executive Order',
+    status: 'active',
+    statusText: 'Enacted / Compliance Reporting',
+    agenda: 'Requiring developers of frontier AI models training on compute power exceeding 10^26 FLOPs to report safety test results to the federal government.',
+    lobbying: 'Tech firms lobby to limit the scope of reporting, arguing compute thresholds stifle startup innovation.',
+    spend: '$12.5M',
+    tags: ['eo', 'executive order', 'ai', 'safety', 'frontier', 'compute', 'tech']
+  },
+  {
+    id: 'fcc-neutrality',
+    title: 'Net Neutrality Title II Reclassification',
+    agency: 'FCC',
+    status: 'stayed',
+    statusText: 'Stayed by Sixth Circuit Court',
+    agenda: 'Reclassifying broadband internet access as a common carrier service under Title II of the Communications Act to prevent ISPs from throttling or blocking traffic.',
+    lobbying: 'Telecom monopolies (Comcast, Verizon, AT&T) litigated the rule, winning a temporary stay in court.',
+    spend: '$29.1M',
+    tags: ['fcc', 'net neutrality', 'internet', 'broadband', 'telecom', 'court']
+  },
+  {
+    id: 'epa-powerplants',
+    title: 'Power Plant Carbon Standards',
+    agency: 'EPA',
+    status: 'blocked',
+    statusText: 'Supreme Court Challenges',
+    agenda: 'Setting strict carbon pollution standards for coal and gas-fired power plants, forcing carbon capture or transitions.',
+    lobbying: 'Utility companies and mining associations appealed, citing compliance costs and grid instability.',
+    spend: '$22.8M',
+    tags: ['epa', 'carbon', 'power plant', 'coal', 'energy', 'climate']
+  },
+  {
+    id: 'dol-overtime',
+    title: 'Overtime Pay Salary Threshold Expansion',
+    agency: 'DOL',
+    status: 'active',
+    statusText: 'Enacted / Partially Challenged',
+    agenda: 'Expanding salary caps under which white-collar workers are guaranteed 1.5x overtime pay (increasing threshold to $58,656).',
+    lobbying: 'Retail and restaurant lobbies filed injunction attempts to delay or block salary adjustments.',
+    spend: '$9.7M',
+    tags: ['dol', 'overtime', 'salary', 'labor', 'wages', 'workers']
+  },
+  {
+    id: 'irs-wealth-audits',
+    title: 'Wealthy Tax Audit Initiative',
+    agency: 'IRS',
+    status: 'active',
+    statusText: 'Enacted / Funding Review',
+    agenda: 'Directing audits and recovery pipelines targeting individuals earning over $400,000 who haven\'t filed or underreported income.',
+    lobbying: 'Financial wealth managers and corporate groups lobby Congress to defund IRS enforcement budgets.',
+    spend: '$14.3M',
+    tags: ['irs', 'tax', 'audit', 'wealth', 'tax cuts', 'finance']
+  }
+];
+
+function initPresidentDesk() {
+  const searchInput = document.getElementById('reg-search-input');
+  const blotterContainer = document.getElementById('desk-blotter-container');
+  
+  const detailPanel = document.getElementById('reg-detail-panel');
+  const detailInitial = detailPanel ? detailPanel.querySelector('.detail-initial-state') : null;
+  const detailContent = document.getElementById('reg-detail-content');
+  
+  const detailTitle = document.getElementById('reg-detail-title');
+  const detailAgency = document.getElementById('reg-detail-agency');
+  const detailStatus = document.getElementById('reg-detail-status');
+  const detailAgenda = document.getElementById('reg-detail-agenda');
+  const detailLobbying = document.getElementById('reg-detail-lobbying');
+  const detailSpend = document.getElementById('reg-detail-spend');
+
+  if (!blotterContainer || !searchInput) return;
+
+  const renderBlotter = (filteredRules) => {
+    blotterContainer.innerHTML = '';
+    
+    if (filteredRules.length === 0) {
+      blotterContainer.innerHTML = '<div class="empty-state-local">No matching regulations found.</div>';
+      return;
+    }
+
+    filteredRules.forEach(rule => {
+      const slot = document.createElement('div');
+      slot.className = 'reg-folder-slot';
+      slot.setAttribute('data-reg-id', rule.id);
+      
+      const leftDiv = document.createElement('div');
+      leftDiv.className = 'loan-card-info';
+      
+      const titleSpan = document.createElement('span');
+      titleSpan.className = 'reg-folder-title';
+      titleSpan.textContent = rule.title;
+      
+      const agencySpan = document.createElement('span');
+      agencySpan.className = 'reg-folder-agency';
+      agencySpan.textContent = rule.agency;
+      
+      leftDiv.appendChild(titleSpan);
+      leftDiv.appendChild(agencySpan);
+      
+      const rightDiv = document.createElement('div');
+      rightDiv.className = 'loan-card-actions';
+      
+      const badgeSpan = document.createElement('span');
+      badgeSpan.className = `reg-status-badge reg-status-${rule.status}`;
+      badgeSpan.textContent = rule.statusText;
+      
+      rightDiv.appendChild(badgeSpan);
+      
+      slot.appendChild(leftDiv);
+      slot.appendChild(rightDiv);
+      
+      slot.addEventListener('click', () => {
+        document.querySelectorAll('.reg-folder-slot').forEach(s => s.classList.remove('active-folder'));
+        slot.classList.add('active-folder');
+        
+        if (detailInitial) detailInitial.classList.add('hidden');
+        if (detailContent) detailContent.classList.remove('hidden');
+        
+        if (detailTitle) detailTitle.textContent = rule.title;
+        if (detailAgency) {
+          detailAgency.textContent = rule.agency;
+          detailAgency.className = 'node-badge badge-regulatory';
+        }
+        if (detailStatus) detailStatus.textContent = rule.statusText;
+        if (detailAgenda) detailAgenda.textContent = rule.agenda;
+        if (detailLobbying) detailLobbying.textContent = rule.lobbying;
+        if (detailSpend) detailSpend.textContent = rule.spend;
+      });
+      
+      blotterContainer.appendChild(slot);
+    });
+  };
+
+  const handleSearch = () => {
+    const query = searchInput.value.toLowerCase().trim();
+    
+    if (query === '') {
+      renderBlotter(REGULATIONS_DATABASE);
+      return;
+    }
+
+    const filtered = REGULATIONS_DATABASE.filter(rule => {
+      const matchTitle = rule.title.toLowerCase().includes(query);
+      const matchAgency = rule.agency.toLowerCase().includes(query);
+      const matchTags = rule.tags.some(tag => tag.toLowerCase().includes(query));
+      return matchTitle || matchAgency || matchTags;
+    });
+
+    renderBlotter(filtered);
+  };
+
+  searchInput.addEventListener('input', handleSearch);
+  
+  // Initial draw
+  renderBlotter(REGULATIONS_DATABASE);
+}
+
+/* ==========================================================================
+   14. Lexis AI Chatbot (Navigation, Law & Feedback Assistant)
+   ========================================================================== */
+function initChatbot() {
+  const chatbotTrigger = document.getElementById('chatbot-trigger-btn');
+  const chatbotPanel = document.getElementById('chatbot-window-panel');
+  const chatbotClose = document.getElementById('chatbot-close-btn');
+  
+  const chatbotInput = document.getElementById('chatbot-input');
+  const chatbotSend = document.getElementById('chatbot-send-btn');
+  const chatbotLog = document.getElementById('chatbot-log');
+  
+  const suggestionChips = document.querySelectorAll('.suggestion-chip');
+
+  if (!chatbotTrigger || !chatbotPanel || !chatbotClose || !chatbotInput || !chatbotSend || !chatbotLog) return;
+
+  // Toggle Panel open/closed
+  chatbotTrigger.addEventListener('click', () => {
+    chatbotPanel.classList.toggle('hidden');
+  });
+
+  chatbotClose.addEventListener('click', () => {
+    chatbotPanel.classList.add('hidden');
+  });
+
+  const appendMessage = (text, sender) => {
+    const bubble = document.createElement('div');
+    bubble.className = `chat-bubble ${sender}-bubble`;
+    bubble.innerHTML = text;
+    chatbotLog.appendChild(bubble);
+    chatbotLog.scrollTop = chatbotLog.scrollHeight;
+  };
+
+  const getAIResponse = (userText) => {
+    const text = userText.toLowerCase();
+
+    // Check for Feedback collection intent
+    if (text.includes('feedback') || text.includes('suggest') || text.includes('add a') || text.includes('recommend') || text.includes('improve')) {
+      return `Thank you for sharing your feedback on <strong>resolve.bet</strong>! I have recorded your suggestion: <em>"${userText}"</em>. We review all community feature requests weekly to expand the tools available on this network.`;
+    }
+
+    // Check for credit questions
+    if (text.includes('credit') || text.includes('fico') || text.includes('utilization') || text.includes('rebuild') || text.includes('debt')) {
+      return `To fix or rebuild your credit score, open the <strong>Financial Literacy</strong> tab and review the FICO breakdowns. Keep your utilization below 10%, automate payments, and dispute errors. You can also simulate interest rates in our <strong>Credit Card Debt Trap Simulator</strong> at the bottom of that page!`;
+    }
+
+    // Check for Regulatory capture questions
+    if (text.includes('capture') || text.includes('citizens united') || text.includes('lobbying') || text.includes('dark money') || text.includes('revolving door')) {
+      return `Regulatory Capture happens when federal agencies (like the SEC, FTC, FCC) get staffed or pressured by the corporations they regulate. Check out the <strong>Mechanics of Control</strong> tab and select <strong>The President's Desk</strong> to search active filings and see how lobbying money halts rules.`;
+    }
+
+    // Check for Specific agency items on the President's Desk
+    if (text.includes('cfpb') || text.includes('late fee') || text.includes('sec') || text.includes('emissions') || text.includes('ftc') || text.includes('merger') || text.includes('omb') || text.includes('ai safety') || text.includes('net neutrality')) {
+      return `That regulation is currently under adjustment! If you go to the <strong>Mechanics of Control</strong> tab, select <strong>The President's Desk</strong>, and search for that agency or keyword, you can click the folder to see the exact rule details and target lobbying spend.`;
+    }
+
+    // Navigation maneuvering guides
+    if (text.includes('navigate') || text.includes('tab') || text.includes('where is') || text.includes('how do i') || text.includes('find')) {
+      return `Here is a map of <strong>resolve.bet</strong>:
+      <ul>
+        <li><strong>Systemic Loop:</strong> View Piketty's Formula and click nodes to see how money flows.</li>
+        <li><strong>Mechanics of Control:</strong> Explore campaign finance, lobbying, revolving doors, and track active rules on <strong>The President's Desk</strong>.</li>
+        <li><strong>Public Square:</strong> Compete in the Debate Arena, view Unfiltered News, and share social arguments.</li>
+        <li><strong>Developer Hub:</strong> Upload or view community-created transparency tools.</li>
+        <li><strong>Local Board:</strong> Locate cooperative shops and mutual aid events near you.</li>
+        <li><strong>P2P Lending:</strong> Request loans directly from other citizens at interest-free terms.</li>
+        <li><strong>Financial Literacy:</strong> Learn how money works and simulate credit card debt interest.</li>
+      </ul>`;
+    }
+
+    // Default Fallback
+    return `I can help you navigate <strong>resolve.bet</strong>, answer lawyer/regulation questions (like Citizens United or Regulatory Capture), or log your feedback. What would you like to know?`;
+  };
+
+  const handleSend = () => {
+    const text = chatbotInput.value.trim();
+    if (!text) return;
+
+    appendMessage(text, 'user');
+    chatbotInput.value = '';
+
+    // Simulate AI response delay
+    setTimeout(() => {
+      const response = getAIResponse(text);
+      appendMessage(response, 'bot');
+    }, 450);
+  };
+
+  chatbotSend.addEventListener('click', handleSend);
+  
+  chatbotInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      handleSend();
+    }
+  });
+
+  // Suggestion Chips handler
+  suggestionChips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      const msg = chip.getAttribute('data-msg');
+      if (msg) {
+        appendMessage(msg, 'user');
+        setTimeout(() => {
+          const response = getAIResponse(msg);
+          appendMessage(response, 'bot');
+        }, 400);
+      }
+    });
+  });
 }

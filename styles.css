@@ -1,4 +1,4 @@
-/* Premium CSS Design System - The Capital Loop */
+/* Premium CSS Design System - resolve.bet */
 
 :root {
   /* Colors */
@@ -61,7 +61,7 @@ body {
 .logo {
   font-size: 2.2rem;
   font-weight: 800;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.12em;
   color: var(--color-text);
   margin-bottom: 0.5rem;
   text-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
@@ -1590,6 +1590,314 @@ cite {
   border: 1px solid var(--color-border);
   border-radius: 8px;
   padding: 1rem;
+}
+
+/* ==========================================================================
+   THE PRESIDENT'S DESK (REGULATIONS TRACKER)
+   ========================================================================== */
+.desk-blotter {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.reg-folder-slot {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--color-border);
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.reg-folder-slot:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.02);
+  transform: translateX(4px);
+}
+
+.reg-folder-slot.active-folder {
+  border-color: var(--color-blue);
+  background: rgba(59, 130, 246, 0.08);
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.1);
+}
+
+.reg-folder-title {
+  font-weight: bold;
+  font-size: 0.95rem;
+  color: #fff;
+}
+
+.reg-folder-agency {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+}
+
+.reg-status-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.reg-status-active { background: rgba(16, 185, 129, 0.15); color: var(--color-green); }
+.reg-status-stayed { background: rgba(245, 158, 11, 0.15); color: var(--color-gold); }
+.reg-status-blocked { background: rgba(239, 68, 68, 0.15); color: var(--color-red); }
+
+#reg-search-input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--color-border);
+  color: #fff;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-family: var(--font-sans);
+  outline: none;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+#reg-search-input:focus {
+  border-color: var(--color-blue);
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.15);
+}
+
+/* ==========================================================================
+   FLOATING CHATBOT WIDGET
+   ========================================================================== */
+.chatbot-widget {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  z-index: 9999;
+  font-family: var(--font-sans);
+}
+
+.chatbot-trigger {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--color-green);
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+}
+
+.chatbot-trigger:hover {
+  transform: scale(1.08) translateY(-2px);
+  background: #0ea5e9;
+  box-shadow: 0 6px 24px rgba(14, 165, 233, 0.4);
+}
+
+.chat-icon-svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* Chat Window */
+.chatbot-window {
+  position: absolute;
+  bottom: 75px;
+  right: 0;
+  width: 380px;
+  height: 520px;
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.chatbot-header {
+  background: rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid var(--color-border);
+  padding: 0.9rem 1.2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bot-info {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.bot-avatar {
+  font-size: 1.4rem;
+}
+
+.bot-meta-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.bot-name {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #fff;
+}
+
+.bot-status {
+  font-size: 0.72rem;
+  color: var(--color-green);
+  font-weight: 500;
+}
+
+.chat-close-btn {
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: 1.6rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  line-height: 1;
+}
+
+.chat-close-btn:hover {
+  color: #fff;
+}
+
+/* Chat Log Thread */
+.chatbot-body {
+  flex: 1;
+  padding: 1.2rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.chat-bubble {
+  max-width: 82%;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  word-wrap: break-word;
+  animation: chatSlip 0.25s ease-out;
+}
+
+.bot-bubble {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  align-self: flex-start;
+  border-top-left-radius: 2px;
+}
+
+.user-bubble {
+  background: var(--color-blue);
+  color: #fff;
+  align-self: flex-end;
+  border-top-right-radius: 2px;
+}
+
+/* Suggestion Chips */
+.chat-suggestions {
+  padding: 0.5rem 1rem;
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+  background: rgba(0,0,0,0.15);
+}
+
+.suggestion-chip {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  padding: 0.3rem 0.7rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.suggestion-chip:hover {
+  color: #fff;
+  border-color: rgba(255,255,255,0.2);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Footer Inputs */
+.chatbot-footer {
+  padding: 0.8rem 1rem;
+  display: flex;
+  gap: 0.5rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-top: 1px solid var(--color-border);
+}
+
+.chatbot-footer input {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--color-border);
+  color: #fff;
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  outline: none;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+}
+
+.chatbot-footer input:focus {
+  border-color: var(--color-blue);
+}
+
+.chat-send-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--color-blue);
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.chat-send-btn:hover {
+  background: #2563eb;
+  transform: scale(1.03);
+}
+
+.chat-send-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+@media (max-width: 480px) {
+  .chatbot-window {
+    width: calc(100vw - 40px);
+    height: 480px;
+    right: -10px;
+  }
 }
 
 /* ==========================================================================

@@ -647,54 +647,118 @@ function updateLeaderboardSelf(newElo) {
 }
 
 /* ==========================================================================
-   8. Unfiltered News Feed Hub
+   8. Unfiltered News Feed Hub (Filterable News)
    ========================================================================== */
-const NEWS_ARTICLES = [
+let NEWS_ARTICLES = [
   {
+    category: 'latest',
     source: 'OpenSecrets.org Lobbying Database',
     date: 'June 29, 2026',
     title: 'US Lobbying Expenditures Reach Record $5.24 Billion in Surge of Corporate Spending',
     excerpt: 'Federal lobbying spending broke records in 2025, marking an unprecedented 17% year-over-year increase. Tech conglomerates (Meta, Coinbase) and pharmaceutical lobbies lead advocacy spending in preparation for the 2026 elections.'
   },
   {
-    source: 'Pew Research Center Economic Analysis',
-    date: 'June 28, 2026',
-    title: 'Racial Wealth Gaps in the United States Expand by $50,000 in Recent Cycles',
-    excerpt: 'Analysis of the Survey of Consumer Finances shows median wealth gaps between White households and Black/Hispanic counterparts continue to widen, driven primarily by systemic gaps in workplace retirement plan assets.'
-  },
-  {
-    source: 'Pew Research Center Income Studies',
-    date: 'June 25, 2026',
-    title: 'The American Middle Class Shrinks from 61% to 51% as Upper Income Tier Captures Gains',
-    excerpt: 'Long-term income data reveals structural compression of the middle class since the 1970s. The proportion of households in the upper-income bracket has outgrown lower tiers, leading to a highly top-heavy wealth curve.'
-  },
-  {
+    category: 'latest',
     source: 'Federal Election Commission (FEC) Filings',
     date: 'June 20, 2026',
     title: 'Dark Money Spending Outpaces Public Campaigns as 501(c)(4) Outlays Escalate',
     excerpt: 'Independent expenditures from groups that hide their primary funding sources have reached new peaks. Campaign ad tracking shows corporate-backed dark money groups dominant in local legislative districts.'
+  },
+  {
+    category: 'latest',
+    source: 'Securities and Exchange Commission Records',
+    date: 'June 18, 2026',
+    title: 'SEC Capture: Former Regulatory Chief Appointed to Lead Investment Bank Advisory',
+    excerpt: 'Criticism rises as another key financial regulator transitions directly to a high-paying executive advisory role on Wall Street, exemplifying the revolving door loop.'
+  },
+  {
+    category: 'global',
+    source: 'World Inequality Report 2026',
+    date: 'June 27, 2026',
+    title: 'Global Wealth Concentration Hits Historic Highs: Top 10% Owns 75% of Total Personal Assets',
+    excerpt: 'Transnational wealth auditing reports that the bottom 50% of the global population holds only 2% of personal net worth, while billionaire assets grew by 81% since 2020.'
+  },
+  {
+    category: 'global',
+    source: 'Oxfam International Report',
+    date: 'June 25, 2026',
+    title: 'The 12 Richest Billionaires Hold More Wealth Than Entire Bottom Half of Humanity Combined',
+    excerpt: 'Oxfam\'s latest economic inequality report highlights that 12 individuals own more combined assets than the bottom 3.9 billion people, driving concerns over top-end tax tax loopholes.'
+  },
+  {
+    category: 'global',
+    source: 'Tax Justice Network Audit',
+    date: 'June 22, 2026',
+    title: 'Transnational Corporations Funnel $480 Billion Annually into Offshore Haven Networks',
+    excerpt: 'Global tax avoidance tracking indicates multi-nationals continue to exploit shifting jurisdictions, bypassing national corporate tax codes to protect profits.'
+  },
+  {
+    category: 'local',
+    source: 'System Dispatch',
+    date: 'June 30, 2026',
+    title: 'Unlock Local Dispatches',
+    excerpt: 'Bypass isolation. Use the Geolocation or ZIP lookup controls on the Local Board tab to sync your neighborhood cooperative news feed.'
   }
 ];
 
 function initNewsHub() {
   const newsContainer = document.getElementById('news-container');
+  const filterBtns = document.querySelectorAll('.news-filter-btn');
   if (!newsContainer) return;
 
-  newsContainer.innerHTML = '';
-  NEWS_ARTICLES.forEach(art => {
-    const card = document.createElement('div');
-    card.className = 'card news-card';
-    card.innerHTML = `
-      <span class="news-source">${art.source}</span>
-      <h3>${art.title}</h3>
-      <p class="news-excerpt">${art.excerpt}</p>
-      <div class="news-meta">
-        <span>Unfiltered News Dispatch</span>
-        <span>${art.date}</span>
-      </div>
-    `;
-    newsContainer.appendChild(card);
+  const renderNews = (filter) => {
+    newsContainer.innerHTML = '';
+    
+    const filtered = NEWS_ARTICLES.filter(art => {
+      if (filter === 'all') return true;
+      return art.category === filter;
+    });
+
+    if (filtered.length === 0) {
+      newsContainer.innerHTML = `
+        <div class="empty-state-local" style="grid-column: 1 / -1; min-height: 150px;">
+          No local dispatches found. Use the Geolocation or ZIP lookup controls on the Local Board tab to sync your neighborhood feed.
+        </div>`;
+      return;
+    }
+
+    filtered.forEach(art => {
+      const card = document.createElement('div');
+      card.className = 'card news-card';
+      card.innerHTML = `
+        <span class="news-source">${art.source}</span>
+        <h3>${art.title}</h3>
+        <p class="news-excerpt">${art.excerpt}</p>
+        <div class="news-meta">
+          <span>Unfiltered News Dispatch</span>
+          <span>${art.date}</span>
+        </div>
+      `;
+      newsContainer.appendChild(card);
+    });
+  };
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.getAttribute('data-filter');
+      renderNews(filter);
+    });
   });
+
+  // Initial render
+  renderNews('all');
+
+  // Expose filter updates globally
+  window.updateNewsFeedCategory = (filter) => {
+    const activeBtn = document.querySelector(`.news-filter-btn[data-filter="${filter}"]`);
+    if (activeBtn) {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      activeBtn.classList.add('active');
+    }
+    renderNews(filter);
+  };
 }
 
 /* ==========================================================================
@@ -817,6 +881,10 @@ const LOCALDATA_BY_REGION = {
     events: [
       { month: 'Jul', day: '12', title: 'LA Tenants Union Assembly', time: '6:30 PM', loc: 'Silverlake Community Hall', desc: 'Organizing tenant protection seminars and discussing local rent control proposals.', action: 'Join Meeting' },
       { month: 'Jul', day: '18', title: 'Echo Park Mutual Aid Food Drive', time: '9:00 AM', loc: 'Echo Park Methodist', desc: 'Volunteers needed to package surplus food deliveries for sidelined families.', action: 'Volunteer' }
+    ],
+    localNews: [
+      { category: 'local', source: 'SoCal Cooperative Coalition', date: 'June 28, 2026', title: 'LA Food Co-op Expands Direct-From-Farmer Network to Bypass Corporate Logistics', excerpt: 'By sourcing directly from regional agricultural cooperatives, LA Co-op bypassed conglomerate logistics, saving members 15% and directly funding local farms.' },
+      { category: 'local', source: 'LA Municipal Audit Office', date: 'June 24, 2026', title: 'Lobbying Disclosures Reveal Real Estate PAC Funding of Local Housing Officers', excerpt: 'Disclosures show corporate real estate developers funded campaign mailers for city housing officers, raising conflict of interest warnings.' }
     ]
   },
   newyork: {
@@ -830,6 +898,10 @@ const LOCALDATA_BY_REGION = {
     events: [
       { month: 'Jul', day: '15', title: 'Rethinking Capital Loop Forum', time: '7:00 PM', loc: 'The Commons Brooklyn', desc: 'A town-hall discussion on Citizens United and public funding amendments.', action: 'RSVP' },
       { month: 'Jul', day: '22', title: 'Astoria Community Garden Soil Work', time: '10:00 AM', loc: 'Astoria Green Lot', desc: 'Bring gloves. Planting summer vegetables and repairing irrigation pipes.', action: 'Volunteer' }
+    ],
+    localNews: [
+      { category: 'local', source: 'NYC Commons Gazette', date: 'June 27, 2026', title: 'Brooklyn Community Fridge Network Deploys 3 New Sites to Fight Wage Stagnation', excerpt: 'Organized entirely by volunteers, the new fridge locations provide free organic produce and food, bypassing retail price hikes.' },
+      { category: 'local', source: 'New York City Lobby Registry', date: 'June 23, 2026', title: 'Tech Giants Spend $4.2 Million Lobbying City Council for Municipal Data Contracts', excerpt: 'Filings show lobbying outlays directed at the municipal technology committee, raising debate over open-source public alternatives.' }
     ]
   },
   general: {
@@ -841,6 +913,10 @@ const LOCALDATA_BY_REGION = {
     ],
     events: [
       { month: 'Aug', day: '05', title: 'National Virtual Debate Matchup', time: '4:00 PM EST', loc: 'Decentralized Arena', desc: 'Connecting debaters from all states to discuss campaign lobbying caps.', action: 'Register' }
+    ],
+    localNews: [
+      { category: 'local', source: 'Cooperative Alliance USA', date: 'June 26, 2026', title: 'National Cooperative Registrations Surge 22% in Consumer Retail', excerpt: 'A nationwide study shows consumer co-ops are growing at record rates as citizens seek economic models that return wealth to the community.' },
+      { category: 'local', source: 'Mutual Aid USA Directory', date: 'June 21, 2026', title: 'National Registry Maps 42 New Free Clinics and Mutual Aid Gardens', excerpt: 'The registry connects under-served communities with free medical, legal, and nutritional resources organized entirely by volunteers.' }
     ]
   }
 };
@@ -863,6 +939,14 @@ function initLocalBoard() {
     statusBadge.textContent = data.name;
     statusBadge.className = 'status-badge status-active node-badge';
     coordsLabel.textContent = data.coords;
+
+    // Update Local News array in NEWS_ARTICLES
+    const localArticles = data.localNews || [];
+    NEWS_ARTICLES = NEWS_ARTICLES.filter(art => art.category !== 'local');
+    NEWS_ARTICLES.push(...localArticles);
+    if (window.updateNewsFeedCategory) {
+      window.updateNewsFeedCategory('local');
+    }
 
     // Render Deals
     dealsList.innerHTML = '';

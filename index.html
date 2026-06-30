@@ -170,6 +170,35 @@
             <div class="diagram-help">
               <span class="help-dot"></span> Hover or click on nodes to inspect connection paths. Glow animations represent active capital routes.
             </div>
+
+            <!-- Phase 4: Macroeconomic Inequality Loop Details -->
+            <div class="inequality-breakdown card margin-top-large">
+              <h3 class="section-title text-gold">The Macroeconomic Loop: Piketty's Law</h3>
+              <p class="section-intro">Behind political influence lies structural economics. Capital concentration is not accidental; it is driven by mathematical loops that expand wealth gaps automatically when left unregulated.</p>
+              
+              <div class="stats-grid">
+                <div class="stat-box">
+                  <span class="stat-number">r &gt; g</span>
+                  <span class="stat-label">Capital Inequality Formula</span>
+                  <p class="stat-desc">When the rate of return on capital/investments (r) outpaces overall economic growth (g), inherited and hoarded wealth multiplies faster than active wages earned by labor.</p>
+                </div>
+                <div class="stat-box">
+                  <span class="stat-number">75%</span>
+                  <span class="stat-label">Global Wealth Concentration</span>
+                  <p class="stat-desc">According to the World Inequality Report 2026, the global top 10% owns 75% of all personal wealth, while the bottom 50% of humanity owns only 2%.</p>
+                </div>
+                <div class="stat-box">
+                  <span class="stat-number">12 vs 50%</span>
+                  <span class="stat-label">The Billionaire Paradox</span>
+                  <p class="stat-desc">Oxfam's 2026 report shows the 12 richest billionaires hold more wealth than the entire bottom half of humanity (3.9 billion people) combined.</p>
+                </div>
+              </div>
+
+              <div class="loop-explanation margin-top-small">
+                <h4>How the Loop Reinforces Itself</h4>
+                <p>Accumulated wealth is invested into the political process through campaign contributions and lobbying. This investment secures legislation (tax cuts, subsidies, and deregulation) that increases the rate of return on assets (<strong>r</strong>) while keeping wage growth (<strong>g</strong>) stagnant. The resulting surplus capital feeds back into the loop, expanding the donor class's command over democratic systems.</p>
+              </div>
+            </div>
           </div>
 
           <!-- Dynamic Detail Panel Column -->
@@ -406,10 +435,17 @@
             </div>
           </div>
 
-          <!-- SUBTAB 4: UNFILTERED NEWS -->
+          <!-- SUBTAB 4: UNFILTERED NEWS (FILTERABLE NEWS SYSTEM) -->
           <div id="subtab-news" class="subtab-content">
-            <div class="news-grid" id="news-container">
-              <!-- News cards loaded dynamically -->
+            <div class="news-filter-bar">
+              <button class="news-filter-btn active" data-filter="all">All News</button>
+              <button class="news-filter-btn" data-filter="latest">Latest News</button>
+              <button class="news-filter-btn" data-filter="global">Global News</button>
+              <button class="news-filter-btn" data-filter="local">Local News</button>
+            </div>
+            
+            <div class="news-grid margin-top-large" id="news-container">
+              <!-- News cards loaded dynamically via JS -->
             </div>
           </div>
 

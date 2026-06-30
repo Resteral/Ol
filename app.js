@@ -43,6 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initSubmissionsHub();
   initBillionaireLoopholeSimulator();
   initPredictionMarkets();
+  initForumLobbyChat();
 });
 
 /* ==========================================================================
@@ -2646,7 +2647,8 @@ let DEFAULT_FORUM_THREADS = [
       { author: 'Citizen_X', text: 'This is the most critical post here. Philanthropic foundations are just tax shields that preserve dynastic control.' },
       { author: 'LobbyWatcher', text: 'Exactly. If they really wanted to give back, they would stop lobbying for corporate tax breaks.' }
     ],
-    date: '1 hour ago'
+    date: '1 hour ago',
+    upvotes: 48
   },
   {
     id: 'thread-2',
@@ -2657,7 +2659,8 @@ let DEFAULT_FORUM_THREADS = [
     replies: [
       { author: 'Citizen_X', text: 'Agree. The utilization ratio is particularly ridiculous. If I use my own money, why does it drop my score?' }
     ],
-    date: '2 hours ago'
+    date: '2 hours ago',
+    upvotes: 24
   }
 ];
 
@@ -2695,22 +2698,29 @@ function initForum() {
   threadForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const id = 'thread-' + (FORUM_THREADS.length + 1);
+    const author = tAuthor.value;
     
     FORUM_THREADS.unshift({
       id: id,
       title: tTitle.value,
       category: tCategory.value,
-      author: tAuthor.value,
+      author: author,
       body: tBody.value,
       replies: [],
-      date: 'Just now'
+      date: 'Just now',
+      upvotes: 1
     });
 
     tTitle.value = '';
     tBody.value = '';
     
+    // Reward reputation (+15 Rep!)
+    rewardUserReputation(author, 15);
+
     localStorage.setItem('FORUM_THREADS', JSON.stringify(FORUM_THREADS));
     renderForumThreads();
+    const leaderboardList = document.getElementById('reputation-leaderboard-list');
+    if (leaderboardList && typeof renderLeaderboard === 'function') renderLeaderboard();
   });
 
   replyForm.addEventListener('submit', (e) => {
@@ -2718,15 +2728,22 @@ function initForum() {
     const thread = FORUM_THREADS.find(t => t.id === activeThreadId);
     if (!thread) return;
 
+    const author = rAuthor.value;
     thread.replies.push({
-      author: rAuthor.value,
+      author: author,
       text: rText.value
     });
 
     rText.value = '';
+    
+    // Reward reputation (+10 Rep!)
+    rewardUserReputation(author, 10);
+
     localStorage.setItem('FORUM_THREADS', JSON.stringify(FORUM_THREADS));
     loadThreadDetails(activeThreadId);
     renderForumThreads();
+    const leaderboardList = document.getElementById('reputation-leaderboard-list');
+    if (leaderboardList && typeof renderLeaderboard === 'function') renderLeaderboard();
   });
 
   if (btnClose) {
@@ -2750,17 +2767,37 @@ function renderForumThreads() {
     return t.category === forumCategoryFilter;
   });
 
+  // Sort threads by upvotes descending
+  filtered.sort((a, b) => (b.upvotes || 0) - (a.upvotes || 0));
+
   filtered.forEach(t => {
     const row = document.createElement('div');
     row.className = 'thread-row-item';
+    row.style.display = 'flex';
+    row.style.alignItems = 'center';
     
     row.addEventListener('click', () => {
       activeThreadId = t.id;
       loadThreadDetails(t.id);
     });
 
+    // Left upvote controller
+    const upvoteBtn = document.createElement('button');
+    upvoteBtn.className = 'upvote-btn';
+    upvoteBtn.style.cssText = 'padding: 0.2rem 0.5rem; margin-right: 0.75rem; font-size: 0.75rem;';
+    upvoteBtn.innerHTML = `▲ <span class="thread-up-count">${t.upvotes || 0}</span>`;
+    upvoteBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      t.upvotes = (t.upvotes || 0) + 1;
+      upvoteBtn.querySelector('.thread-up-count').textContent = t.upvotes;
+      rewardUserReputation(t.author, 15);
+      localStorage.setItem('FORUM_THREADS', JSON.stringify(FORUM_THREADS));
+      renderForumThreads();
+    });
+
     const info = document.createElement('div');
     info.className = 'thread-row-info';
+    info.style.flex = '1';
 
     const title = document.createElement('span');
     title.className = 'thread-row-title';
@@ -2786,6 +2823,7 @@ function renderForumThreads() {
 
     replies.appendChild(count);
 
+    row.appendChild(upvoteBtn);
     row.appendChild(info);
     row.appendChild(replies);
     container.appendChild(row);
@@ -3681,4 +3719,129 @@ window.upvoteSubmissionMarket = (id) => {
 
   localStorage.setItem('PENDING_MARKETS', JSON.stringify(PENDING_MARKETS));
   renderVotingMarkets();
+};
+
+/* ==========================================================================
+   23. Citizens Reputation Ledger & Live Chat Rooms
+   ========================================================================== */
+let CITIZEN_REPUTATION = JSON.parse(localStorage.getItem('CITIZEN_REPUTATION')) || [
+  { name: 'Socrates_99', rep: 485, tag: 'Elder' },
+  { name: 'DebtDisputer_99', rep: 310, tag: 'Activist' },
+  { name: 'LobbyWatcher', rep: 245, tag: 'Observer' },
+  { name: 'VoxPopuli_33', rep: 180, tag: 'Speaker' },
+  { name: 'Citizen_X', rep: 120, tag: 'Contributor' }
+];
+
+let LOBBY_CHAT_MESSAGES = JSON.parse(localStorage.getItem('LOBBY_CHAT_MESSAGES')) || [
+  { sender: 'Socrates_99', text: 'Welcome to the resolve.bet lobby! Let’s coordinate on campaign funding caps.', time: '10m ago' },
+  { sender: 'VoxPopuli_33', text: 'I just upvoted the D3.js Lobby Map app in the submissions hub, it looks awesome.', time: '5m ago' }
+];
+
+function initForumLobbyChat() {
+  const logContainer = document.getElementById('lobby-chat-log');
+  const chatForm = document.getElementById('lobby-chat-form');
+  const chatInput = document.getElementById('lobby-chat-input');
+  const leaderboardList = document.getElementById('reputation-leaderboard-list');
+
+  if (!logContainer || !chatForm || !chatInput || !leaderboardList) return;
+
+  const renderLeaderboard = () => {
+    leaderboardList.innerHTML = '';
+    CITIZEN_REPUTATION.sort((a, b) => b.rep - a.rep);
+    CITIZEN_REPUTATION.slice(0, 5).forEach((citizen, idx) => {
+      const row = document.createElement('div');
+      row.style.cssText = 'display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.03); padding-bottom:0.3rem;';
+      
+      let medal = '👤';
+      if (idx === 0) medal = '🥇';
+      if (idx === 1) medal = '🥈';
+      if (idx === 2) medal = '🥉';
+
+      row.innerHTML = `
+        <span>${medal} <strong>@${citizen.name}</strong> <span class="genre-badge genre-fun" style="font-size:0.55rem; padding:0.05rem 0.2rem; margin:0;">${citizen.tag}</span></span>
+        <span style="font-weight:bold; color:var(--color-gold);">${citizen.rep} Rep</span>
+      `;
+      leaderboardList.appendChild(row);
+    });
+  };
+
+  const renderChat = () => {
+    logContainer.innerHTML = '';
+    LOBBY_CHAT_MESSAGES.forEach(msg => {
+      const row = document.createElement('div');
+      row.style.marginBottom = '0.4rem';
+      row.innerHTML = `<strong style="color:var(--color-blue); font-size:0.75rem;">@${msg.sender}:</strong> <span style="color:#e2e8f0;">${msg.text}</span>`;
+      logContainer.appendChild(row);
+    });
+    logContainer.scrollTop = logContainer.scrollHeight;
+  };
+
+  chatForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const text = chatInput.value.trim();
+    if (!text) return;
+
+    const sender = SUPABASE_USER.authenticated ? SUPABASE_USER.name : 'Guest';
+    LOBBY_CHAT_MESSAGES.push({
+      sender: sender,
+      text: text,
+      time: 'Just now'
+    });
+
+    chatInput.value = '';
+    rewardUserReputation(sender, 10);
+    localStorage.setItem('LOBBY_CHAT_MESSAGES', JSON.stringify(LOBBY_CHAT_MESSAGES));
+    renderChat();
+    renderLeaderboard();
+  });
+
+  const simulatedQuotes = [
+    { sender: 'VoxPopuli_33', text: 'I just staked $200 on the Kroger merger YES contract inside prediction markets!' },
+    { sender: 'Socrates_99', text: 'Excellent choice. If the merger goes through, corporate retail lobby wins, but prediction markets hedge citizen risks.' },
+    { sender: 'LobbyWatcher', text: 'CFPB late fee caps are currently blocked by a judge in Texas. Check out the President\'s desk trackers.' },
+    { sender: 'DebtDisputer_99', text: 'The CC debt simulator taught me how banks make 22% APR off of minimal payments. Absolute eye-opener.' },
+    { sender: 'VoxPopuli_33', text: 'Has anyone claimed the open co-op fridge gig on the local board?' },
+    { sender: 'Citizen_X', text: 'I just claimed it! Will publish the community charter drafts by tomorrow.' }
+  ];
+
+  const triggerSimulatedChat = () => {
+    const quote = simulatedQuotes[Math.floor(Math.random() * simulatedQuotes.length)];
+    LOBBY_CHAT_MESSAGES.push({
+      sender: quote.sender,
+      text: quote.text,
+      time: 'Just now'
+    });
+    
+    rewardUserReputation(quote.sender, 5);
+
+    if (LOBBY_CHAT_MESSAGES.length > 15) {
+      LOBBY_CHAT_MESSAGES.shift();
+    }
+
+    localStorage.setItem('LOBBY_CHAT_MESSAGES', JSON.stringify(LOBBY_CHAT_MESSAGES));
+    renderChat();
+    renderLeaderboard();
+  };
+
+  setInterval(triggerSimulatedChat, 18000);
+
+  window.renderLeaderboard = renderLeaderboard;
+
+  renderLeaderboard();
+  renderChat();
+}
+
+window.rewardUserReputation = (username, amount) => {
+  if (username === 'Guest') return;
+  let citizen = CITIZEN_REPUTATION.find(c => c.name.toLowerCase() === username.toLowerCase());
+  if (citizen) {
+    citizen.rep += amount;
+  } else {
+    CITIZEN_REPUTATION.push({
+      name: username,
+      rep: amount,
+      tag: 'Citizen'
+    });
+  }
+  localStorage.setItem('CITIZEN_REPUTATION', JSON.stringify(CITIZEN_REPUTATION));
 };

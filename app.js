@@ -15,6 +15,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Phase 3: Developer Hub & Local Board Initializers
   initDeveloperHub();
   initLocalBoard();
+
+  // Phase 5: P2P Mutual Credit Initializer
+  initMutualCredit();
 });
 
 /* ==========================================================================
@@ -1043,4 +1046,251 @@ function initLocalBoard() {
       renderRegion(matchedRegion);
     });
   }
+}
+
+/* ==========================================================================
+   11. P2P Mutual Credit Loan System
+   ========================================================================== */
+let LOAN_REQUESTS = [
+  { id: 1, borrower: '@Gardener_Dave', amount: 450, term: 6, interest: 2.0, purpose: 'Purchase heirloom tomato seeds and organic compost for local community garden.' },
+  { id: 2, borrower: '@Coop_Bakery', amount: 1200, term: 12, interest: 3.5, purpose: 'Upgrade commercial convection oven motor to keep production active.' }
+];
+
+let LOAN_OFFERS = [
+  { id: 1, lender: '@Eco_Investor', amount: 2000, term: 12, interest: 1.5, details: 'Surplus credit available specifically for local green initiatives.' },
+  { id: 2, lender: '@Mutual_Alice', amount: 500, term: 6, interest: 0.0, details: 'Interest-free micro-lending to support single parents and co-op workers.' }
+];
+
+let USER_LEDGER = [
+  { id: 1, type: 'Borrowed', partner: '@Mutual_Alice', principal: 300, remaining: 150, term: 6, interest: 0.0 }
+];
+
+function initMutualCredit() {
+  const reqList = document.getElementById('loan-requests-list');
+  const offList = document.getElementById('loan-offers-list');
+  const ledgerBody = document.getElementById('p2p-ledger-body');
+  
+  const borrowForm = document.getElementById('p2p-borrow-form');
+  const lendForm = document.getElementById('p2p-lend-form');
+
+  if (!reqList || !offList || !ledgerBody) return;
+
+  // Render Loan Requests Bulletin Board
+  const renderRequests = () => {
+    reqList.innerHTML = '';
+    if (LOAN_REQUESTS.length === 0) {
+      reqList.innerHTML = '<div class="empty-state-local" style="padding: 2rem;">No active borrow requests.</div>';
+      return;
+    }
+
+    LOAN_REQUESTS.forEach(req => {
+      const div = document.createElement('div');
+      div.className = 'loan-card';
+      div.innerHTML = `
+        <div class="loan-card-info">
+          <span class="loan-user">${req.borrower}</span>
+          <span class="loan-details-meta">Term: ${req.term} Months | Interest Offer: ${req.interest}%</span>
+          <p class="loan-purpose-text">"${req.purpose}"</p>
+        </div>
+        <div class="loan-card-actions">
+          <span class="loan-amount">$${req.amount}</span>
+          <button class="btn btn-primary" onclick="fundRequest(${req.id})" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Fund Loan</button>
+        </div>
+      `;
+      reqList.appendChild(div);
+    });
+  };
+
+  // Render Loan Offers Bulletin Board
+  const renderOffers = () => {
+    offList.innerHTML = '';
+    if (LOAN_OFFERS.length === 0) {
+      offList.innerHTML = '<div class="empty-state-local" style="padding: 2rem;">No active capital offers.</div>';
+      return;
+    }
+
+    LOAN_OFFERS.forEach(off => {
+      const div = document.createElement('div');
+      div.className = 'loan-card';
+      div.innerHTML = `
+        <div class="loan-card-info">
+          <span class="loan-user">${off.lender}</span>
+          <span class="loan-details-meta">Max Term: ${off.term} Months | Interest: ${off.interest}%</span>
+          <p class="loan-purpose-text">"${off.details}"</p>
+        </div>
+        <div class="loan-card-actions">
+          <span class="loan-amount">$${off.amount}</span>
+          <button class="btn btn-primary" onclick="requestFundingFromOffer(${off.id})" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Request</button>
+        </div>
+      `;
+      offList.appendChild(div);
+    });
+  };
+
+  // Render User's Mutual Credit Ledger
+  const renderLedger = () => {
+    ledgerBody.innerHTML = '';
+    if (USER_LEDGER.length === 0) {
+      ledgerBody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--color-text-muted);">No active credit contracts.</td></tr>';
+      return;
+    }
+
+    USER_LEDGER.forEach(item => {
+      const tr = document.createElement('tr');
+      const isLent = item.type === 'Lent';
+      
+      tr.innerHTML = `
+        <td><span class="status-badge ${isLent ? 'status-active' : 'status-offline'}">${item.type}</span></td>
+        <td style="font-weight: 500;">${item.partner}</td>
+        <td>$${item.principal}</td>
+        <td style="color:${isLent ? 'var(--color-green)' : 'var(--color-red)'}; font-weight: bold;">$${Math.round(item.remaining)}</td>
+        <td>
+          <button class="upvote-btn" onclick="makeRepayment(${item.id})" style="padding: 0.25rem 0.6rem; font-size: 0.75rem;">
+            ${isLent ? 'Collect payment' : 'Pay Installment'}
+          </button>
+        </td>
+      `;
+      ledgerBody.appendChild(tr);
+    });
+  };
+
+  // Fund a borrower request (User acts as Lender)
+  window.fundRequest = (id) => {
+    const idx = LOAN_REQUESTS.findIndex(r => r.id === id);
+    if (idx === -1) return;
+    const req = LOAN_REQUESTS[idx];
+
+    // Deduct listing and append to ledger
+    LOAN_REQUESTS.splice(idx, 1);
+    
+    // Remaining is principal + interest
+    const interestCharge = req.amount * (req.interest / 100);
+    const totalRepay = req.amount + interestCharge;
+
+    USER_LEDGER.push({
+      id: Date.now(),
+      type: 'Lent',
+      partner: req.borrower,
+      principal: req.amount,
+      remaining: totalRepay,
+      term: req.term,
+      interest: req.interest
+    });
+
+    alert(`Success! You funded ${req.borrower}'s loan of $${req.amount}. Contract is now active on your ledger.`);
+    renderRequests();
+    renderLedger();
+  };
+
+  // Request from a lender offer (User acts as Borrower)
+  window.requestFundingFromOffer = (id) => {
+    const idx = LOAN_OFFERS.findIndex(o => o.id === id);
+    if (idx === -1) return;
+    const off = LOAN_OFFERS[idx];
+
+    LOAN_OFFERS.splice(idx, 1);
+
+    const interestCharge = off.amount * (off.interest / 100);
+    const totalRepay = off.amount + interestCharge;
+
+    USER_LEDGER.push({
+      id: Date.now(),
+      type: 'Borrowed',
+      partner: off.lender,
+      principal: off.amount,
+      remaining: totalRepay,
+      term: off.term,
+      interest: off.interest
+    });
+
+    alert(`Success! Requested micro-loan of $${off.amount} from ${off.lender}. Capital is credited to your account.`);
+    renderOffers();
+    renderLedger();
+  };
+
+  // Repayment simulation
+  window.makeRepayment = (id) => {
+    const item = USER_LEDGER.find(l => l.id === id);
+    if (!item) return;
+
+    const installment = Math.min(item.remaining, Math.round(item.principal / item.term));
+    item.remaining -= installment;
+
+    if (item.remaining <= 0) {
+      USER_LEDGER = USER_LEDGER.filter(l => l.id !== id);
+      alert(`Success! The loan contract with ${item.partner} has been fully settled and closed.`);
+    } else {
+      alert(`Payment successful! Paid installment of $${installment}. Remaining balance with ${item.partner}: $${Math.round(item.remaining)}`);
+    }
+
+    renderLedger();
+  };
+
+  // Form submit handlers
+  if (borrowForm) {
+    borrowForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const borrower = document.getElementById('borrow-name').value;
+      const amount = parseInt(document.getElementById('borrow-amount').value);
+      const term = parseInt(document.getElementById('borrow-term').value);
+      const interest = parseFloat(document.getElementById('borrow-interest').value);
+      const purpose = document.getElementById('borrow-purpose').value;
+
+      LOAN_REQUESTS.unshift({
+        id: Date.now(),
+        borrower: borrower.startsWith('@') ? borrower : '@' + borrower,
+        amount,
+        term,
+        interest,
+        purpose
+      });
+
+      renderRequests();
+      borrowForm.reset();
+    });
+  }
+
+  if (lendForm) {
+    lendForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const lender = document.getElementById('lend-name').value;
+      const amount = parseInt(document.getElementById('lend-amount').value);
+      const term = parseInt(document.getElementById('lend-term').value);
+      const interest = parseFloat(document.getElementById('lend-interest').value);
+
+      LOAN_OFFERS.unshift({
+        id: Date.now(),
+        lender: lender.startsWith('@') ? lender : '@' + lender,
+        amount,
+        term,
+        interest,
+        details: `Community micro-funding available for local initiatives.`
+      });
+
+      renderOffers();
+      lendForm.reset();
+    });
+  }
+
+  // Initial tab form toggle helpers
+  window.toggleP2PForm = (mode) => {
+    const btnBorrow = document.getElementById('btn-subform-borrow');
+    const btnLend = document.getElementById('btn-subform-lend');
+    
+    if (mode === 'borrow') {
+      btnBorrow.classList.add('active');
+      btnLend.classList.remove('active');
+      borrowForm.classList.remove('hidden');
+      lendForm.classList.add('hidden');
+    } else {
+      btnBorrow.classList.remove('active');
+      btnLend.classList.add('active');
+      borrowForm.classList.add('hidden');
+      lendForm.classList.remove('hidden');
+    }
+  };
+
+  renderRequests();
+  renderOffers();
+  renderLedger();
 }

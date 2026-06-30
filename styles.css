@@ -156,6 +156,12 @@ body {
   box-shadow: 0 0 20px rgba(245, 158, 11, 0.15);
 }
 
+.tab-btn[data-tab="mutual-credit"].active {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: var(--color-blue);
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
+}
+
 .tab-icon {
   width: 18px;
   height: 18px;
@@ -857,7 +863,10 @@ cite {
 .post-box-card textarea,
 .dev-form-card input,
 .dev-form-card textarea,
-.dev-form-card select {
+.dev-form-card select,
+.p2p-forms-card input,
+.p2p-forms-card textarea,
+.p2p-forms-card select {
   width: 100%;
   background: rgba(0,0,0,0.3);
   border: 1px solid var(--color-border);
@@ -874,7 +883,10 @@ cite {
 .post-box-card textarea:focus,
 .dev-form-card input:focus,
 .dev-form-card textarea:focus,
-.dev-form-card select:focus {
+.dev-form-card select:focus,
+.p2p-forms-card input:focus,
+.p2p-forms-card textarea:focus,
+.p2p-forms-card select:focus {
   border-color: var(--color-blue);
 }
 
@@ -1470,6 +1482,94 @@ cite {
 
 .event-action:hover {
   text-decoration: underline;
+}
+
+/* ==========================================================================
+   P2P MUTUAL CREDIT TAB
+   ========================================================================== */
+.p2p-layout {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .p2p-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.loan-listings {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.loan-card {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--color-border);
+  padding: 1.25rem;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.25s ease;
+}
+
+.loan-card:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.loan-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.loan-user {
+  font-weight: bold;
+  font-size: 0.95rem;
+  color: var(--color-blue);
+}
+
+.loan-details-meta {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+}
+
+.loan-purpose-text {
+  font-size: 0.85rem;
+  color: var(--color-text);
+  font-style: italic;
+  margin-top: 0.25rem;
+  font-weight: 300;
+}
+
+.loan-card-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.loan-amount {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.loan-rate {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--color-green);
+  text-transform: uppercase;
+}
+
+.p2p-forms-card {
+  border-left: 4px solid var(--color-blue);
 }
 
 /* ==========================================================================

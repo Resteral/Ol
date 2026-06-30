@@ -359,6 +359,8 @@ function initDebateArena() {
 
   const btnRandom = document.getElementById('btn-random-topic');
   const btnSwap = document.getElementById('btn-swap-topic');
+  const btnArgue = document.getElementById('btn-debate-argue');
+  const btnRebut = document.getElementById('btn-debate-rebut');
 
   if (!btnMatch || !btnDisconnect) return;
 
@@ -370,6 +372,16 @@ function initDebateArena() {
       setTimeout(() => localOverlay.classList.add('hidden'), 300);
     } catch (err) {
       console.warn("Webcam access denied or unavailable. Using placeholder.", err);
+      const overlaySpan = localOverlay.querySelector('span');
+      if (overlaySpan) {
+        overlaySpan.textContent = 'Webcam Blocked (Active Avatar)';
+      }
+      const overlayIcon = localOverlay.querySelector('.overlay-icon');
+      if (overlayIcon) {
+        overlayIcon.classList.add('animated-pulse');
+        overlayIcon.textContent = '🎙️';
+      }
+      localOverlay.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #0d9488 100%)';
     }
   };
 
@@ -389,6 +401,8 @@ function initDebateArena() {
       matchIndicator.className = 'status-indicator';
       btnMatch.classList.remove('hidden');
       btnDisconnect.classList.add('hidden');
+      if (btnArgue) btnArgue.classList.add('hidden');
+      if (btnRebut) btnRebut.classList.add('hidden');
       remotePlaceholderText.textContent = 'Searching for debate partner...';
       remoteAvatar.classList.remove('hidden');
       remoteName.textContent = 'Partner';
@@ -407,6 +421,8 @@ function initDebateArena() {
       matchIndicator.className = 'status-indicator searching';
       btnMatch.classList.add('hidden');
       btnDisconnect.classList.remove('hidden');
+      if (btnArgue) btnArgue.classList.add('hidden');
+      if (btnRebut) btnRebut.classList.add('hidden');
       
       startCamera();
 
@@ -419,6 +435,8 @@ function initDebateArena() {
     else if (state === 'connected') {
       matchStatusText.textContent = 'Connected';
       matchIndicator.className = 'status-indicator connected';
+      if (btnArgue) btnArgue.classList.remove('hidden');
+      if (btnRebut) btnRebut.classList.remove('hidden');
     }
   };
 
@@ -506,6 +524,75 @@ function initDebateArena() {
 
   btnMatch.addEventListener('click', () => setMatchingState('searching'));
   btnDisconnect.addEventListener('click', () => endMatch(false));
+
+  const DEBATE_ARGUMENTS = {
+    lobbying: [
+      "We must restrict donor groups; corporate cash has completely drowned out citizen voices.",
+      "Lobbyists write 90% of regulatory tax exemptions before Congress even debates them.",
+      "If money equals speech under law, then democracy is just a commercial auction."
+    ],
+    wealth: [
+      "Compounding returns on assets are mathematically outpacing labor wages globally.",
+      "No single person needs billions while millions lack basic housing and healthcare.",
+      "A wealth cap returns hoarded capital back to active circulation."
+    ],
+    united: [
+      "Super PACs hide the true identity of corporate election buying campaigns.",
+      "Restoring election limits is the only way to establish equal citizen protection.",
+      "Corporations are legal constructs, not actual human voters."
+    ],
+    default: [
+      "We need structural reform, not incremental policy adjustments.",
+      "Local P2P mutual aid and co-ops bypass banking extractions completely.",
+      "True value lies in generative human service, not compounding ledgers."
+    ]
+  };
+
+  const speakArgument = (type) => {
+    if (matchStatusText.textContent !== 'Connected') return;
+
+    const topicSelect = document.getElementById('arena-topic');
+    const topicVal = topicSelect ? topicSelect.value : 'default';
+    
+    let key = 'default';
+    if (topicVal.includes('lobby') || topicVal.includes('president')) key = 'lobbying';
+    else if (topicVal.includes('wealth') || topicVal.includes('piketty')) key = 'wealth';
+    else if (topicVal.includes('united') || topicVal.includes('citizens')) key = 'united';
+
+    const pool = DEBATE_ARGUMENTS[key] || DEBATE_ARGUMENTS.default;
+    const randomQuote = pool[Math.floor(Math.random() * pool.length)];
+
+    // Append user bubble to chat stream
+    const commentDiv = document.createElement('div');
+    commentDiv.className = 'chat-message';
+    commentDiv.style.fontWeight = 'bold';
+    commentDiv.innerHTML = `<span class="chat-user" style="color:var(--color-blue);">Citizen_X (You):</span> <span class="chat-text" style="color:var(--color-text);">${type === 'argue' ? '🎤 ' : '👂 '}${randomQuote}</span>`;
+    chatBox.appendChild(commentDiv);
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    // Shift audience poll in user's favor
+    const boost = Math.floor(Math.random() * 5) + 5; // +5% to +9% boost
+    let userPercent = Math.max(15, Math.min(85, parseInt(agreementBar.style.width) + boost));
+    let partnerPercent = 100 - userPercent;
+
+    agreementBar.style.width = `${userPercent}%`;
+    labelUser.textContent = `You: ${Math.round(userPercent)}%`;
+    labelPartner.textContent = `Partner: ${Math.round(partnerPercent)}%`;
+
+    // Disable button briefly to prevent spamming
+    const btn = type === 'argue' ? btnArgue : btnRebut;
+    if (btn) {
+      btn.disabled = true;
+      btn.style.opacity = '0.5';
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.style.opacity = '1';
+      }, 2000);
+    }
+  };
+
+  if (btnArgue) btnArgue.addEventListener('click', () => speakArgument('argue'));
+  if (btnRebut) btnRebut.addEventListener('click', () => speakArgument('rebut'));
 
   if (btnRandom) {
     btnRandom.addEventListener('click', () => {

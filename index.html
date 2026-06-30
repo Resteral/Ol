@@ -525,17 +525,19 @@
                 <!-- Video Grid -->
                 <div class="video-grid">
                   <!-- User Video Panel -->
-                  <div class="video-panel" id="panel-local">
+                  <div class="video-panel" id="panel-local" style="position: relative;">
                     <video id="local-video" autoplay playsinline muted class="camera-feed"></video>
                     <div class="video-overlay" id="local-overlay">
                       <div class="overlay-icon">👤</div>
                       <span>Your Webcam (Inactive)</span>
                     </div>
+                    <div id="local-tips-counter" style="position:absolute; top:10px; left:10px; z-index:10; font-size:0.7rem; background:rgba(245,158,11,0.25); border:1px solid #f59e0b; color:#f59e0b; padding:0.15rem 0.4rem; border-radius:4px; font-weight:bold; display:none;">Tips Earned: $0</div>
                     <div class="panel-name">User (You)</div>
                   </div>
 
                   <!-- Partner Video Panel -->
-                  <div class="video-panel" id="panel-remote">
+                  <div class="video-panel" id="panel-remote" style="position: relative;">
+                    <button class="btn btn-primary hidden" id="btn-tip-remote" style="position:absolute; top:10px; right:10px; z-index:10; font-size:0.7rem; padding:0.25rem 0.6rem; background:rgba(16,185,129,0.9); border-color:var(--color-green); font-weight:bold;">💸 Tip Partner</button>
                     <div class="remote-avatar-container" id="remote-avatar">
                       <div class="overlay-icon animated-pulse">🎙️</div>
                       <span id="remote-placeholder-text">Searching for debate partner...</span>

@@ -361,6 +361,9 @@ function initDebateArena() {
   const btnSwap = document.getElementById('btn-swap-topic');
   const btnArgue = document.getElementById('btn-debate-argue');
   const btnRebut = document.getElementById('btn-debate-rebut');
+  const btnTipRemote = document.getElementById('btn-tip-remote');
+  const localTipsCounter = document.getElementById('local-tips-counter');
+  let userTipsEarned = 0;
 
   if (!btnMatch || !btnDisconnect) return;
 
@@ -403,6 +406,11 @@ function initDebateArena() {
       btnDisconnect.classList.add('hidden');
       if (btnArgue) btnArgue.classList.add('hidden');
       if (btnRebut) btnRebut.classList.add('hidden');
+      if (btnTipRemote) btnTipRemote.classList.add('hidden');
+      if (localTipsCounter) {
+        localTipsCounter.style.display = 'none';
+      }
+      userTipsEarned = 0;
       remotePlaceholderText.textContent = 'Searching for debate partner...';
       remoteAvatar.classList.remove('hidden');
       remoteName.textContent = 'Partner';
@@ -423,6 +431,10 @@ function initDebateArena() {
       btnDisconnect.classList.remove('hidden');
       if (btnArgue) btnArgue.classList.add('hidden');
       if (btnRebut) btnRebut.classList.add('hidden');
+      if (btnTipRemote) btnTipRemote.classList.add('hidden');
+      if (localTipsCounter) {
+        localTipsCounter.style.display = 'none';
+      }
       
       startCamera();
 
@@ -437,6 +449,11 @@ function initDebateArena() {
       matchIndicator.className = 'status-indicator connected';
       if (btnArgue) btnArgue.classList.remove('hidden');
       if (btnRebut) btnRebut.classList.remove('hidden');
+      if (btnTipRemote) btnTipRemote.classList.remove('hidden');
+      if (localTipsCounter) {
+        localTipsCounter.style.display = 'block';
+        localTipsCounter.textContent = 'Tips Earned: $0';
+      }
     }
   };
 
@@ -589,6 +606,23 @@ function initDebateArena() {
         btn.style.opacity = '1';
       }, 2000);
     }
+
+    // 25% chance of receiving a tip from the audience watcher
+    if (Math.random() < 0.25) {
+      const tipAmount = [5, 10, 20, 50][Math.floor(Math.random() * 4)];
+      userTipsEarned += tipAmount;
+      if (localTipsCounter) {
+        localTipsCounter.textContent = `Tips Earned: $${userTipsEarned}`;
+      }
+      
+      const viewer = `DebateWatcher_${Math.floor(Math.random() * 900) + 100}`;
+      const tipDiv = document.createElement('div');
+      tipDiv.className = 'chat-message';
+      tipDiv.style.cssText = 'color:var(--color-gold); font-weight:bold;';
+      tipDiv.innerHTML = `🎉 ${viewer} tipped you $${tipAmount} for a great point!`;
+      chatBox.appendChild(tipDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
   };
 
   if (btnArgue) btnArgue.addEventListener('click', () => speakArgument('argue'));
@@ -634,6 +668,27 @@ function initDebateArena() {
           chatBox.appendChild(msg);
           chatBox.scrollTop = chatBox.scrollHeight;
         }
+      }
+    });
+  }
+
+  // Tipping opponent click event
+  if (btnTipRemote) {
+    btnTipRemote.addEventListener('click', () => {
+      if (matchStatusText.textContent !== 'Connected') return;
+      const opponentName = remoteName.textContent;
+      const amtStr = prompt(`How much would you like to tip ${opponentName}?`, "5");
+      const amt = parseInt(amtStr);
+      
+      if (amt > 0) {
+        alert(`Tipped $${amt} successfully to ${opponentName}! Transferred via peer-to-peer network ledger.`);
+        
+        const tipMsg = document.createElement('div');
+        tipMsg.className = 'chat-message';
+        tipMsg.style.cssText = 'color:var(--color-green); font-weight:bold;';
+        tipMsg.innerHTML = `💸 Citizen_X (You) tipped $${amt} to ${opponentName}!`;
+        chatBox.appendChild(tipMsg);
+        chatBox.scrollTop = chatBox.scrollHeight;
       }
     });
   }

@@ -67,7 +67,6 @@
           <button class="tab-btn" data-tab="betting-arena" id="tab-betting-arena">🎯 resolve.bet Markets</button>
           <button class="tab-btn" data-tab="local-board" id="tab-local-board">📍 Local Board</button>
           <button class="tab-btn" data-tab="mutual-credit" id="tab-mutual-credit">🤝 P2P Lending</button>
-          <button class="tab-btn" data-tab="gaming-corner" id="tab-gaming-corner">🎮 Gaming</button>
           <button class="tab-btn" data-tab="developer-hub" id="tab-developer-hub">💻 Dev Hub</button>
         </div>
       </div>
@@ -763,111 +762,7 @@
         </div>
       </section>
 
-      <!-- TAB 5: GAMING CORNER -->
-      <section id="gaming-corner" class="tab-content">
-        <h2 class="section-title text-center">The Gaming Corner</h2>
-        <p class="section-intro text-center">Host or join tournaments, arrange prize pool buy-ins, configure snake or auction drafts, and discover indie games published by the community.</p>
 
-        <div class="grid-layout">
-          <!-- Tournament Configurator Form Card -->
-          <div class="card">
-            <h3>Host a Tournament</h3>
-            <p class="section-intro">Set up stakes, select your game title, configure brackets, and coordinate drafts.</p>
-            <form id="tournament-creator-form">
-              <div class="input-group">
-                <label for="tourney-name">Tournament Name</label>
-                <input type="text" id="tourney-name" placeholder="e.g. resolve.bet Spring Classic" required>
-              </div>
-
-              <div class="post-form-grid margin-top-small">
-                <div class="input-group">
-                  <label for="tourney-game">Game Title</label>
-                  <select id="tourney-game">
-                    <option value="chess">Speed Chess</option>
-                    <option value="blockmaker">BlockMaker Sandbox</option>
-                    <option value="capital-exploit">Capital Exploit Runner</option>
-                  </select>
-                </div>
-                <div class="input-group">
-                  <label for="tourney-prize">Prize Pool / Stake ($)</label>
-                  <input type="number" id="tourney-prize" value="250" min="0" step="50" required>
-                </div>
-              </div>
-
-              <div class="post-form-grid margin-top-small">
-                <div class="input-group">
-                  <label for="tourney-bracket">Bracket Format</label>
-                  <select id="tourney-bracket">
-                    <option value="single">Single Elimination</option>
-                    <option value="double">Double Elimination</option>
-                    <option value="robin">Round Robin</option>
-                  </select>
-                </div>
-                <div class="input-group">
-                  <label for="tourney-draft">Draft Mode</label>
-                  <select id="tourney-draft">
-                    <option value="snake">Snake Draft</option>
-                    <option value="auction">Auction Draft ($200 budget)</option>
-                    <option value="none">Seeded Matches</option>
-                  </select>
-                </div>
-              </div>
-
-              <button type="submit" class="btn btn-primary margin-top-large">Generate Tournament & Bracket</button>
-            </form>
-          </div>
-
-          <!-- Active Tournaments List -->
-          <div class="card" style="display:flex; flex-direction:column; max-height:420px; overflow-y:auto;">
-            <h3>Active Competitions</h3>
-            <p class="section-intro">Click any tournament to load its bracket visualization and draft results below.</p>
-            <div class="loan-listings" id="active-tournaments-list">
-              <!-- Rendered via JS -->
-            </div>
-          </div>
-        </div>
-
-        <!-- Visual Bracket Tree & Draft Console -->
-        <div class="card margin-top-large" id="tournament-detail-panel" style="border-top: 4px solid var(--color-blue);">
-          <div id="tourney-detail-initial">
-            <h3 class="text-center">Select or Create a Tournament</h3>
-            <p class="text-center section-intro">Generate a tournament to see bracket paths, participant pairings, draft picks, and tournament standings.</p>
-          </div>
-
-          <div id="tourney-detail-active" class="hidden">
-            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--color-border); padding-bottom:1rem; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;">
-              <div>
-                <h3 id="active-tourney-title">Tournament Title</h3>
-                <span class="node-badge badge-capital" id="active-tourney-meta" style="margin-bottom:0;">Chess • $500 Pool</span>
-              </div>
-              <div style="display:flex; gap:0.5rem;">
-                <button class="btn btn-primary" id="btn-simulate-round" style="padding:0.4rem 0.8rem; font-size:0.8rem;">⚡ Simulate Next Matchups</button>
-              </div>
-            </div>
-
-            <!-- Draft Board Column & Bracket Grid -->
-            <div class="grid-layout" style="grid-template-columns: 1fr 1.6fr;">
-              <!-- Draft Console Card -->
-              <div>
-                <h4>Draft Summary</h4>
-                <p class="section-intro" id="active-tourney-draft-desc">Snake or Auction draft roster overview.</p>
-                <div class="audience-chat" id="tourney-draft-log" style="height:280px; background:rgba(0,0,0,0.25);">
-                  <!-- Injected by JS -->
-                </div>
-              </div>
-
-              <!-- Bracket Visualizer -->
-              <div>
-                <h4>Tournament Bracket Tree</h4>
-                <p class="section-intro">Track matches from Quarterfinals down to the Champion.</p>
-                <div class="bracket-viewer-container" id="bracket-viewer-tree">
-                  <!-- Rendered via JS -->
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       <!-- TAB 6: COMMUNITY FORUM -->
       <section id="community-forum" class="tab-content">

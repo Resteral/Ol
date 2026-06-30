@@ -47,6 +47,10 @@
         <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><path d="M12 11h.01"/><path d="M12 15h.01"/></svg>
         P2P Lending
       </button>
+      <button class="tab-btn" data-tab="financial-literacy" id="tab-financial-literacy">
+        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        Financial Literacy
+      </button>
       <button class="tab-btn" data-tab="hell-greed" id="tab-hell-greed">
         <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
         The Wealth Bubble (Greed)
@@ -681,7 +685,138 @@
         </div>
       </section>
 
-      <!-- TAB 7: THE HELL OF GREED -->
+      <!-- TAB 7: FINANCIAL LITERACY -->
+      <section id="financial-literacy" class="tab-content">
+        <div class="grid-layout">
+          <!-- Money & Platforms Column -->
+          <div class="diagram-card card">
+            <h2 class="section-title">How Money Works & Platform Monetization</h2>
+            <p class="section-intro">Understand the difference between currency (fiat debt claims) and assets (value-generators), and calculate exact view milestones required to earn on major platforms.</p>
+
+            <div class="philosophical-insight" style="margin-top:0; margin-bottom: 2rem; border-left: 4px solid var(--color-blue); background: rgba(59,130,246,0.02);">
+              <h3 class="text-gold" style="font-size:1.15rem; margin-bottom: 0.5rem;">Fiat Currency vs. Generative Wealth</h3>
+              <p style="font-size:0.9rem; line-height:1.5;">Modern money is not backed by gold; it is backed by debt. Every dollar in circulation was lent into existence by a bank. Real wealth is not currency; it is ownership of assets that produce generative value (software, community-owned infrastructure, creative publications). To build wealth, focus on producing ownership assets rather than chasing rented hourly wages.</p>
+            </div>
+
+            <!-- Platform Calculator Widget -->
+            <div class="reflection-widget" style="border-top:4px solid var(--color-blue); background:rgba(0,0,0,0.15);">
+              <h3>Creator Monetization Calculator</h3>
+              <p class="widget-subtitle">Compute the views or streams required to make a target income across platforms using average RPM (revenue per mille/thousand views) and minimum requirements.</p>
+
+              <div class="widget-grid" style="margin-bottom: 1.5rem;">
+                <div class="input-group">
+                  <label for="platform-select">Platform</label>
+                  <select id="platform-select">
+                    <option value="youtube">YouTube (Ads RPM)</option>
+                    <option value="tiktok_rewards">TikTok Creator Rewards (>1m videos)</option>
+                    <option value="tiktok_fund">TikTok Creator Fund (Shorts)</option>
+                    <option value="spotify">Spotify streams</option>
+                    <option value="apple_music">Apple Music streams</option>
+                    <option value="x_ads">X/Twitter Ads Sharing</option>
+                  </select>
+                </div>
+                <div class="input-group">
+                  <label for="input-target-income">Target Monthly Income ($)</label>
+                  <input type="number" id="input-target-income" value="1000" min="50" step="100">
+                </div>
+              </div>
+
+              <!-- Output Box -->
+              <div class="reflection-output winning" id="platform-calc-output">
+                <!-- Loaded dynamically by JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Credit Breakdown Column -->
+          <div class="detail-card card" style="justify-content: flex-start; min-height: auto;">
+            <h2 class="section-title">Understanding & Rebuilding Credit</h2>
+            <p class="section-intro">Credit scores are a trust database used by lenders to assess risk. Rebuilding it requires logical choices based on how the score is calculated.</p>
+
+            <!-- FICO Components -->
+            <div class="fico-breakdown-panel">
+              <h4>FICO Scoring Components</h4>
+              <div class="fico-list" style="display:flex; flex-direction:column; gap:0.8rem; margin-top:0.75rem;">
+                <div class="fico-item">
+                  <div style="display:flex; justify-content:space-between; font-size:0.82rem; font-weight:bold;">
+                    <span>1. Payment History</span>
+                    <span style="color:var(--color-green)">35% (Most Crucial)</span>
+                  </div>
+                  <div style="height:6px; background:rgba(255,255,255,0.05); border-radius:10px; overflow:hidden; margin-top:3px;">
+                    <div style="background:var(--color-green); height:100%; width:35%;"></div>
+                  </div>
+                  <p style="font-size:0.78rem; color:var(--color-text-muted); margin-top:2px;">Automate minimum payments to prevent any 30-day delinquencies, which can drop scores by 100 points instantly.</p>
+                </div>
+
+                <div class="fico-item">
+                  <div style="display:flex; justify-content:space-between; font-size:0.82rem; font-weight:bold;">
+                    <span>2. Amounts Owed / Utilization</span>
+                    <span style="color:var(--color-blue)">30% (High Impact)</span>
+                  </div>
+                  <div style="height:6px; background:rgba(255,255,255,0.05); border-radius:10px; overflow:hidden; margin-top:3px;">
+                    <div style="background:var(--color-blue); height:100%; width:30%;"></div>
+                  </div>
+                  <p style="font-size:0.78rem; color:var(--color-text-muted); margin-top:2px;">Keep your credit utilization (balance divided by credit limit) below 10% (ideal) or 30% (maximum) across all cards.</p>
+                </div>
+
+                <div class="fico-item">
+                  <div style="display:flex; justify-content:space-between; font-size:0.82rem; font-weight:bold;">
+                    <span>3. Length of Credit History</span>
+                    <span style="color:var(--color-gold)">15%</span>
+                  </div>
+                  <div style="height:6px; background:rgba(255,255,255,0.05); border-radius:10px; overflow:hidden; margin-top:3px;">
+                    <div style="background:var(--color-gold); height:100%; width:15%;"></div>
+                  </div>
+                  <p style="font-size:0.78rem; color:var(--color-text-muted); margin-top:2px;">Keep old card accounts open. Age of accounts boosts trust metrics automatically over time.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Credit Repair Steps -->
+            <div class="detail-section margin-top-large">
+              <h4>Credit Repair Roadmap</h4>
+              <ul class="card-list" style="border:none; padding-top:0.5rem;">
+                <li><strong>Audit and Dispute:</strong> Pull free credit reports and dispute incorrect balances, late reportings, or collections records.</li>
+                <li><strong>Utilize Secured Cards:</strong> If credit is severely damaged, open a secured card. You deposit cash (e.g. $200) as the limit, eliminating lender risk while reporting positive payments.</li>
+                <li><strong>Request Limit Increases:</strong> Ask lenders to increase limits without hard inquiries. This instantly lowers your utilization ratio.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Debt Trap Simulator (Full Width) -->
+        <div class="card margin-top-large" style="border-top:4px solid var(--color-red);">
+          <h2 class="section-title text-gold">The Credit Card Debt Trap Simulator</h2>
+          <p class="section-intro">A demonstration of how compound interest and paying only card minimums turns minor purchases into lifetime debt cycles.</p>
+
+          <div class="widget-grid">
+            <div class="input-group">
+              <label for="cc-balance">Credit Card Balance ($)</label>
+              <input type="number" id="cc-balance" value="3000" min="100" step="500">
+            </div>
+            <div class="input-group">
+              <label for="cc-apr">APR / Interest Rate (%)</label>
+              <input type="number" id="cc-apr" value="22" min="5" max="36" step="1">
+            </div>
+            <div class="input-group">
+              <label for="cc-min-rate">Minimum Payment Rate (%)</label>
+              <select id="cc-min-rate">
+                <option value="2">2% of balance (standard bank minimum)</option>
+                <option value="3">3% of balance</option>
+                <option value="4">4% of balance</option>
+                <option value="10">Fixed $100 per month (fixed payment)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Debt Output results -->
+          <div class="reflection-output losing margin-top-large" id="cc-trap-output">
+            <!-- Loaded dynamically by JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 8: THE HELL OF GREED -->
       <section id="hell-greed" class="tab-content">
         <div class="philosophical-container">
           <div class="hero-quote">
@@ -721,7 +856,7 @@
         </div>
       </section>
 
-      <!-- TAB 8: THE PURPOSE OF LIFE -->
+      <!-- TAB 9: THE PURPOSE OF LIFE -->
       <section id="purpose-life" class="tab-content">
         <div class="philosophical-container purpose-container">
           <div class="gold-gradient-bg">
@@ -794,7 +929,7 @@
         </div>
       </section>
 
-      <!-- TAB 9: SYSTEMIC REFORM -->
+      <!-- TAB 10: SYSTEMIC REFORM -->
       <section id="systemic-reform" class="tab-content">
         <h2 class="section-title text-center">Reclaiming the Democratic System</h2>
         <p class="section-intro text-center">To move from a government controlled by capital to a government controlled by people, we must dismantle the structures that make money necessary for political survival.</p>

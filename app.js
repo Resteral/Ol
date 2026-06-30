@@ -18,6 +18,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Phase 5: P2P Mutual Credit Initializer
   initMutualCredit();
+
+  // Phase 6: Financial Literacy Initializer
+  initFinancialLiteracy();
 });
 
 /* ==========================================================================
@@ -1293,4 +1296,172 @@ function initMutualCredit() {
   renderRequests();
   renderOffers();
   renderLedger();
+}
+
+/* ==========================================================================
+   12. Financial Literacy & Calculators
+   ========================================================================== */
+const PLATFORM_DATA = {
+  youtube: {
+    name: 'YouTube Partner Program',
+    rate: 4.00, // RPM per 1000 views
+    metric: 'Views',
+    requirements: '1,000 Subscribers and 4,000 valid public watch hours in the last 12 months, or 10 million Shorts views.',
+    note: 'CPM varies widely based on audience geography and niche (finance/tech has high RPM; gaming/comedy has low RPM).'
+  },
+  tiktok_rewards: {
+    name: 'TikTok Creator Rewards',
+    rate: 0.75, // RPM per 1000 views
+    metric: 'Qualified Views',
+    requirements: 'At least 10,000 followers and 100,000 video views in the last 30 days. Videos must be longer than 1 minute.',
+    note: 'Requires high engagement and retention. TikTok pays only on "qualified views" (first view per user, watched > 5 seconds).'
+  },
+  tiktok_fund: {
+    name: 'TikTok Creator Fund (Shorts)',
+    rate: 0.03, // RPM per 1000 views
+    metric: 'Shorts Views',
+    requirements: '10,000 followers and 100,000 video views in the last 30 days.',
+    note: 'Extremely low payouts. Chasing short viral loops is highly extraction-prone for creators; it drives platform traffic but returns pennies.'
+  },
+  spotify: {
+    name: 'Spotify Artist Streaming',
+    rate: 3.50, // per 1000 streams
+    metric: 'Streams',
+    requirements: 'Minimum of 1,000 streams annually on the track to start generating payouts.',
+    note: 'Payouts are pooled and distributed based on market share, meaning small artists receive less than the absolute rate.'
+  },
+  apple_music: {
+    name: 'Apple Music Streaming',
+    rate: 7.50, // per 1000 streams
+    metric: 'Streams',
+    requirements: 'No minimum track stream count, but requires account distribution setup (DistroKid/TuneCore).',
+    note: 'Generally pays roughly double Spotify’s rate due to Apple’s subscription-only model (no free ad-supported tier).'
+  },
+  x_ads: {
+    name: 'X (Twitter) Ads Revenue Sharing',
+    rate: 0.015, // per 1000 impressions
+    metric: 'Impressions',
+    requirements: 'Subscribe to X Premium, and have at least 5 million organic impressions on your posts in the last 3 months.',
+    note: 'Highly volatile. Payouts depend strictly on ads served in the replies of verified users.'
+  }
+};
+
+function initFinancialLiteracy() {
+  const platSelect = document.getElementById('platform-select');
+  const targetIncomeInput = document.getElementById('input-target-income');
+  const calcOutput = document.getElementById('platform-calc-output');
+
+  const ccBalanceInput = document.getElementById('cc-balance');
+  const ccAprInput = document.getElementById('cc-apr');
+  const ccMinRateSelect = document.getElementById('cc-min-rate');
+  const ccOutput = document.getElementById('cc-trap-output');
+
+  if (!platSelect || !targetIncomeInput || !calcOutput || !ccBalanceInput || !ccAprInput || !ccMinRateSelect || !ccOutput) return;
+
+  // Platform calculator engine
+  const calculatePlatformMonetization = () => {
+    const platKey = platSelect.value;
+    const target = parseFloat(targetIncomeInput.value) || 0;
+    const info = PLATFORM_DATA[platKey];
+
+    if (!info) return;
+
+    // views needed = target / (rate / 1000)
+    const viewsNeeded = Math.round(target / (info.rate / 1000));
+    
+    calcOutput.innerHTML = `
+      <div class="reflection-header">
+        <span class="reflection-badge badge-winning">${info.name}</span>
+        <span class="reflection-title">${viewsNeeded.toLocaleString()} ${info.metric} / month</span>
+      </div>
+      <div class="reflection-text">
+        <p><strong>Average Revenue Rate:</strong> $${info.rate.toFixed(3)} per 1,000 ${info.metric.toLowerCase()}</p>
+        <p class="margin-top-small"><strong>Monetization Requirements:</strong> ${info.requirements}</p>
+        <p class="margin-top-small" style="font-style: italic; font-size: 0.82rem; color: var(--color-text-muted);">${info.note}</p>
+      </div>
+    `;
+  };
+
+  // Credit Card Debt Trap Calculator engine
+  const calculateDebtTrap = () => {
+    const balanceStart = parseFloat(ccBalanceInput.value) || 0;
+    const apr = parseFloat(ccAprInput.value) || 0;
+    const minSelectVal = ccMinRateSelect.value;
+
+    let balance = balanceStart;
+    const r = apr / 12 / 100;
+    let months = 0;
+    let totalPaid = 0;
+    let totalInterest = 0;
+
+    const isFixed = minSelectVal === '100';
+    const minRate = isFixed ? 0 : parseFloat(minSelectVal) / 100;
+
+    // Check for infinite debt loop:
+    const initialInterest = balance * r;
+    const initialPayment = isFixed ? 100 : Math.max(25, balance * minRate);
+
+    if (initialInterest >= initialPayment && balance > 0) {
+      ccOutput.className = 'reflection-output losing';
+      ccOutput.innerHTML = `
+        <div class="reflection-header">
+          <span class="reflection-badge badge-losing">INDEFINITE DEBT LOOP</span>
+          <span class="reflection-title" style="color: var(--color-red);">Warning: Debt Grows Indefinitely!</span>
+        </div>
+        <div class="reflection-text">
+          <p>Your interest charge this month ($${Math.round(initialInterest)}) exceeds or equals your starting payment ($${Math.round(initialPayment)}). Under this payment scheme, the card balance will grow forever, trapping you in interest obligations indefinitely.</p>
+          <p class="margin-top-small"><strong>Action required:</strong> Increase your monthly payment to at least $${Math.round(initialInterest + 20)} to start paying down the principal.</p>
+        </div>
+      `;
+      return;
+    }
+
+    while (balance > 0.01 && months < 600) { // Limit to 50 years to prevent browser freeze
+      months++;
+      const interest = balance * r;
+      totalInterest += interest;
+      balance += interest;
+
+      let payment = 0;
+      if (isFixed) {
+        payment = Math.min(balance, 100);
+      } else {
+        payment = Math.min(balance, Math.max(25, balance * minRate));
+      }
+
+      totalPaid += payment;
+      balance -= payment;
+    }
+
+    const years = Math.floor(months / 12);
+    const remainingMonths = months % 12;
+    const timeString = `${years > 0 ? years + ' years ' : ''}${remainingMonths} months`;
+    const interestPercentage = Math.round((totalInterest / balanceStart) * 100);
+
+    ccOutput.className = 'reflection-output losing';
+    ccOutput.innerHTML = `
+      <div class="reflection-header">
+        <span class="reflection-badge badge-losing">Debt payoff results</span>
+        <span class="reflection-title">${timeString} to pay off</span>
+      </div>
+      <div class="reflection-text">
+        <p><strong>Total Interest Extracted:</strong> $${Math.round(totalInterest).toLocaleString()} (${interestPercentage}% of original balance)</p>
+        <p><strong>Total Cash Paid to Bank:</strong> $${Math.round(totalPaid).toLocaleString()}</p>
+        <p class="margin-top-small" style="font-style: italic; font-size: 0.85rem; color: var(--color-text-muted);">
+          *Paying only the bank's minimum rate ensures they maximize their extraction from your labor. Always prioritize paying the STATEMENT BALANCE in full every month to force the bank to extend interest-free credit rather than extracting your savings.
+        </p>
+      </div>
+    `;
+  };
+
+  platSelect.addEventListener('change', calculatePlatformMonetization);
+  targetIncomeInput.addEventListener('input', calculatePlatformMonetization);
+  
+  ccBalanceInput.addEventListener('input', calculateDebtTrap);
+  ccAprInput.addEventListener('input', calculateDebtTrap);
+  ccMinRateSelect.addEventListener('change', calculateDebtTrap);
+
+  // Initial runs
+  calculatePlatformMonetization();
+  calculateDebtTrap();
 }

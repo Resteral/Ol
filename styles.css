@@ -162,6 +162,12 @@ body {
   box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
 }
 
+.tab-btn[data-tab="financial-literacy"].active {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: var(--color-blue);
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
+}
+
 .tab-icon {
   width: 18px;
   height: 18px;
@@ -866,7 +872,9 @@ cite {
 .dev-form-card select,
 .p2p-forms-card input,
 .p2p-forms-card textarea,
-.p2p-forms-card select {
+.p2p-forms-card select,
+.fico-breakdown-panel select,
+.fico-breakdown-panel input {
   width: 100%;
   background: rgba(0,0,0,0.3);
   border: 1px solid var(--color-border);
@@ -886,7 +894,9 @@ cite {
 .dev-form-card select:focus,
 .p2p-forms-card input:focus,
 .p2p-forms-card textarea:focus,
-.p2p-forms-card select:focus {
+.p2p-forms-card select:focus,
+.fico-breakdown-panel select:focus,
+.fico-breakdown-panel input:focus {
   border-color: var(--color-blue);
 }
 
@@ -1570,6 +1580,16 @@ cite {
 
 .p2p-forms-card {
   border-left: 4px solid var(--color-blue);
+}
+
+/* ==========================================================================
+   FINANCIAL LITERACY STYLING
+   ========================================================================== */
+.fico-item {
+  background: rgba(0,0,0,0.2);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 1rem;
 }
 
 /* ==========================================================================

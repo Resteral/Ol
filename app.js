@@ -942,6 +942,7 @@ function initDeveloperHub() {
     }
   };
 
+  window.renderDevGallery = renderGallery;
   renderGallery();
 }
 
@@ -1527,6 +1528,11 @@ function initFinancialLiteracy() {
     `;
   };
 
+  const calcBtn = document.getElementById('btn-platform-calc');
+  if (calcBtn) {
+    calcBtn.addEventListener('click', calculatePlatformMonetization);
+  }
+
   platSelect.addEventListener('change', calculatePlatformMonetization);
   targetIncomeInput.addEventListener('input', calculatePlatformMonetization);
   
@@ -2062,9 +2068,11 @@ function initGamingCorner() {
   if (!form) return;
 
   // Listen to Developer Hub dynamic game submissions
-  const originalDraw = renderDevGallery;
-  renderDevGallery = function() {
-    originalDraw();
+  const originalDraw = window.renderDevGallery;
+  window.renderDevGallery = function() {
+    if (typeof originalDraw === 'function') {
+      originalDraw();
+    }
     updateGameSelectDropdown();
   };
 
